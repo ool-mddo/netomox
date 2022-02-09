@@ -1,0 +1,28 @@
+{
+  "index": 5,
+  "lost_edges": [
+    {
+      "node1": {
+        "hostname": "RegionA-Acc01",
+        "interfaceName": "Ethernet5"
+      },
+      "node2": {
+        "hostname": "RegionA-CE01",
+        "interfaceName": "ge-0/0/6"
+      }
+    },
+    {
+      "node1": {
+        "hostname": "RegionA-CE01",
+        "interfaceName": "ge-0/0/6"
+      },
+      "node2": {
+        "hostname": "RegionA-Acc01",
+        "interfaceName": "Ethernet5"
+      }
+    }
+  ],
+  "original_snapshot_path": "configs/pushed_configs_drawoff/mddo_network",
+  "snapshot_path": "configs/pushed_configs_linkdown/mddo_network_05",
+  "description": "No.05: down RegionA-Acc01[Ethernet5] <=> RegionA-CE01[ge-0/0/6] in layer1"
+}

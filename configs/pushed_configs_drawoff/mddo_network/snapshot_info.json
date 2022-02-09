@@ -1,0 +1,7 @@
+{
+  "index": 0,
+  "lost_edges": [],
+  "original_snapshot_path": "configs/pushed_configs/mddo_network",
+  "snapshot_path": "configs/pushed_configs_drawoff/mddo_network",
+  "description": "Draw-off node: DUMMY, link_pattern: DUMMY"
+}

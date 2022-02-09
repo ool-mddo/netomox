@@ -1,0 +1,20 @@
+Last table change time   : 20 days, 3:29:19 ago
+Number of table inserts  : 16
+Number of table deletes  : 4
+Number of table drops    : 0
+Number of table age-outs : 4
+
+Port          Neighbor Device ID       Neighbor Port ID    TTL
+---------- ------------------------ ---------------------- ---
+Et1           RegionA-CE01             Ethernet5           120
+Et2           RegionA-CE01             Ethernet6           120
+Et3           RegionA-CE02             Ethernet5           120
+Et4           RegionA-CE02             Ethernet6           120
+Et5           RegionA-CE01             Ethernet7           120
+Et6           RegionA-CE01             Ethernet8           120
+Et7           RegionA-CE02             Ethernet7           120
+Et8           RegionA-CE02             Ethernet8           120
+Et9           RegionA-Svr01            Ethernet1           120
+Et10          RegionA-Svr01            Ethernet2           120
+Et11          RegionA-Svr02            Ethernet1           120
+Et12          RegionA-Svr02            Ethernet2           120

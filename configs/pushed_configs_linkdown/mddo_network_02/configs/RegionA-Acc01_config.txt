@@ -1,0 +1,135 @@
+! Command: show running-config
+! device: RegionA-Acc01 (vEOS-lab, EOS-4.27.0F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+no aaa root
+!
+username vrnetlab role network-admin secret sha512 $6$Qr5gX7/.re8Z2jCF$Iwljs7D2E30uCmjwYCKCyb5cnINwGaupT7seqDodJ2ty3hmTvzuAxfLyxrJbzjkuvVyi5UuGKI8K.kOO5rp0O.
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model ribd
+!
+hostname RegionA-Acc01
+!
+spanning-tree mode mstp
+!
+vlan 10,20,110,120
+!
+management api http-commands
+   protocol unix-socket
+   no shutdown
+!
+interface Port-Channel1
+   load-interval 30
+   switchport trunk allowed vlan 10,110
+   switchport mode trunk
+   port-channel min-links 1
+!
+interface Port-Channel2
+   load-interval 30
+   switchport trunk allowed vlan 10,110
+   switchport mode trunk
+   port-channel min-links 1
+!
+interface Port-Channel3
+   load-interval 30
+   switchport trunk allowed vlan 20,120
+   switchport mode trunk
+   port-channel min-links 1
+!
+interface Port-Channel4
+   load-interval 30
+   switchport trunk allowed vlan 20,120
+   switchport mode trunk
+   port-channel min-links 1
+!
+interface Ethernet1
+   description to_RegionA-CE01_ge-0/0/4
+   load-interval 30
+   speed forced 1000full
+   channel-group 1 mode active
+!
+interface Ethernet2
+   description to_RegionA-CE01_ge-0/0/5
+   load-interval 30
+   speed forced 1000full
+   channel-group 1 mode active
+!
+interface Ethernet3
+   description to_RegionA-CE02_ge-0/0/4
+   load-interval 30
+   speed forced 1000full
+   channel-group 2 mode active
+!
+interface Ethernet4
+   description to_RegionA-CE02_ge-0/0/5
+   load-interval 30
+   speed forced 1000full
+   channel-group 2 mode active
+!
+interface Ethernet5
+   description to_RegionA-CE01_ge-0/0/6
+   load-interval 30
+   speed forced 1000full
+   channel-group 3 mode active
+!
+interface Ethernet6
+   description to_RegionA-CE01_ge-0/0/7
+   load-interval 30
+   speed forced 1000full
+   channel-group 3 mode active
+!
+interface Ethernet7
+   description to_RegionA-CE02_ge-0/0/6
+   load-interval 30
+   speed forced 1000full
+   channel-group 4 mode active
+!
+interface Ethernet8
+   description to_RegionA-CE02_ge-0/0/7
+   load-interval 30
+   speed forced 1000full
+   channel-group 4 mode active
+!
+interface Ethernet9
+   description to_RegionA-Svr01_Ethernet1
+   switchport access vlan 10
+!
+interface Ethernet10
+   description to_RegionA-Svr01_Ethernet2
+   switchport access vlan 110
+!
+interface Ethernet11
+   description to_RegionA-Svr02_Ethernet1
+   switchport access vlan 10
+!
+interface Ethernet12
+   description to_RegionA-Svr02_Ethernet2
+   switchport access vlan 110
+!
+interface Ethernet13
+!
+interface Ethernet14
+!
+interface Ethernet15
+!
+interface Ethernet16
+!
+interface Ethernet17
+!
+interface Ethernet18
+!
+interface Ethernet19
+!
+interface Management1
+   speed 10full
+   ip address 10.0.0.15/24
+   ipv6 enable
+   ipv6 address auto-config
+   ipv6 nd ra rx accept default-route
+!
+no ip routing
+!
+end

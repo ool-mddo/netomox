@@ -1,0 +1,28 @@
+{
+  "index": 22,
+  "lost_edges": [
+    {
+      "node1": {
+        "hostname": "RegionB-PE02",
+        "interfaceName": "ge-0/0/3"
+      },
+      "node2": {
+        "hostname": "RegionB-CE02",
+        "interfaceName": "ge-0/0/1"
+      }
+    },
+    {
+      "node1": {
+        "hostname": "RegionB-CE02",
+        "interfaceName": "ge-0/0/1"
+      },
+      "node2": {
+        "hostname": "RegionB-PE02",
+        "interfaceName": "ge-0/0/3"
+      }
+    }
+  ],
+  "original_snapshot_path": "configs/pushed_configs_drawoff/mddo_network",
+  "snapshot_path": "configs/pushed_configs_linkdown/mddo_network_22",
+  "description": "No.22: down RegionB-PE02[ge-0/0/3] <=> RegionB-CE02[ge-0/0/1] in layer1"
+}

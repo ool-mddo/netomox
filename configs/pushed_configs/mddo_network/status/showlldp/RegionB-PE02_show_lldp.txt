@@ -1,0 +1,5 @@
+Local Interface    Parent Interface    Chassis Id          Port info          System Name
+ge-0/0/0           -                   02:d2:45:6c:a4:05   Gi0/0/0/0          RegionA-PE02        
+ge-0/0/3           -                   2c:6b:f5:36:6f:c0   519                RegionB-CE02        
+ge-0/0/2           -                   2c:6b:f5:ae:fc:c0   519                RegionB-CE01        
+ge-0/0/1           -                   2c:6b:f5:e5:68:c0   519                RegionB-PE01

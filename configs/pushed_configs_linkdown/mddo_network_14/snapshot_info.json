@@ -1,0 +1,28 @@
+{
+  "index": 14,
+  "lost_edges": [
+    {
+      "node1": {
+        "hostname": "RegionA-CE02",
+        "interfaceName": "ge-0/0/1"
+      },
+      "node2": {
+        "hostname": "RegionA-PE02",
+        "interfaceName": "GigabitEthernet0/0/0/3"
+      }
+    },
+    {
+      "node1": {
+        "hostname": "RegionA-PE02",
+        "interfaceName": "GigabitEthernet0/0/0/3"
+      },
+      "node2": {
+        "hostname": "RegionA-CE02",
+        "interfaceName": "ge-0/0/1"
+      }
+    }
+  ],
+  "original_snapshot_path": "configs/pushed_configs_drawoff/mddo_network",
+  "snapshot_path": "configs/pushed_configs_linkdown/mddo_network_14",
+  "description": "No.14: down RegionA-CE02[ge-0/0/1] <=> RegionA-PE02[GigabitEthernet0/0/0/3] in layer1"
+}

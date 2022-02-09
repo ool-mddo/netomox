@@ -1,0 +1,83 @@
+! Command: show running-config
+! device: RegionB-Svr02 (vEOS-lab, EOS-4.27.0F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+no aaa root
+!
+username vrnetlab role network-admin secret sha512 $6$T53eFGnqk.Hmz7z6$0qXe./tosXalMDjSf5xNBkkZVdyvIUIPpXSWwf5pPNu5q1h8eeMQ.cOF/TFTms8Qw7iEtI6ah/gc/uAWEwCd2/
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model ribd
+!
+hostname RegionB-Svr02
+!
+spanning-tree mode mstp
+!
+management api http-commands
+   protocol unix-socket
+   no shutdown
+!
+interface Ethernet1
+   description to_RegionB-Acc02_Ethernet5
+   no switchport
+   ip address 172.31.20.100/24
+   ipv6 address fc00:172:31:20::100/64
+!
+interface Ethernet2
+   description to_RegionB-Acc02_Ethernet6
+   no switchport
+   ip address 172.31.120.100/24
+   ipv6 address fc00:172:31:120::100/64
+!
+interface Ethernet3
+!
+interface Ethernet4
+!
+interface Ethernet5
+!
+interface Ethernet6
+!
+interface Ethernet7
+!
+interface Ethernet8
+!
+interface Ethernet9
+!
+interface Ethernet10
+!
+interface Ethernet11
+!
+interface Ethernet12
+!
+interface Ethernet13
+!
+interface Ethernet14
+!
+interface Ethernet15
+!
+interface Ethernet16
+!
+interface Ethernet17
+!
+interface Ethernet18
+!
+interface Ethernet19
+!
+interface Management1
+   speed 10full
+   ip address 10.0.0.15/24
+   ipv6 enable
+   ipv6 address auto-config
+   ipv6 nd ra rx accept default-route
+!
+ip routing
+!
+ipv6 unicast-routing
+!
+ip route 0.0.0.0/0 172.31.20.3
+!
+ipv6 route ::/0 fc00:172:31:20::3
+!
+end

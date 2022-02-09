@@ -1,0 +1,28 @@
+{
+  "index": 11,
+  "lost_edges": [
+    {
+      "node1": {
+        "hostname": "RegionA-Acc01",
+        "interfaceName": "Ethernet11"
+      },
+      "node2": {
+        "hostname": "RegionA-Svr02",
+        "interfaceName": "Ethernet1"
+      }
+    },
+    {
+      "node1": {
+        "hostname": "RegionA-Svr02",
+        "interfaceName": "Ethernet1"
+      },
+      "node2": {
+        "hostname": "RegionA-Acc01",
+        "interfaceName": "Ethernet11"
+      }
+    }
+  ],
+  "original_snapshot_path": "configs/pushed_configs_drawoff/mddo_network",
+  "snapshot_path": "configs/pushed_configs_linkdown/mddo_network_11",
+  "description": "No.11: down RegionA-Acc01[Ethernet11] <=> RegionA-Svr02[Ethernet1] in layer1"
+}

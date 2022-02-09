@@ -1,0 +1,9 @@
+Local Interface    Parent Interface    Chassis Id          Port info          System Name
+ge-0/0/1           -                   2c:6b:f5:57:02:c0   521                RegionB-PE02        
+ge-0/0/2           ae0                 2c:6b:f5:ae:fc:c0   520                RegionB-CE01        
+ge-0/0/3           ae0                 2c:6b:f5:ae:fc:c0   521                RegionB-CE01        
+ge-0/0/0           -                   2c:6b:f5:e5:68:c0   521                RegionB-PE01        
+ge-0/0/6           ae2                 52:54:00:3b:53:8b   Ethernet3          RegionB-Acc02       
+ge-0/0/7           ae2                 52:54:00:3b:53:8b   Ethernet4          RegionB-Acc02       
+ge-0/0/4           ae1                 52:54:00:42:93:50   Ethernet3          RegionB-Acc01       
+ge-0/0/5           ae1                 52:54:00:42:93:50   Ethernet4          RegionB-Acc01

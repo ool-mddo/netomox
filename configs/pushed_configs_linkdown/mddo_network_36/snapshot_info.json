@@ -1,0 +1,28 @@
+{
+  "index": 36,
+  "lost_edges": [
+    {
+      "node1": {
+        "hostname": "RegionB-Acc01",
+        "interfaceName": "Ethernet5"
+      },
+      "node2": {
+        "hostname": "RegionB-Svr01",
+        "interfaceName": "Ethernet1"
+      }
+    },
+    {
+      "node1": {
+        "hostname": "RegionB-Svr01",
+        "interfaceName": "Ethernet1"
+      },
+      "node2": {
+        "hostname": "RegionB-Acc01",
+        "interfaceName": "Ethernet5"
+      }
+    }
+  ],
+  "original_snapshot_path": "configs/pushed_configs_drawoff/mddo_network",
+  "snapshot_path": "configs/pushed_configs_linkdown/mddo_network_36",
+  "description": "No.36: down RegionB-Acc01[Ethernet5] <=> RegionB-Svr01[Ethernet1] in layer1"
+}

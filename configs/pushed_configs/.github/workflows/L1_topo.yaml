@@ -1,0 +1,56 @@
+on:
+  push:
+    paths:
+    - "mddo_network/configs/**"
+
+defaults:
+  run:
+      working-directory: ./L1_topo
+
+jobs:
+  extract-L1-topo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: prepare NetBox
+      run: |
+        git clone -b release https://github.com/netbox-community/netbox-docker.git
+        cd netbox-docker
+        tee docker-compose.override.yml <<EOF
+        version: '3.4'
+        services:
+          netbox:
+            ports:
+            - 8000:8080
+        EOF
+        docker-compose up -d
+
+    - name: prepare batfish
+      run: docker-compose up -d
+
+    - name: install dependencies
+      run: pip3 install -r requirements.txt
+
+    - name: install dependencies on batfish container
+      run: docker-compose exec -T batfish pip3 install pynetbox
+
+    - name: wait NetBox
+      run: bash wait_service.sh
+
+    - name: parse description
+      run: docker-compose exec -T batfish python3 /mnt/description2netbox.py http://host.docker.internal:8000 0123456789abcdef0123456789abcdef01234567
+
+    - name: extract L1 topo as inet-henge format
+      run: python3 netbox2inet-henge.py http://localhost:8000 0123456789abcdef0123456789abcdef01234567 1 > ../inet-henge/netbox.json
+
+    - name: convert format inet-henge to batfish
+      run: python3 inet-henge2batfish.py ../inet-henge/netbox.json > ../mddo_network/layer1_topology.json
+
+    - name: commit files
+      run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "update L1_topo" ../inet-henge/netbox.json ../mddo_network/layer1_topology.json
+          git push

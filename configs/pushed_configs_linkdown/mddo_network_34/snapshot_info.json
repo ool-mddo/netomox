@@ -1,0 +1,28 @@
+{
+  "index": 34,
+  "lost_edges": [
+    {
+      "node1": {
+        "hostname": "RegionB-Acc01",
+        "interfaceName": "Ethernet1"
+      },
+      "node2": {
+        "hostname": "RegionB-CE01",
+        "interfaceName": "ge-0/0/4"
+      }
+    },
+    {
+      "node1": {
+        "hostname": "RegionB-CE01",
+        "interfaceName": "ge-0/0/4"
+      },
+      "node2": {
+        "hostname": "RegionB-Acc01",
+        "interfaceName": "Ethernet1"
+      }
+    }
+  ],
+  "original_snapshot_path": "configs/pushed_configs_drawoff/mddo_network",
+  "snapshot_path": "configs/pushed_configs_linkdown/mddo_network_34",
+  "description": "No.34: down RegionB-Acc01[Ethernet1] <=> RegionB-CE01[ge-0/0/4] in layer1"
+}

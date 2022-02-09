@@ -1,0 +1,103 @@
+! Command: show running-config
+! device: RegionB-Acc02 (vEOS-lab, EOS-4.27.0F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+no aaa root
+!
+username vrnetlab role network-admin secret sha512 $6$YklB7T0swsPNncA5$1PytLTv.HUBbds0jIxMRBZm/XKesTk4GMKzkVbttbYcoxI7.RGNaKGYgdXZGq0nPRhsjGbOWKvjxgIAY735LW0
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model ribd
+!
+hostname RegionB-Acc02
+!
+spanning-tree mode mstp
+!
+vlan 1010,1020,1110,1120
+!
+management api http-commands
+   protocol unix-socket
+   no shutdown
+!
+interface Port-Channel1
+   load-interval 30
+   switchport trunk allowed vlan 1020,1120
+   switchport mode trunk
+   port-channel min-links 1
+!
+interface Port-Channel2
+   load-interval 30
+   switchport trunk allowed vlan 1020,1120
+   switchport mode trunk
+   port-channel min-links 1
+!
+interface Ethernet1
+   description to_RegionB-CE01_ge-0/0/6
+   load-interval 30
+   speed forced 1000full
+   channel-group 1 mode active
+!
+interface Ethernet2
+   description to_RegionB-CE01_ge-0/0/7
+   load-interval 30
+   speed forced 1000full
+   channel-group 1 mode active
+!
+interface Ethernet3
+   description to_RegionB-CE02_ge-0/0/6
+   load-interval 30
+   speed forced 1000full
+   channel-group 2 mode active
+!
+interface Ethernet4
+   description to_RegionB-CE02_ge-0/0/7
+   load-interval 30
+   speed forced 1000full
+   channel-group 2 mode active
+!
+interface Ethernet5
+   description to_RegionB-Svr02_Ethernet1
+   switchport access vlan 1020
+!
+interface Ethernet6
+   description to_RegionB-Svr02_Ethernet2
+   switchport access vlan 1120
+!
+interface Ethernet7
+!
+interface Ethernet8
+!
+interface Ethernet9
+!
+interface Ethernet10
+!
+interface Ethernet11
+!
+interface Ethernet12
+!
+interface Ethernet13
+!
+interface Ethernet14
+!
+interface Ethernet15
+!
+interface Ethernet16
+!
+interface Ethernet17
+!
+interface Ethernet18
+!
+interface Ethernet19
+!
+interface Management1
+   speed 10full
+   ip address 10.0.0.15/24
+   ipv6 enable
+   ipv6 address auto-config
+   ipv6 nd ra rx accept default-route
+!
+no ip routing
+!
+end

@@ -1,0 +1,307 @@
+show configuration
+## Last commit: 2021-12-14 03:51:20 UTC by vrnetlab
+version 18.1R1.9;
+system {
+    host-name RegionA-CE02;
+    root-authentication {
+        encrypted-password "$6$vOte4zs5$j1X3fElYvJSt8VPNXx2KzRNrZIkp9CeRX83/W4wQo5K4Tl/MHZeMcvbymEzm9/2ya3S4hU993YDSLY26ROGnW/"; ## SECRET-DATA
+    }
+    login {
+        user vrnetlab {
+            uid 2000;
+            class super-user;
+            authentication {
+                encrypted-password "$6$CDmzGe/d$g43HmhI3FA.21JCYppnTg1h4q/JO4DOHSICLhhavqBem5zUTgKEcg5m9tBG1Ik6qmfb7L3v.wgj4/DkfgZejO0"; ## SECRET-DATA
+            }
+        }
+    }
+    services {
+        ssh;
+        netconf {
+            ssh;
+        }
+    }
+    syslog {
+        user * {
+            any emergency;
+        }
+        file messages {
+            any notice;
+            authorization info;
+        }
+        file interactive-commands {
+            interactive-commands any;
+        }
+    }
+}
+chassis {
+    aggregated-devices {
+        ethernet {
+            device-count 4;
+        }
+    }
+    fpc 0 {
+        pic 0 {
+            number-of-ports 96;
+        }
+    }
+}
+interfaces {
+    ge-0/0/0 {
+        description to_RegionA-PE01_GigabitEthernet0/0/0/3;
+        unit 0 {
+            family inet {
+                address 172.16.2.2/30;
+            }
+            family inet6 {
+                address fc00:172:16:2::2/64;
+            }
+        }
+    }
+    ge-0/0/1 {
+        description to_RegionA-PE02_GigabitEthernet0/0/0/3;
+        unit 0 {
+            family inet {
+                address 172.16.4.2/30;
+            }
+            family inet6 {
+                address fc00:172:17:4::2/64;
+            }
+        }
+    }
+    ge-0/0/2 {
+        description to_RegionA-CE01_ge-0/0/2;
+        gigether-options {
+            802.3ad ae0;
+        }
+    }
+    ge-0/0/3 {
+        description to_RegionA-CE01_ge-0/0/3;
+        gigether-options {
+            802.3ad ae0;
+        }
+    }
+    ge-0/0/4 {
+        description to_RegionA-Acc01_Ethernet3;
+        gigether-options {
+            802.3ad ae1;
+        }
+    }
+    ge-0/0/5 {
+        description to_RegionA-Acc01_Ethernet4;
+        gigether-options {
+            802.3ad ae1;
+        }
+    }
+    ge-0/0/6 {
+        description to_RegionA-Acc01_Ethernet7;
+        gigether-options {
+            802.3ad ae2;
+        }
+    }
+    ge-0/0/7 {
+        description to_RegionA-Acc01_Ethernet8;
+        gigether-options {
+            802.3ad ae2;
+        }
+    }
+    ae0 {
+        aggregated-ether-options {
+            lacp {
+                active;
+            }
+        }
+        unit 0 {
+            family inet {
+                address 172.16.5.2/30;
+            }
+            family inet6 {
+                address fc00:172:16:5::2/64;
+            }
+        }
+    }
+    ae1 {
+        flexible-vlan-tagging;
+        aggregated-ether-options {
+            lacp {
+                active;
+            }
+        }
+        unit 10 {
+            vlan-id 10;
+            family inet {
+                address 172.30.10.2/24 {
+                    vrrp-group 1 {
+                        virtual-address 172.30.10.3;
+                        priority 100;
+                        accept-data;
+                        track {
+                            interface ae1 {
+                                priority-cost 20;
+                            }
+                        }
+                    }
+                }
+            }
+            family inet6 {
+                address fc00:172:30:10::2/64 {
+                    vrrp-inet6-group 1 {
+                        virtual-inet6-address fc00:172:30:10::3;
+                        priority 100;
+                        accept-data;
+                        track {
+                            interface ae1 {
+                                priority-cost 20;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        unit 110 {
+            vlan-id 110;
+            family inet {
+                address 172.30.110.2/24 {
+                    vrrp-group 2 {
+                        virtual-address 172.30.110.3;
+                        priority 100;
+                        accept-data;
+                        track {
+                            interface ae1 {
+                                priority-cost 20;
+                            }
+                        }
+                    }
+                }
+            }
+            family inet6 {
+                address fc00:172:30:110::2/64 {
+                    vrrp-inet6-group 2 {
+                        virtual-inet6-address fc00:172:30:110::3;
+                        priority 100;
+                        accept-data;
+                        track {
+                            interface ae1 {
+                                priority-cost 20;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ae2 {
+        flexible-vlan-tagging;
+        aggregated-ether-options {
+            lacp {
+                active;
+            }
+        }
+        unit 20 {
+            vlan-id 20;
+            family inet {
+                address 172.30.20.2/24 {
+                    vrrp-group 3 {
+                        virtual-address 172.30.20.3;
+                        priority 100;
+                        accept-data;
+                        track {
+                            interface ae2 {
+                                priority-cost 20;
+                            }
+                        }
+                    }
+                }
+            }
+            family inet6 {
+                address fc00:172:30:20::2/64 {
+                    vrrp-inet6-group 3 {
+                        virtual-inet6-address fc00:172:30:20::3;
+                        priority 100;
+                        accept-data;
+                        track {
+                            interface ae2 {
+                                priority-cost 20;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        unit 120 {
+            vlan-id 120;
+            family inet {
+                address 172.30.120.2/24 {
+                    vrrp-group 2 {
+                        virtual-address 172.30.120.3;
+                        priority 100;
+                        accept-data;
+                        track {
+                            interface ae2 {
+                                priority-cost 20;
+                            }
+                        }
+                    }
+                }
+            }
+            family inet6 {
+                address fc00:172:30:120::2/64 {
+                    vrrp-inet6-group 2 {
+                        virtual-inet6-address fc00:172:30:120::3;
+                        priority 100;
+                        accept-data;
+                        track {
+                            interface ae2 {
+                                priority-cost 20;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    fxp0 {
+        unit 0 {
+            family inet {
+                address 10.0.0.15/24;
+            }
+        }
+    }
+}
+routing-options {
+    router-id 1.1.1.4;
+}
+protocols {
+    ospf {
+        export EXPORTDIRECT;
+        area 0.0.0.0 {
+            interface ge-0/0/0.0;
+            interface ge-0/0/1.0;
+        }
+    }
+    ospf3 {
+        export EXPORTDIRECT;
+        area 0.0.0.0 {
+            interface ge-0/0/0.0;
+            interface ge-0/0/1.0;
+        }
+    }
+    lldp {
+        interface all;
+    }
+}
+policy-options {
+    policy-statement EXPORTDIRECT {
+        term 1 {
+            from protocol direct;
+            then accept;
+        }
+    }
+}
+routing-instances {
+    VR1 {
+        instance-type virtual-router;
+        interface ae1.110;
+        interface ae2.120;
+    }
+}
