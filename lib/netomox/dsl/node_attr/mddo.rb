@@ -181,12 +181,16 @@ module Netomox
 
     # attribute for mddo-topology bgp node (bgp proc)
     class MddoBgpNodeAttribute
+      # @!attribute [rw] router_id
+      #   @return [String]
+      attr_accessor :router_id
       # @!attribute [r] type
       #   @return [String]
       attr_reader :type
 
-      def initialize(**_hash)
+      def initialize(router_id: '')
         # TODO: attribute implementation
+        @router_id = router_id
         @type = "#{NS_MDDO}:bgp-node-attributes"
       end
 
@@ -194,12 +198,13 @@ module Netomox
       # @return [Hash]
       def topo_data
         # TODO: attribute implementation
-        {}
+        {
+          'router-id' => @router_id
+        }
       end
 
       # @return [Boolean]
       def empty?
-        # TODO: attribute implementation
         false
       end
     end

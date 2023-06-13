@@ -141,7 +141,9 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
 
   it 'generate node that has bgp attribute', :attr, :bgp_attr do
     # TODO: attribute implementation
-    node_attr = {}
+    node_attr = {
+      router_id: '10.0.0.1'
+    }
     node = Netomox::DSL::Node.new(@bgp_nw, 'nodeX') do
       attribute(node_attr)
     end
@@ -149,7 +151,9 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
     node_data = {
       'node-id' => 'nodeX',
       @tp_key => [],
-      @bgp_attr_key => {}
+      @bgp_attr_key => {
+        'router-id' => '10.0.0.1'
+      }
     }
     expect(node.topo_data).to eq node_data
   end

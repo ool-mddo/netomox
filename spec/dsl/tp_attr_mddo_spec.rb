@@ -152,14 +152,24 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
 
   it 'generates term-point that has bgp attribute', :attr, :bgp_attr do
     # TODO: attribute implementation
-    tp_attr = {}
+    tp_attr = {
+      local_as: 65_531,
+      local_ip: '10.0.1.9',
+      remote_as: 65_532,
+      remote_ip: '10.0.1.10'
+    }
     tp = Netomox::DSL::TermPoint.new(@bgp_node, 'tpX') do
       attribute(tp_attr)
     end
     # TODO: attribute implementation
     tp_data = {
       'tp-id' => 'tpX',
-      @bgp_attr_key => {}
+      @bgp_attr_key => {
+        'local-as' => 65_531,
+        'local-ip' => '10.0.1.9',
+        'remote-as' => 65_532,
+        'remote-ip' => '10.0.1.10'
+      }
     }
     expect(tp.topo_data).to eq tp_data
   end

@@ -187,12 +187,29 @@ module Netomox
 
     # attribute for mddo topology bgp term-point
     class MddoBgpTPAttribute
+      # @!attribute [rw] local_as
+      #   @return [Integer]
+      # @!attribute [rw] local_ip
+      #   @return [String]
+      # @!attribute [rw] remote_as
+      #   @return [Integer]
+      # @!attribute [rw] remote_ip
+      #   @return [String]
+      attr_accessor :local_as, :local_ip, :remote_as, :remote_ip
       # @!attribute [r] type
       #   @return [String]
       attr_reader :type
 
-      def initialize(**_hash)
+      # @param [Integer] local_as Local ASN
+      # @param [String] local_ip Local IP address
+      # @param [Integer] remote_as Remote ASN
+      # @param [String] remote_ip Remote IP address
+      def initialize(local_as: -1, local_ip: '', remote_as: -1, remote_ip: '')
         # TODO: attribute implementation
+        @local_as = local_as
+        @local_ip = local_ip
+        @remote_as = remote_as
+        @remote_ip = remote_ip
         @type = "#{NS_MDDO}:bgp-termination-point-attributes"
       end
 
@@ -200,12 +217,16 @@ module Netomox
       # @return [Hash]
       def topo_data
         # TODO: attribute implementation
-        {}
+        {
+          'local-as' => @local_as,
+          'local-ip' => @local_ip,
+          'remote-as' => @remote_as,
+          'remote-ip' => @remote_ip
+        }
       end
 
       # @return [Boolean]
       def empty?
-        # TODO: attribute implementation
         false
       end
     end
