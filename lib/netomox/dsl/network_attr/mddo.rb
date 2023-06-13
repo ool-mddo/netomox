@@ -60,5 +60,13 @@ module Netomox
         @name.empty? && @identifier.empty? && @flags.empty?
       end
     end
+
+    # attribute for mddo-bgp network
+    class MddoBgpNWAttribute < NetworkAttributeBase
+      def initialize(**hash)
+        super(**hash)
+        @type = "#{NS_MDDO}:bgp-network-attributes"
+      end
+    end
   end
 end

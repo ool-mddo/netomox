@@ -94,7 +94,7 @@ module Netomox
       # @param [String] src_tp Source term-point name
       # @param [String] dst_node Destination node name
       # @param [String] dst_tp Destination term-point name
-      # @param [Proc] block Code block to eval this instance
+      # @param [Proc] & Code block to eval this instance
       def initialize(parent, src_node, src_tp, dst_node, dst_tp, &)
         super(parent, [src_node, src_tp, dst_node, dst_tp].join(','))
         @source = SrcTPRef.new(src_node, src_tp)
@@ -118,7 +118,7 @@ module Netomox
         end
       end
 
-      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/PerceivedComplexity
 
       # Set attribute
       # @param [Hash] attr Attribute data
@@ -131,8 +131,9 @@ module Netomox
         @type.key?(NWTYPE_MDDO_L2) && (@attribute = MddoL2LinkAttribute.new(**attr))
         @type.key?(NWTYPE_MDDO_L3) && (@attribute = MddoL3LinkAttribute.new(**attr))
         @type.key?(NWTYPE_MDDO_OSPF_AREA) && (@attribute = MddoOspfAreaLinkAttribute.new(**attr))
+        @type.key?(NWTYPE_MDDO_BGP) && (@attribute = MddoBgpLinkAttribute.new(**attr))
       end
-      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/AbcSize
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/PerceivedComplexity
 
       # @param [String, Array<String>] nw_ref Network name of Array of path element
       # @param [String] link_ref Link name

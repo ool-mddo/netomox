@@ -15,17 +15,22 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
       network 'test-ospf-area0' do
         type Netomox::NWTYPE_MDDO_OSPF_AREA
       end
+      network 'test-bgp' do
+        type Netomox::NWTYPE_MDDO_BGP
+      end
     end
     @l1nw = nws.network('test-L1')
     @l2nw = nws.network('test-L2')
     @l3nw = nws.network('test-L3')
     @ospf_nw = nws.network('test-ospf-area0')
+    @bgp_nw = nws.network('test-bgp')
 
     @tp_key = "#{Netomox::NS_TOPO}:termination-point"
     @l1attr_key = "#{Netomox::NS_MDDO}:l1-node-attributes"
     @l2attr_key = "#{Netomox::NS_MDDO}:l2-node-attributes"
     @l3attr_key = "#{Netomox::NS_MDDO}:l3-node-attributes"
     @ospf_attr_key = "#{Netomox::NS_MDDO}:ospf-area-node-attributes"
+    @bgp_attr_key = "#{Netomox::NS_MDDO}:bgp-node-attributes"
   end
 
   it 'generate node that has L1 attribute', :attr, :l1attr do
@@ -130,6 +135,21 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
           { 'protocol' => 'connected', 'metric-type' => 2 }
         ]
       }
+    }
+    expect(node.topo_data).to eq node_data
+  end
+
+  it 'generate node that has bgp attribute', :attr, :bgp_attr do
+    # TODO: attribute implementation
+    node_attr = {}
+    node = Netomox::DSL::Node.new(@bgp_nw, 'nodeX') do
+      attribute(node_attr)
+    end
+    # TODO: attribute implementation
+    node_data = {
+      'node-id' => 'nodeX',
+      @tp_key => [],
+      @bgp_attr_key => {}
     }
     expect(node.topo_data).to eq node_data
   end

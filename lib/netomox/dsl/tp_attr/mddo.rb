@@ -184,5 +184,30 @@ module Netomox
         false
       end
     end
+
+    # attribute for mddo topology bgp term-point
+    class MddoBgpTPAttribute
+      # @!attribute [r] type
+      #   @return [String]
+      attr_reader :type
+
+      def initialize(**_hash)
+        # TODO: attribute implementation
+        @type = "#{NS_MDDO}:bgp-termination-point-attributes"
+      end
+
+      # Convert to RFC8345 topology data
+      # @return [Hash]
+      def topo_data
+        # TODO: attribute implementation
+        {}
+      end
+
+      # @return [Boolean]
+      def empty?
+        # TODO: attribute implementation
+        false
+      end
+    end
   end
 end

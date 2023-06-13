@@ -11,11 +11,13 @@ RSpec.describe 'network dsl', :dsl, :mddo, :network do
     @l2nw_type = { Netomox::NWTYPE_MDDO_L2 => {} }
     @l3nw_type = { Netomox::NWTYPE_MDDO_L3 => {} }
     @ospf_nw_type = { Netomox::NWTYPE_MDDO_OSPF_AREA => {} }
+    @bgp_nw_type = { Netomox::NWTYPE_MDDO_BGP => {} }
 
     @l1attr_key = "#{Netomox::NS_MDDO}:l1-network-attributes"
     @l2attr_key = "#{Netomox::NS_MDDO}:l2-network-attributes"
     @l3attr_key = "#{Netomox::NS_MDDO}:l3-network-attributes"
     @ospf_attr_key = "#{Netomox::NS_MDDO}:ospf-area-network-attributes"
+    @bgp_attr_key = "#{Netomox::NS_MDDO}:bgp-network-attributes"
   end
 
   it 'generate network that has L1 attribute', :attr, :l1attr do
@@ -87,6 +89,21 @@ RSpec.describe 'network dsl', :dsl, :mddo, :network do
         'identifier' => '0.0.0.0',
         'flag' => %w[foo bar]
       }
+    }
+    expect(nw.topo_data).to eq nw_data
+  end
+
+  it 'generate network that has bgp attribute', :attr, :bgp_attr do
+    nw = Netomox::DSL::Network.new(@nws, 'nwX') do
+      type Netomox::NWTYPE_MDDO_BGP
+      attribute(name: 'bgp', flags: %w[foo bar])
+    end
+    nw_data = {
+      'network-id' => 'nwX',
+      'network-types' => @bgp_nw_type,
+      'node' => [],
+      @link_key => [],
+      @bgp_attr_key => { 'name' => 'bgp', 'flag' => %w[foo bar] }
     }
     expect(nw.topo_data).to eq nw_data
   end
