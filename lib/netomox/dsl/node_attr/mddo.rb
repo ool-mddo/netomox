@@ -210,7 +210,7 @@ module Netomox
       # @param [Array] peer_groups
       # @param [Array] policies
       # @param [Array] redistribute_list
-      def initialize(router_id: '', confederation_id: 0, confederation_members: [], route_reflector: false,
+      def initialize(router_id: '', confederation_id: -1, confederation_members: [], route_reflector: false,
                      peer_groups: [], policies: [], redistribute_list: [])
         @router_id = router_id
         @confederation_id = confederation_id
@@ -229,7 +229,7 @@ module Netomox
         {
           'router-id' => @router_id,
           'confederation-id' => @confederation_id,
-          'confederation-members' => @confederation_members,
+          'confederation-member' => @confederation_members,
           'route-reflector' => @route_reflector,
           'peer-group' => @peer_groups,
           'policy' => @policies,

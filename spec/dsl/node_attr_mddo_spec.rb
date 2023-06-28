@@ -155,7 +155,7 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
       @bgp_attr_key => {
         'router-id' => '10.0.0.4',
         'confederation-id' => 65_530,
-        'confederation-members' => [65_531],
+        'confederation-member' => [65_531],
         'route-reflector' => false,
         'peer-group' => [],
         'policy' => [],
