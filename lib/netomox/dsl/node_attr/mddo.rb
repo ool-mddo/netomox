@@ -183,29 +183,63 @@ module Netomox
     class MddoBgpNodeAttribute
       # @!attribute [rw] router_id
       #   @return [String]
-      attr_accessor :router_id
+      # @!attribute [rw] confederation_id
+      #   @return [Integer] ASN
+      # @!attribute [rw] confederation_members
+      #   @return [Array<Integer>] List of ASN
+      # @!attribute [rw] route_reflector
+      #   @return [Boolean]
+      # @!attribute [rw] peer_groups
+      #   @return [Array] # TODO: attr implementation
+      # @!attribute [rw] policies
+      #   @return [Array] # TODO: attr implementation
+      # @!attribute [rw] redistribute_list
+      #   @return [Array] # TODO: attr implementation
+      attr_accessor :router_id, :confederation_id, :confederation_members, :route_reflector, :peer_groups, :policies,
+                    :redistribute_list
       # @!attribute [r] type
       #   @return [String]
       attr_reader :type
 
-      def initialize(router_id: '')
-        # TODO: attribute implementation
+      # rubocop:disable Metrics/ParameterLists
+
+      # @param [String] router_id
+      # @param [Integer] confederation_id
+      # @param [Array<Integer>] confederation_members
+      # @param [Boolean] route_reflector
+      # @param [Array] peer_groups
+      # @param [Array] policies
+      # @param [Array] redistribute_list
+      def initialize(router_id: '', confederation_id: 0, confederation_members: [], route_reflector: false,
+                     peer_groups: [], policies: [], redistribute_list: [])
         @router_id = router_id
+        @confederation_id = confederation_id
+        @confederation_members = confederation_members
+        @route_reflector = route_reflector
+        @peer_groups = peer_groups
+        @policies = policies
+        @redistribute_list = redistribute_list
         @type = "#{NS_MDDO}:bgp-node-attributes"
       end
+      # rubocop:enable Metrics/ParameterLists
 
       # Convert to RFC8345 topology data
       # @return [Hash]
       def topo_data
-        # TODO: attribute implementation
         {
-          'router-id' => @router_id
+          'router-id' => @router_id,
+          'confederation-id' => @confederation_id,
+          'confederation-members' => @confederation_members,
+          'route-reflector' => @route_reflector,
+          'peer-group' => @peer_groups,
+          'policy' => @policies,
+          'redistribute' => @redistribute_list
         }
       end
 
       # @return [Boolean]
       def empty?
-        false
+        @router_id.empty?
       end
     end
   end

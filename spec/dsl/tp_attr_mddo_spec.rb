@@ -150,27 +150,49 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
   end
   # rubocop:enable RSpec/ExampleLength
 
+  # rubocop:disable RSpec/ExampleLength
   it 'generates term-point that has bgp attribute', :attr, :bgp_attr do
-    # TODO: attribute implementation
     tp_attr = {
       local_as: 65_531,
-      local_ip: '10.0.1.9',
-      remote_as: 65_532,
-      remote_ip: '10.0.1.10'
+      local_ip: '10.0.0.2',
+      remote_as: 65_531,
+      remote_ip: '10.0.0.4',
+      confederation: 65_530,
+      route_reflector_client: true,
+      cluster_id: '10.0.0.2',
+      timer: {
+        hold_time: 30,
+        keepalive_interval: 10,
+        minimum_advertisement_interval: 10,
+        connect_retry: 5
+      }
     }
     tp = Netomox::DSL::TermPoint.new(@bgp_node, 'tpX') do
       attribute(tp_attr)
     end
-    # TODO: attribute implementation
     tp_data = {
       'tp-id' => 'tpX',
       @bgp_attr_key => {
         'local-as' => 65_531,
-        'local-ip' => '10.0.1.9',
-        'remote-as' => 65_532,
-        'remote-ip' => '10.0.1.10'
+        'local-ip' => '10.0.0.2',
+        'remote-as' => 65_531,
+        'remote-ip' => '10.0.0.4',
+        'confederation' => 65_530,
+        'route-reflector-client' => true,
+        'cluster-id' => '10.0.0.2',
+        'peer-group' => '',
+        'import-policy' => [],
+        'export-policy' => [],
+        'timer' => {
+          'connect-retry' => 5,
+          'hold-time' => 30,
+          'keepalive-interval' => 10,
+          'minimum-advertisement-interval' => 10,
+          'restart-time' => -1
+        }
       }
     }
     expect(tp.topo_data).to eq tp_data
   end
+  # rubocop:enable RSpec/ExampleLength
 end

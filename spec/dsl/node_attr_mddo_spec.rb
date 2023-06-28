@@ -140,19 +140,26 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
   end
 
   it 'generate node that has bgp attribute', :attr, :bgp_attr do
-    # TODO: attribute implementation
     node_attr = {
-      router_id: '10.0.0.1'
+      router_id: '10.0.0.4',
+      confederation_id: 65_530,
+      confederation_members: [65_531],
+      route_reflector: false
     }
     node = Netomox::DSL::Node.new(@bgp_nw, 'nodeX') do
       attribute(node_attr)
     end
-    # TODO: attribute implementation
     node_data = {
       'node-id' => 'nodeX',
       @tp_key => [],
       @bgp_attr_key => {
-        'router-id' => '10.0.0.1'
+        'router-id' => '10.0.0.4',
+        'confederation-id' => 65_530,
+        'confederation-members' => [65_531],
+        'route-reflector' => false,
+        'peer-group' => [],
+        'policy' => [],
+        'redistribute' => []
       }
     }
     expect(node.topo_data).to eq node_data
