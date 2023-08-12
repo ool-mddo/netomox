@@ -155,8 +155,8 @@ module Netomox
       end
     end
 
-    # attribute for bgp termination point
-    class MddoBgpTPAttribute < AttributeBase
+    # attribute for bgp-proc termination point
+    class MddoBgpProcTPAttribute < AttributeBase
       # @!attribute [rw] local_as
       #   @return [Integer]
       # @!attribute [rw] local_ip
@@ -198,6 +198,7 @@ module Netomox
       ].freeze
 
       include Diffable
+
       # @param [Hash] data Attribute data (RFC8345)
       # @param [String] type Attribute type (keyword of data in RFC8345)
       def initialize(data, type)
@@ -219,5 +220,8 @@ module Netomox
         MddoBgpTimer.new(operative_hash_key?(data, key) ? data[key] : {}, key)
       end
     end
+
+    # attribute for bgp-as termination point
+    class MddoBgpAsTPAttribute < MddoL1TPAttribute; end
   end
 end

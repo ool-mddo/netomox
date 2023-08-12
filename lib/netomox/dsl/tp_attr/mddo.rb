@@ -186,8 +186,8 @@ module Netomox
       end
     end
 
-    # attribute for mddo topology bgp term-point
-    class MddoBgpTPAttribute
+    # attribute for mddo-topology bgp-proc term-point
+    class MddoBgpProcTPAttribute
       # @!attribute [rw] local_as
       #   @return [Integer]
       # @!attribute [rw] local_ip
@@ -243,7 +243,7 @@ module Netomox
         @import_policies = import_policies
         @export_policies = export_policies
         @timer = MddoBgpTimer.new(**timer)
-        @type = "#{NS_MDDO}:bgp-termination-point-attributes"
+        @type = "#{NS_MDDO}:bgp-proc-termination-point-attributes"
       end
       # rubocop:enable Metrics/ParameterLists
 
@@ -268,6 +268,16 @@ module Netomox
       # @return [Boolean]
       def empty?
         @local_as.negative?
+      end
+    end
+
+    # attribute for mddo-topology bgp-as term-point
+    class MddoBgpAsTPAttribute < MddoL1TPAttribute
+      # @param [String] description Interface description
+      # @param [Array<String>] flags Flags
+      def initialize(description: '', flags: [])
+        super(description:, flags:)
+        @type = "#{NS_MDDO}:bgp-as-termination-point-attributes"
       end
     end
   end

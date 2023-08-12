@@ -105,7 +105,8 @@ module Netomox
         @type.key?(NWTYPE_MDDO_L2) && (@attribute = MddoL2NodeAttribute.new(**attr))
         @type.key?(NWTYPE_MDDO_L3) && (@attribute = MddoL3NodeAttribute.new(**attr))
         @type.key?(NWTYPE_MDDO_OSPF_AREA) && (@attribute = MddoOspfAreaNodeAttribute.new(**attr))
-        @type.key?(NWTYPE_MDDO_BGP) && (@attribute = MddoBgpNodeAttribute.new(**attr))
+        @type.key?(NWTYPE_MDDO_BGP_PROC) && (@attribute = MddoBgpProcNodeAttribute.new(**attr))
+        @type.key?(NWTYPE_MDDO_BGP_AS) && (@attribute = MddoBgpAsNodeAttribute.new(**attr))
       end
       # rubocop:enable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/PerceivedComplexity
 

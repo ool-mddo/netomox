@@ -179,8 +179,8 @@ module Netomox
       end
     end
 
-    # attribute for mddo-topology bgp node (bgp proc)
-    class MddoBgpNodeAttribute
+    # attribute for mddo-topology bgp-proc node (bgp proc)
+    class MddoBgpProcNodeAttribute
       # @!attribute [rw] router_id
       #   @return [String]
       # @!attribute [rw] confederation_id
@@ -219,7 +219,7 @@ module Netomox
         @peer_groups = peer_groups
         @policies = policies
         @redistribute_list = redistribute_list
-        @type = "#{NS_MDDO}:bgp-node-attributes"
+        @type = "#{NS_MDDO}:bgp-proc-node-attributes"
       end
       # rubocop:enable Metrics/ParameterLists
 
@@ -240,6 +240,35 @@ module Netomox
       # @return [Boolean]
       def empty?
         @router_id.empty?
+      end
+    end
+
+    # attribute for mddo-topology bgp-as node (bgp proc)
+    class MddoBgpAsNodeAttribute
+      # @!attribute [rw] as_number
+      #   @return [Integer]
+      attr_accessor :as_number
+      # @!attribute [r] type
+      #   @return [String]
+      attr_reader :type
+
+      # @param [Integer] as_number
+      def initialize(as_number: -1)
+        @as_number = as_number
+        @type = "#{NS_MDDO}:bgp-as-node-attributes"
+      end
+
+      # Convert to RFC8345 topology data
+      # @return [Hash]
+      def topo_data
+        {
+          'as-number' => @as_number
+        }
+      end
+
+      # @return [Boolean]
+      def empty?
+        @as_number <= 0
       end
     end
   end

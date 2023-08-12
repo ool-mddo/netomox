@@ -27,7 +27,9 @@ module Netomox
         { key: "#{NS_MDDO}:l1-network-attributes", klass: MddoL1NetworkAttribute },
         { key: "#{NS_MDDO}:l2-network-attributes", klass: MddoL2NetworkAttribute },
         { key: "#{NS_MDDO}:l3-network-attributes", klass: MddoL3NetworkAttribute },
-        { key: "#{NS_MDDO}:ospf-area-network-attributes", klass: MddoOspfAreaNetworkAttribute }
+        { key: "#{NS_MDDO}:ospf-area-network-attributes", klass: MddoOspfAreaNetworkAttribute },
+        { key: "#{NS_MDDO}:bgp-proc-network-attributes", klass: MddoBgpProcNetworkAttribute },
+        { key: "#{NS_MDDO}:bgp-as-network-attributes", klass: MddoBgpAsNetworkAttribute }
       ].freeze
 
       # @param [Hash] data RFC8345 data (network element)

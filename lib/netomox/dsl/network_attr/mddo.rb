@@ -61,11 +61,19 @@ module Netomox
       end
     end
 
-    # attribute for mddo-bgp network
-    class MddoBgpNWAttribute < NetworkAttributeBase
+    # attribute for mddo-topology bgp-proc network
+    class MddoBgpProcNWAttribute < NetworkAttributeBase
       def initialize(**hash)
         super(**hash)
-        @type = "#{NS_MDDO}:bgp-network-attributes"
+        @type = "#{NS_MDDO}:bgp-proc-network-attributes"
+      end
+    end
+
+    # attribute for mddo-topology bgp-as network
+    class MddoBgpAsNWAttribute < NetworkAttributeBase
+      def initialize(**hash)
+        super(**hash)
+        @type = "#{NS_MDDO}:bgp-as-network-attributes"
       end
     end
   end

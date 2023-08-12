@@ -15,22 +15,27 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
       network 'test-ospf-area0' do
         type Netomox::NWTYPE_MDDO_OSPF_AREA
       end
-      network 'test-bgp' do
-        type Netomox::NWTYPE_MDDO_BGP
+      network 'test-bgp-proc' do
+        type Netomox::NWTYPE_MDDO_BGP_PROC
+      end
+      network 'test-bgp-as' do
+        type Netomox::NWTYPE_MDDO_BGP_AS
       end
     end
     @l1nw = nws.network('test-L1')
     @l2nw = nws.network('test-L2')
     @l3nw = nws.network('test-L3')
     @ospf_nw = nws.network('test-ospf-area0')
-    @bgp_nw = nws.network('test-bgp')
+    @bgp_proc_nw = nws.network('test-bgp-proc')
+    @bgp_as_nw = nws.network('test-bgp-as')
 
     @tp_key = "#{Netomox::NS_TOPO}:termination-point"
     @l1attr_key = "#{Netomox::NS_MDDO}:l1-node-attributes"
     @l2attr_key = "#{Netomox::NS_MDDO}:l2-node-attributes"
     @l3attr_key = "#{Netomox::NS_MDDO}:l3-node-attributes"
     @ospf_attr_key = "#{Netomox::NS_MDDO}:ospf-area-node-attributes"
-    @bgp_attr_key = "#{Netomox::NS_MDDO}:bgp-node-attributes"
+    @bgp_proc_attr_key = "#{Netomox::NS_MDDO}:bgp-proc-node-attributes"
+    @bgp_as_attr_key = "#{Netomox::NS_MDDO}:bgp-as-node-attributes"
   end
 
   it 'generate node that has L1 attribute', :attr, :l1attr do
@@ -139,20 +144,20 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
     expect(node.topo_data).to eq node_data
   end
 
-  it 'generate node that has bgp attribute', :attr, :bgp_attr do
+  it 'generate node that has bgp-proc attribute', :attr, :bgp_attr do
     node_attr = {
       router_id: '10.0.0.4',
       confederation_id: 65_530,
       confederation_members: [65_531],
       route_reflector: false
     }
-    node = Netomox::DSL::Node.new(@bgp_nw, 'nodeX') do
+    node = Netomox::DSL::Node.new(@bgp_proc_nw, 'nodeX') do
       attribute(node_attr)
     end
     node_data = {
       'node-id' => 'nodeX',
       @tp_key => [],
-      @bgp_attr_key => {
+      @bgp_proc_attr_key => {
         'router-id' => '10.0.0.4',
         'confederation-id' => 65_530,
         'confederation-member' => [65_531],
@@ -161,6 +166,19 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
         'policy' => [],
         'redistribute' => []
       }
+    }
+    expect(node.topo_data).to eq node_data
+  end
+
+  it 'generate node that has bgp-as attribute', :attr, :bgp_attr do
+    node_attr = { as_number: 65_550 }
+    node = Netomox::DSL::Node.new(@bgp_as_nw, 'nodeX') do
+      attribute(node_attr)
+    end
+    node_data = {
+      'node-id' => 'nodeX',
+      @tp_key => [],
+      @bgp_as_attr_key => { 'as-number' => 65_550 }
     }
     expect(node.topo_data).to eq node_data
   end

@@ -59,8 +59,8 @@ RSpec.describe 'check term-point attribute with Mddo-model' do
           end
         end
       end
-      network 'nw_bgp' do
-        type Netomox::NWTYPE_MDDO_BGP
+      network 'nw_bgp_proc' do
+        type Netomox::NWTYPE_MDDO_BGP_PROC
         node('node1') do
           term_point('eth1') do
             attribute(
@@ -69,6 +69,17 @@ RSpec.describe 'check term-point attribute with Mddo-model' do
               remote_as: 65_531,
               remote_ip: '10.0.0.22',
               confederation: 65_530
+            )
+          end
+        end
+      end
+      network 'nw_bgp_as' do
+        type Netomox::NWTYPE_MDDO_BGP_AS
+        node('node1') do
+          term_point('eth1') do
+            attribute(
+              description: 'descr of bgp-as node eth1',
+              flags: %w[bgp-as term-point]
             )
           end
         end
@@ -133,8 +144,8 @@ RSpec.describe 'check term-point attribute with Mddo-model' do
     expect(attr&.to_data).to eq expected_attr
   end
 
-  it 'has MDDO BGP term-point attribute' do
-    attr = @nws.find_network('nw_bgp')&.find_node_by_name('node1')&.find_tp_by_name('eth1')&.attribute
+  it 'has MDDO BGP-PROC term-point attribute' do
+    attr = @nws.find_network('nw_bgp_proc')&.find_node_by_name('node1')&.find_tp_by_name('eth1')&.attribute
     expected_attr = {
       '_diff_state_' => @default_diff_state,
       'local-as' => 65_531,
@@ -154,6 +165,16 @@ RSpec.describe 'check term-point attribute with Mddo-model' do
         'minimum-advertisement-interval' => 30,
         'restart-time' => -1
       }
+    }
+    expect(attr&.to_data).to eq expected_attr
+  end
+
+  it 'has MDDO BGP-AS term-point attribute' do
+    attr = @nws.find_network('nw_bgp_as')&.find_node_by_name('node1')&.find_tp_by_name('eth1')&.attribute
+    expected_attr = {
+      '_diff_state_' => @default_diff_state,
+      'description' => 'descr of bgp-as node eth1',
+      'flag' => %w[bgp-as term-point]
     }
     expect(attr&.to_data).to eq expected_attr
   end

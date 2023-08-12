@@ -19,22 +19,28 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
         type Netomox::NWTYPE_MDDO_OSPF_AREA
         node 'ospf_node'
       end
-      network 'test-bgp' do
-        type Netomox::NWTYPE_MDDO_BGP
-        node 'bgp_node'
+      network 'test-bgp-proc' do
+        type Netomox::NWTYPE_MDDO_BGP_PROC
+        node 'bgp_proc_node'
+      end
+      network 'test-bgp-as' do
+        type Netomox::NWTYPE_MDDO_BGP_AS
+        node 'bgp_as_node'
       end
     end
     @l1node = nws.network('test-L1').node('l1node')
     @l2node = nws.network('test-L2').node('l2node')
     @l3node = nws.network('test-L3').node('l3node')
     @ospf_node = nws.network('test-ospf-area0').node('ospf_node')
-    @bgp_node = nws.network('test-bgp').node('bgp_node')
+    @bgp_proc_node = nws.network('test-bgp-proc').node('bgp_proc_node')
+    @bgp_as_node = nws.network('test-bgp-as').node('bgp_as_node')
 
     @l1attr_key = "#{Netomox::NS_MDDO}:l1-termination-point-attributes"
     @l2attr_key = "#{Netomox::NS_MDDO}:l2-termination-point-attributes"
     @l3attr_key = "#{Netomox::NS_MDDO}:l3-termination-point-attributes"
     @ospf_attr_key = "#{Netomox::NS_MDDO}:ospf-area-termination-point-attributes"
-    @bgp_attr_key = "#{Netomox::NS_MDDO}:bgp-termination-point-attributes"
+    @bgp_proc_attr_key = "#{Netomox::NS_MDDO}:bgp-proc-termination-point-attributes"
+    @bgp_as_attr_key = "#{Netomox::NS_MDDO}:bgp-as-termination-point-attributes"
   end
 
   it 'generate term-point that has L1 attribute', :attr, :l1attr do
@@ -151,7 +157,7 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
   # rubocop:enable RSpec/ExampleLength
 
   # rubocop:disable RSpec/ExampleLength
-  it 'generates term-point that has bgp attribute', :attr, :bgp_attr do
+  it 'generates term-point that has bgp-proc attribute', :attr, :bgp_attr do
     tp_attr = {
       local_as: 65_531,
       local_ip: '10.0.0.2',
@@ -167,12 +173,12 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
         connect_retry: 5
       }
     }
-    tp = Netomox::DSL::TermPoint.new(@bgp_node, 'tpX') do
+    tp = Netomox::DSL::TermPoint.new(@bgp_proc_node, 'tpX') do
       attribute(tp_attr)
     end
     tp_data = {
       'tp-id' => 'tpX',
-      @bgp_attr_key => {
+      @bgp_proc_attr_key => {
         'local-as' => 65_531,
         'local-ip' => '10.0.0.2',
         'remote-as' => 65_531,
@@ -195,4 +201,19 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
     expect(tp.topo_data).to eq tp_data
   end
   # rubocop:enable RSpec/ExampleLength
+
+  it 'generates term-point that has bgp-as attribute', :attr, :bgp_attr do
+    tp_attr = { description: 'bgp-as tp descr', flags: %w[foo bar] }
+    tp = Netomox::DSL::TermPoint.new(@bgp_as_node, 'tpX') do
+      attribute(tp_attr)
+    end
+    tp_data = {
+      'tp-id' => 'tpX',
+      @bgp_as_attr_key => {
+        'description' => 'bgp-as tp descr',
+        'flag' => %w[foo bar]
+      }
+    }
+    expect(tp.topo_data).to eq tp_data
+  end
 end

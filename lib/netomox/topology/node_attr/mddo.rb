@@ -143,8 +143,8 @@ module Netomox
       end
     end
 
-    # attribute for bgp node
-    class MddoBgpNodeAttribute < AttributeBase
+    # attribute for bgp-proc node
+    class MddoBgpProcNodeAttribute < AttributeBase
       # @!attribute [rw] router_id
       #   @return [String]
       # @!attribute [rw] confederation_id
@@ -162,7 +162,7 @@ module Netomox
       attr_accessor :router_id, :confederation_id, :confederation_members, :route_reflector, :peer_groups, :policies,
                     :redistribute_list
 
-      # Attribute definition of bgp node
+      # Attribute definition of bgp-proc node
       ATTR_DEFS = [
         { int: :router_id, ext: 'router-id', default: '' },
         { int: :confederation_id, ext: 'confederation-id', default: -1 },
@@ -184,6 +184,29 @@ module Netomox
       # @return [String]
       def to_s
         "attribute: #{@router_id}"
+      end
+    end
+
+    # attribute for bgp-as node
+    class MddoBgpAsNodeAttribute < AttributeBase
+      # @!attribute [rw] as_number
+      #   @return [Integer] AS number
+      attr_accessor :as_number
+
+      # Attribute definition of bgp-as node
+      ATTR_DEFS = [{ int: :as_number, ext: 'as-number', default: -1 }].freeze
+
+      include Diffable
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @param [String] type Attribute type (keyword of data in RFC8345)
+      def initialize(data, type)
+        super(ATTR_DEFS, data, type)
+      end
+
+      # @return [String]
+      def to_s
+        "attribute: #{@as_number}"
       end
     end
   end

@@ -50,14 +50,20 @@ RSpec.describe 'check node attribute with Mddo-model' do
           )
         end
       end
-      network 'nw_bgp' do
-        type Netomox::NWTYPE_MDDO_BGP
+      network 'nw_bgp_proc' do
+        type Netomox::NWTYPE_MDDO_BGP_PROC
         node('node1') do
           attribute(
             router_id: '10.0.0.1',
             confederation_id: 65_531,
             confederation_members: [65_532]
           )
+        end
+      end
+      network 'nw_bgp_as' do
+        type Netomox::NWTYPE_MDDO_BGP_AS
+        node('node1') do
+          attribute(as_number: 65_550)
         end
       end
     end
@@ -125,8 +131,8 @@ RSpec.describe 'check node attribute with Mddo-model' do
     expect(attr&.to_data).to eq expected_attr
   end
 
-  it 'has MDDO bgp node attribute' do
-    attr = @nws.find_network('nw_bgp')&.find_node_by_name('node1')&.attribute
+  it 'has MDDO bgp-proc node attribute' do
+    attr = @nws.find_network('nw_bgp_proc')&.find_node_by_name('node1')&.attribute
     expected_attr = {
       '_diff_state_' => @default_diff_state,
       'router-id' => '10.0.0.1',
@@ -136,6 +142,15 @@ RSpec.describe 'check node attribute with Mddo-model' do
       'peer-group' => [],
       'policy' => [],
       'redistribute' => []
+    }
+    expect(attr&.to_data).to eq expected_attr
+  end
+
+  it 'has MDDO bgp-as node attribute' do
+    attr = @nws.find_network('nw_bgp_as')&.find_node_by_name('node1')&.attribute
+    expected_attr = {
+      '_diff_state_' => @default_diff_state,
+      'as-number' => 65_550
     }
     expect(attr&.to_data).to eq expected_attr
   end

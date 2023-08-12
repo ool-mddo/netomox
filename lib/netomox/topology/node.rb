@@ -23,7 +23,8 @@ module Netomox
         { key: "#{NS_MDDO}:l2-node-attributes", klass: MddoL2NodeAttribute },
         { key: "#{NS_MDDO}:l3-node-attributes", klass: MddoL3NodeAttribute },
         { key: "#{NS_MDDO}:ospf-area-node-attributes", klass: MddoOspfAreaNodeAttribute },
-        { key: "#{NS_MDDO}:bgp-node-attributes", klass: MddoBgpNodeAttribute }
+        { key: "#{NS_MDDO}:bgp-proc-node-attributes", klass: MddoBgpProcNodeAttribute },
+        { key: "#{NS_MDDO}:bgp-as-node-attributes", klass: MddoBgpAsNodeAttribute }
       ].freeze
 
       # @param [Hash] data RFC8345 data (node element)
