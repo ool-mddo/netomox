@@ -46,7 +46,7 @@ RSpec.describe 'check node attribute with Mddo-model' do
             router_id: '10.0.0.1',
             process_id: 1,
             log_adjacency_change: false,
-            redistribute: [{ protocol: 'static', metric_type: 2 }]
+            redistribute_list: [{ protocol: 'static', metric_type: 2 }]
           )
         end
       end
@@ -56,7 +56,9 @@ RSpec.describe 'check node attribute with Mddo-model' do
           attribute(
             router_id: '10.0.0.1',
             confederation_id: 65_531,
-            confederation_members: [65_532]
+            confederation_members: [65_532],
+            policies: [], # TBA
+            redistribute_list: [] # TBA
           )
         end
       end

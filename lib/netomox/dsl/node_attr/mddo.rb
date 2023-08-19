@@ -149,14 +149,15 @@ module Netomox
       # @param [String] router_id
       # @param [Integer] process_id
       # @param [Boolean] log_adjacency_change
-      # @param [Array<Hash>] redistribute
-      def initialize(node_type: '', router_id: '', process_id: 'default', log_adjacency_change: false, redistribute: [])
+      # @param [Array<Hash>] redistribute_list
+      def initialize(node_type: '', router_id: '', process_id: 'default', log_adjacency_change: false,
+                     redistribute_list: [])
         @node_type = node_type
         @router_id_source = router_id.empty? ? :auto : :static
         @router_id = router_id # TODO: router id selection
         @process_id = process_id
         @log_adjacency_change = log_adjacency_change
-        @redistribute_list = redistribute.map { |r| MddoOspfRedistribute.new(**r) }
+        @redistribute_list = redistribute_list.map { |r| MddoOspfRedistribute.new(**r) }
         @type = "#{NS_MDDO}:ospf-area-node-attributes"
       end
 
@@ -209,7 +210,7 @@ module Netomox
       # @param [Boolean] route_reflector
       # @param [Array] peer_groups
       # @param [Array] policies
-      # @param [Array] redistribute_list
+      # @param [Array<Hash>] redistribute_list
       def initialize(router_id: '', confederation_id: -1, confederation_members: [], route_reflector: false,
                      peer_groups: [], policies: [], redistribute_list: [])
         @router_id = router_id

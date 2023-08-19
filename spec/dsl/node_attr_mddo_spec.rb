@@ -118,7 +118,7 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
       router_id: '192.0.0.1',
       process_id: '1',
       log_adjacency_change: true,
-      redistribute: [
+      redistribute_list: [
         { protocol: 'static', metric_type: 1 },
         { protocol: 'connected' }
       ]
@@ -149,7 +149,9 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
       router_id: '10.0.0.4',
       confederation_id: 65_530,
       confederation_members: [65_531],
-      route_reflector: false
+      route_reflector: false,
+      policies: [], # TBA
+      redistribute_list: [] # TBA
     }
     node = Netomox::DSL::Node.new(@bgp_proc_nw, 'nodeX') do
       attribute(node_attr)
