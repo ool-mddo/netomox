@@ -47,7 +47,8 @@ module Netomox
 
       # @param [Node] parent Parent object (Node)
       # @param [String] name Term-point name
-      # @param [Proc] & Conde block to eval in this instance
+      # @yield Code block to eval in this instance
+      # @yieldreturn [void]
       def initialize(parent, name, &)
         super(parent, name)
         @supports = [] # supporting termination point

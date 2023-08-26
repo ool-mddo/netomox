@@ -51,7 +51,8 @@ module Netomox
 
       # @param [Network] parent Parent object (Network)
       # @param [String] name Node name
-      # @param [Proc] & Code block to eval this instance
+      # @yield Code block to eval this instance
+      # @yieldreturn [void]
       def initialize(parent, name, &)
         super(parent, name)
         @term_points = []
@@ -65,7 +66,8 @@ module Netomox
 
       # Add or access term-point by name
       # @param [String] name Term-point name
-      # @param [Proc] & Code block to eval the term-point
+      # @yield Code block to eval the term-point
+      # @yieldreturn [void]
       # @return [TermPoint]
       def term_point(name, &)
         tp = find_term_point(name)
