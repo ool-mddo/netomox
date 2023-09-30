@@ -194,10 +194,16 @@ module Netomox
       #   @return [Array] # TODO: attr implementation
       # @!attribute [rw] policies
       #   @return [Array] # TODO: attr implementation
+      # @!attribute [rw] prefix_sets
+      #   @return [Array] # TODO: attr implementation
+      # @!attribute [rw] as_path_sets
+      #   @return [Array] # TODO: attr implementation
+      # @!attribute [rw] community_sets
+      #   @return [Array] # TODO: attr implementation
       # @!attribute [rw] redistribute_list
       #   @return [Array] # TODO: attr implementation
-      attr_accessor :router_id, :confederation_id, :confederation_members, :route_reflector, :peer_groups, :policies,
-                    :redistribute_list
+      attr_accessor :router_id, :confederation_id, :confederation_members, :route_reflector, :peer_groups,
+                    :policies, :prefix_sets, :as_path_sets, :community_sets, :redistribute_list
       # @!attribute [r] type
       #   @return [String]
       attr_reader :type
@@ -212,13 +218,17 @@ module Netomox
       # @param [Array] policies
       # @param [Array<Hash>] redistribute_list
       def initialize(router_id: '', confederation_id: -1, confederation_members: [], route_reflector: false,
-                     peer_groups: [], policies: [], redistribute_list: [])
+                     peer_groups: [], policies: [], prefix_sets: [], as_path_sets: [], community_sets: [],
+                     redistribute_list: [])
         @router_id = router_id
         @confederation_id = confederation_id
         @confederation_members = confederation_members
         @route_reflector = route_reflector
         @peer_groups = peer_groups
         @policies = policies
+        @prefix_sets = prefix_sets
+        @as_path_sets = as_path_sets
+        @community_sets = community_sets
         @redistribute_list = redistribute_list
         @type = "#{NS_MDDO}:bgp-proc-node-attributes"
       end
@@ -234,6 +244,9 @@ module Netomox
           'route-reflector' => @route_reflector,
           'peer-group' => @peer_groups,
           'policy' => @policies,
+          'prefix-set' => @prefix_sets,
+          'as-path-set' => @as_path_sets,
+          'community-set' => @community_sets,
           'redistribute' => @redistribute_list
         }
       end
