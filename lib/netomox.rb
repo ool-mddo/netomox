@@ -2,6 +2,7 @@
 
 require 'netomox/version'
 require 'netomox/const'
+require 'netomox/convert_attr'
 require 'netomox/diff_view/viewer'
 require 'netomox/dsl/dsl'
 require 'netomox/graphdb/networks_ops'
