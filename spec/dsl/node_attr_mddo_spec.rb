@@ -150,7 +150,10 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
       confederation_id: 65_530,
       confederation_members: [65_531],
       route_reflector: false,
-      policies: [], # TBA
+      policies: [{ 'name' => 'test policy 1' }], # TBA
+      prefix_sets: [{ 'name' => 'prefix set 1' }], # TBA
+      as_path_sets: [{ 'name' => 'as-path set 1' }], # TBA
+      community_sets: [{ 'name' => 'community set 1' }], # TBA
       redistribute_list: [] # TBA
     }
     node = Netomox::DSL::Node.new(@bgp_proc_nw, 'nodeX') do
@@ -165,7 +168,10 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
         'confederation-member' => [65_531],
         'route-reflector' => false,
         'peer-group' => [],
-        'policy' => [],
+        'policy' => [{ 'name' => 'test policy 1' }],
+        'prefix-set' => [{ 'name' => 'prefix set 1' }],
+        'as-path-set' => [{ 'name' => 'as-path set 1' }],
+        'community-set' => [{ 'name' => 'community set 1' }],
         'redistribute' => []
       }
     }

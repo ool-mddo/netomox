@@ -57,7 +57,10 @@ RSpec.describe 'check node attribute with Mddo-model' do
             router_id: '10.0.0.1',
             confederation_id: 65_531,
             confederation_members: [65_532],
-            policies: [], # TBA
+            policies: [{ 'name' => 'test policy 1' }], # TBA
+            prefix_sets: [{ 'name' => 'prefix set 1' }], # TBA
+            as_path_sets: [{ 'name' => 'as-path set 1' }], # TBA
+            community_sets: [{ 'name' => 'community set 1' }], # TBA
             redistribute_list: [] # TBA
           )
         end
@@ -142,7 +145,10 @@ RSpec.describe 'check node attribute with Mddo-model' do
       'confederation-member' => [65_532],
       'route-reflector' => false,
       'peer-group' => [],
-      'policy' => [],
+      'policy' => [{ 'name' => 'test policy 1' }],
+      'prefix-set' => [{ 'name' => 'prefix set 1' }],
+      'as-path-set' => [{ 'name' => 'as-path set 1' }],
+      'community-set' => [{ 'name' => 'community set 1' }],
       'redistribute' => []
     }
     expect(attr&.to_data).to eq expected_attr

@@ -157,10 +157,16 @@ module Netomox
       #   @return [Array] # TODO: attr implementation
       # @!attribute [rw] policies
       #   @return [Array] # TODO: attr implementation
+      # @!attribute [rw] prefix_sets
+      #   @return [Array] # TODO: attr implementation
+      # @!attribute [rw] as_path_sets
+      #   @return [Array] # TODO: attr implementation
+      # @!attribute [rw] community_sets
+      #   @return [Array] # TODO: attr implementation
       # @!attribute [rw] redistribute_list
       #   @return [Array] # TODO: attr implementation
-      attr_accessor :router_id, :confederation_id, :confederation_members, :route_reflector, :peer_groups, :policies,
-                    :redistribute_list
+      attr_accessor :router_id, :confederation_id, :confederation_members, :route_reflector, :peer_groups,
+                    :policies, :prefix_sets, :as_path_sets, :community_sets, :redistribute_list
 
       # Attribute definition of bgp-proc node
       ATTR_DEFS = [
@@ -170,6 +176,9 @@ module Netomox
         { int: :route_reflector, ext: 'route-reflector', default: false },
         { int: :peer_groups, ext: 'peer-group', default: [] },
         { int: :policies, ext: 'policy', default: [] },
+        { int: :prefix_sets, ext: 'prefix-set', default: [] },
+        { int: :as_path_sets, ext: 'as-path-set', default: [] },
+        { int: :community_sets, ext: 'community-set', default: [] },
         { int: :redistribute_list, ext: 'redistribute', default: [] }
       ].freeze
 
