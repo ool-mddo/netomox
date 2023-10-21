@@ -54,7 +54,8 @@ RSpec.describe 'check term-point attribute with Mddo-model' do
                 retransmission_interval: 5
               },
               neighbors: [{ router_id: '10.0.0.1', ip_addr: '192.168.0.1' }],
-              area: 1
+              area: 1,
+              flags: %w[ospf term-point]
             )
           end
         end
@@ -69,7 +70,8 @@ RSpec.describe 'check term-point attribute with Mddo-model' do
               remote_as: 65_531,
               remote_ip: '10.0.0.22',
               description: 'test-descr',
-              confederation: 65_530
+              confederation: 65_530,
+              flags: %w[bgp-proc term-point]
             )
           end
         end
@@ -140,7 +142,8 @@ RSpec.describe 'check term-point attribute with Mddo-model' do
       'neighbor' => [
         { 'router-id' => '10.0.0.1', 'ip-address' => '192.168.0.1' }
       ],
-      'area' => 1
+      'area' => 1,
+      'flag' => %w[ospf term-point]
     }
     expect(attr&.to_data).to eq expected_attr
   end
@@ -166,7 +169,8 @@ RSpec.describe 'check term-point attribute with Mddo-model' do
         'keepalive-interval' => 30,
         'minimum-advertisement-interval' => 30,
         'restart-time' => -1
-      }
+      },
+      'flag' => %w[bgp-proc term-point]
     }
     expect(attr&.to_data).to eq expected_attr
   end

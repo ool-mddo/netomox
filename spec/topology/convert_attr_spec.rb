@@ -12,7 +12,8 @@ RSpec.describe 'check attribute conversion functions' do
       prefix_sets: [{ 'name' => 'prefix set 1' }], # TBA
       as_path_sets: [{ 'name' => 'as-path set 1' }], # TBA
       community_sets: [{ 'name' => 'community set 1' }], # TBA
-      redistribute_list: [] # TBA
+      redistribute_list: [], # TBA
+      flags: %w[foo bar]
     }
     nws = Netomox::DSL::Networks.new do
       network 'bgp_proc' do

@@ -110,7 +110,9 @@ module Netomox
       #   @return [Array<MddoOspfNeighbor>]
       # @!attribute [rw] area
       #   @return [Integer]
-      attr_accessor :network_type, :priority, :metric, :passive, :timer, :neighbors, :area
+      # @!attribute [rw] flags
+      #   @return [Array<String>]
+      attr_accessor :network_type, :priority, :metric, :passive, :timer, :neighbors, :area, :flags
 
       # Attribute definition of ospf-area node
       ATTR_DEFS = [
@@ -120,7 +122,8 @@ module Netomox
         { int: :passive, ext: 'passive', default: false },
         { int: :timer, ext: 'timer', default: {} },
         { int: :neighbors, ext: 'neighbor', default: [] },
-        { int: :area, ext: 'area', default: -1 }
+        { int: :area, ext: 'area', default: -1 },
+        { int: :flags, ext: 'flag', default: [] }
       ].freeze
 
       include Diffable
@@ -181,8 +184,10 @@ module Netomox
       #   @return [Array<String>]
       # @!attribute [rw] timer
       #   @return [MddoBgpTimer]
+      # @!attribute [rw] flags
+      #   @return [Array<String>]
       attr_accessor :local_as, :local_ip, :remote_as, :remote_ip, :description, :confederation, :route_reflector_client,
-                    :cluster_id, :peer_group, :import_policies, :export_policies, :timer
+                    :cluster_id, :peer_group, :import_policies, :export_policies, :timer, :flags
 
       # Attribute definition of bgp node
       ATTR_DEFS = [
@@ -197,7 +202,8 @@ module Netomox
         { int: :peer_group, ext: 'peer-group', default: '' },
         { int: :import_policies, ext: 'import-policy', default: [] },
         { int: :export_policies, ext: 'export-policy', default: [] },
-        { int: :timer, ext: 'timer', default: {} }
+        { int: :timer, ext: 'timer', default: {} },
+        { int: :flags, ext: 'flag', default: [] }
       ].freeze
 
       include Diffable

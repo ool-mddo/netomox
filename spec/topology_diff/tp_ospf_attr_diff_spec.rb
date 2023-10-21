@@ -78,6 +78,7 @@ RSpec.describe 'termination point diff with ospf attribute', :attr, :diff, :ospf
       dd_expected = [
         ['+', '_diff_state_', { forward: :kept, backward: nil, pair: '' }],
         ['+', 'area', -1],
+        ['+', 'flag', []],
         ['+', 'metric', 1],
         ['+', 'neighbor', [{ 'router-id' => '192.168.0.1', 'ip-address' => '172.16.0.1' }]],
         ['+', 'network-type', 'BROADCAST'],
@@ -95,6 +96,7 @@ RSpec.describe 'termination point diff with ospf attribute', :attr, :diff, :ospf
       dd_expected = [
         ['-', '_diff_state_', { forward: :kept, backward: nil, pair: '' }],
         ['-', 'area', -1],
+        ['-', 'flag', []],
         ['-', 'metric', 1],
         ['-', 'neighbor', [{ 'router-id' => '192.168.0.1', 'ip-address' => '172.16.0.1' }]],
         ['-', 'network-type', 'BROADCAST'],
@@ -159,7 +161,8 @@ RSpec.describe 'termination point diff with ospf attribute', :attr, :diff, :ospf
         'network-type' => 'BROADCAST', 'priority' => 10, 'metric' => 1, 'passive' => false,
         'timer' => { 'hello-interval' => 5, 'dead-interval' => 40, 'retransmission-interval' => 5 },
         'neighbor' => [{ 'router-id' => '192.168.0.1', 'ip-address' => '172.16.0.1' }],
-        'area' => -1
+        'area' => -1,
+        'flag' => []
       }
       expect(d_tp.attribute.to_data).to eq data
     end

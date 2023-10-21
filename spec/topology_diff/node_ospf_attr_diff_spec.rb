@@ -75,6 +75,7 @@ RSpec.describe 'node diff with ospf-area attribute', :attr, :diff, :node, :ospf_
       expect(d_node.attribute.diff_state.detect).to eq :added
       dd_expected = [
         ['+', '_diff_state_', { backward: nil, forward: :kept, pair: '' }],
+        ['+', 'flag', []],
         ['+', 'log-adjacency-change', false],
         ['+', 'node-type', 'ospf_proc'],
         ['+', 'process-id', 'default'],
@@ -91,6 +92,7 @@ RSpec.describe 'node diff with ospf-area attribute', :attr, :diff, :node, :ospf_
       expect(d_node.attribute.diff_state.detect).to eq :deleted
       dd_expected = [
         ['-', '_diff_state_', { backward: nil, forward: :kept, pair: '' }],
+        ['-', 'flag', []],
         ['-', 'log-adjacency-change', false],
         ['-', 'node-type', 'ospf_proc'],
         ['-', 'process-id', 'default'],
