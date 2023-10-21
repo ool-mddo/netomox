@@ -121,7 +121,8 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
       redistribute_list: [
         { protocol: 'static', metric_type: 1 },
         { protocol: 'connected' }
-      ]
+      ],
+      flags: %w[foo bar]
     }
     node = Netomox::DSL::Node.new(@ospf_nw, 'nodeX') do
       attribute(node_attr)
@@ -138,12 +139,14 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
         'redistribute' => [
           { 'protocol' => 'static', 'metric-type' => 1 },
           { 'protocol' => 'connected', 'metric-type' => 2 }
-        ]
+        ],
+        'flag' => %w[foo bar]
       }
     }
     expect(node.topo_data).to eq node_data
   end
 
+  # rubocop:disable RSpec/ExampleLength
   it 'generate node that has bgp-proc attribute', :attr, :bgp_attr do
     node_attr = {
       router_id: '10.0.0.4',
@@ -154,7 +157,8 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
       prefix_sets: [{ 'name' => 'prefix set 1' }], # TBA
       as_path_sets: [{ 'name' => 'as-path set 1' }], # TBA
       community_sets: [{ 'name' => 'community set 1' }], # TBA
-      redistribute_list: [] # TBA
+      redistribute_list: [], # TBA
+      flags: %w[foo bar]
     }
     node = Netomox::DSL::Node.new(@bgp_proc_nw, 'nodeX') do
       attribute(node_attr)
@@ -172,21 +176,29 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
         'prefix-set' => [{ 'name' => 'prefix set 1' }],
         'as-path-set' => [{ 'name' => 'as-path set 1' }],
         'community-set' => [{ 'name' => 'community set 1' }],
-        'redistribute' => []
+        'redistribute' => [],
+        'flag' => %w[foo bar]
       }
     }
     expect(node.topo_data).to eq node_data
   end
+  # rubocop:enable RSpec/ExampleLength
 
   it 'generate node that has bgp-as attribute', :attr, :bgp_attr do
-    node_attr = { as_number: 65_550 }
+    node_attr = {
+      as_number: 65_550,
+      flags: %w[foo bar]
+    }
     node = Netomox::DSL::Node.new(@bgp_as_nw, 'nodeX') do
       attribute(node_attr)
     end
     node_data = {
       'node-id' => 'nodeX',
       @tp_key => [],
-      @bgp_as_attr_key => { 'as-number' => 65_550 }
+      @bgp_as_attr_key => {
+        'as-number' => 65_550,
+        'flag' => %w[foo bar]
+      }
     }
     expect(node.topo_data).to eq node_data
   end

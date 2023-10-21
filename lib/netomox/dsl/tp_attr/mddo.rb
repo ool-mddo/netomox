@@ -140,7 +140,9 @@ module Netomox
       #   @return [MddoOspfTimer]
       # @!attribute [rw] area
       #   @return [Integer]
-      attr_accessor :network_type, :priority, :metric, :passive, :timer, :area
+      # @!attribute [rw] flags
+      #   @return [Array<String>]
+      attr_accessor :network_type, :priority, :metric, :passive, :timer, :area, :flags
       # @!attribute [r] type
       #   @return [String]
       attr_reader :type
@@ -154,7 +156,9 @@ module Netomox
       # @param [Hash] timer
       # @param [Array<Hash>] neighbors
       # @param [Integer] area
-      def initialize(network_type: '', priority: 10, metric: 1, passive: false, timer: {}, neighbors: [], area: -1)
+      # @param [Array<String>] flags
+      def initialize(network_type: '', priority: 10, metric: 1, passive: false, timer: {}, neighbors: [], area: -1,
+                     flags: [])
         @network_type = network_type # TODO: network type selection
         @priority = priority
         @metric = metric
@@ -162,6 +166,7 @@ module Netomox
         @timer = MddoOspfTimer.new(**timer)
         @neighbors = neighbors.map { |n| MddoOspfNeighbor.new(**n) }
         @area = area
+        @flags = flags
         @type = "#{NS_MDDO}:ospf-area-termination-point-attributes"
       end
       # rubocop:enable Metrics/ParameterLists
@@ -176,7 +181,8 @@ module Netomox
           'passive' => @passive,
           'timer' => @timer.topo_data,
           'neighbor' => @neighbors.map(&:topo_data),
-          'area' => @area
+          'area' => @area,
+          'flag' => @flags
         }
       end
 
@@ -212,8 +218,10 @@ module Netomox
       #   @return [Array<String>]
       # @!attribute [rw] timer
       #   @return [MddoBgpTimer]
+      # @!attribute [rw] flags
+      #   @return [Array<String>]
       attr_accessor :local_as, :local_ip, :remote_as, :remote_ip, :description, :confederation, :route_reflector_client,
-                    :cluster_id, :peer_group, :import_policies, :export_policies, :timer
+                    :cluster_id, :peer_group, :import_policies, :export_policies, :timer, :flags
       # @!attribute [r] type
       #   @return [String]
       attr_reader :type
@@ -231,10 +239,11 @@ module Netomox
       # @param [String] peer_group
       # @param [Array<String>] import_policies
       # @param [Array<String>] export_policies
-      # @timer [MddoBgpTimer] timer
+      # @param [MddoBgpTimer] timer
+      # @param [Array<String>] flags
       def initialize(local_as: -1, local_ip: '', remote_as: -1, remote_ip: '', description: '', confederation: -1,
                      route_reflector_client: false, cluster_id: '', peer_group: '', import_policies: [],
-                     export_policies: [], timer: {})
+                     export_policies: [], timer: {}, flags: [])
         @local_as = local_as
         @local_ip = local_ip
         @remote_as = remote_as
@@ -247,6 +256,7 @@ module Netomox
         @import_policies = import_policies
         @export_policies = export_policies
         @timer = MddoBgpTimer.new(**timer)
+        @flags = flags
         @type = "#{NS_MDDO}:bgp-proc-termination-point-attributes"
       end
       # rubocop:enable Metrics/ParameterLists
@@ -266,7 +276,8 @@ module Netomox
           'peer-group' => @peer_group,
           'import-policy' => @import_policies,
           'export-policy' => @export_policies,
-          'timer' => @timer.topo_data
+          'timer' => @timer.topo_data,
+          'flag' => @flags
         }
       end
 

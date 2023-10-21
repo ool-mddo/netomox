@@ -108,7 +108,8 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
           'retransmission-interval' => 5
         },
         'neighbor' => [],
-        'area' => -1
+        'area' => -1,
+        'flag' => []
       }
     }
     expect(tp.topo_data).to eq tp_data
@@ -126,7 +127,8 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
         retransmission_interval: 2
       },
       neighbors: [{ router_id: '10.0.0.1', ip_addr: '192.168.0.1' }],
-      area: 1
+      area: 1,
+      flags: %w[foo bar]
     }
     tp = Netomox::DSL::TermPoint.new(@ospf_node, 'tpX') do
       attribute(tp_attr)
@@ -149,7 +151,8 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
             'ip-address' => '192.168.0.1'
           }
         ],
-        'area' => 1
+        'area' => 1,
+        'flag' => %w[foo bar]
       }
     }
     expect(tp.topo_data).to eq tp_data
@@ -172,7 +175,8 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
         keepalive_interval: 10,
         minimum_advertisement_interval: 10,
         connect_retry: 5
-      }
+      },
+      flags: %w[foo bar]
     }
     tp = Netomox::DSL::TermPoint.new(@bgp_proc_node, 'tpX') do
       attribute(tp_attr)
@@ -197,7 +201,8 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
           'keepalive-interval' => 10,
           'minimum-advertisement-interval' => 10,
           'restart-time' => -1
-        }
+        },
+        'flag' => %w[foo bar]
       }
     }
     expect(tp.topo_data).to eq tp_data
