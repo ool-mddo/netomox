@@ -137,7 +137,9 @@ module Netomox
       #   @return [Boolean]
       # @!attribute [rw] redistribute_list
       #   @return [Array<MddoOspfRedistribute>]
-      attr_accessor :node_type, :router_id, :process_id, :log_adjacency_change, :redistribute_list
+      # @!attribute [rw] flags
+      #   @return [Array<String>]
+      attr_accessor :node_type, :router_id, :process_id, :log_adjacency_change, :redistribute_list, :flags
       # @!attribute [r] type
       #   @return [String]
       #   @todo enum (:static, :auto)
@@ -145,21 +147,26 @@ module Netomox
       #   @return [Symbol]
       attr_reader :type, :router_id_source
 
+      # rubocop:disable Metrics/ParameterLists
+
       # @param [String] node_type
       # @param [String] router_id
       # @param [Integer] process_id
       # @param [Boolean] log_adjacency_change
       # @param [Array<Hash>] redistribute_list
+      # @param [Array<String>] flags
       def initialize(node_type: '', router_id: '', process_id: 'default', log_adjacency_change: false,
-                     redistribute_list: [])
+                     redistribute_list: [], flags: [])
         @node_type = node_type
         @router_id_source = router_id.empty? ? :auto : :static
         @router_id = router_id # TODO: router id selection
         @process_id = process_id
         @log_adjacency_change = log_adjacency_change
         @redistribute_list = redistribute_list.map { |r| MddoOspfRedistribute.new(**r) }
+        @flags = flags
         @type = "#{NS_MDDO}:ospf-area-node-attributes"
       end
+      # rubocop:enable Metrics/ParameterLists
 
       # Convert to RFC8345 topology data
       # @return [Hash]
@@ -170,7 +177,8 @@ module Netomox
           'process-id' => @process_id,
           'router-id-source' => @router_id_source.to_s,
           'log-adjacency-change' => @log_adjacency_change,
-          'redistribute' => @redistribute_list.map(&:topo_data)
+          'redistribute' => @redistribute_list.map(&:topo_data),
+          'flag' => @flags
         }
       end
 
@@ -202,8 +210,10 @@ module Netomox
       #   @return [Array] # TODO: attr implementation
       # @!attribute [rw] redistribute_list
       #   @return [Array] # TODO: attr implementation
+      # @!attribute [rw] flags
+      #   @return [Array<String>]
       attr_accessor :router_id, :confederation_id, :confederation_members, :route_reflector, :peer_groups,
-                    :policies, :prefix_sets, :as_path_sets, :community_sets, :redistribute_list
+                    :policies, :prefix_sets, :as_path_sets, :community_sets, :redistribute_list, :flags
       # @!attribute [r] type
       #   @return [String]
       attr_reader :type
@@ -217,9 +227,10 @@ module Netomox
       # @param [Array] peer_groups
       # @param [Array] policies
       # @param [Array<Hash>] redistribute_list
+      # @param [Array<String>] flags
       def initialize(router_id: '', confederation_id: -1, confederation_members: [], route_reflector: false,
                      peer_groups: [], policies: [], prefix_sets: [], as_path_sets: [], community_sets: [],
-                     redistribute_list: [])
+                     redistribute_list: [], flags: [])
         @router_id = router_id
         @confederation_id = confederation_id
         @confederation_members = confederation_members
@@ -230,6 +241,7 @@ module Netomox
         @as_path_sets = as_path_sets
         @community_sets = community_sets
         @redistribute_list = redistribute_list
+        @flags = flags
         @type = "#{NS_MDDO}:bgp-proc-node-attributes"
       end
       # rubocop:enable Metrics/ParameterLists
@@ -247,7 +259,8 @@ module Netomox
           'prefix-set' => @prefix_sets,
           'as-path-set' => @as_path_sets,
           'community-set' => @community_sets,
-          'redistribute' => @redistribute_list
+          'redistribute' => @redistribute_list,
+          'flag' => @flags
         }
       end
 
@@ -261,14 +274,18 @@ module Netomox
     class MddoBgpAsNodeAttribute
       # @!attribute [rw] as_number
       #   @return [Integer]
-      attr_accessor :as_number
+      # @!attribute [rw] flags
+      #   @return [Array<String>]
+      attr_accessor :as_number, :flags
       # @!attribute [r] type
       #   @return [String]
       attr_reader :type
 
       # @param [Integer] as_number
-      def initialize(as_number: -1)
+      # @param [Array<String>] flags
+      def initialize(as_number: -1, flags: [])
         @as_number = as_number
+        @flags = flags
         @type = "#{NS_MDDO}:bgp-as-node-attributes"
       end
 
@@ -276,7 +293,8 @@ module Netomox
       # @return [Hash]
       def topo_data
         {
-          'as-number' => @as_number
+          'as-number' => @as_number,
+          'flag' => @flags
         }
       end
 

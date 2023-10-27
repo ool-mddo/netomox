@@ -46,7 +46,8 @@ RSpec.describe 'check node attribute with Mddo-model' do
             router_id: '10.0.0.1',
             process_id: 1,
             log_adjacency_change: false,
-            redistribute_list: [{ protocol: 'static', metric_type: 2 }]
+            redistribute_list: [{ protocol: 'static', metric_type: 2 }],
+            flags: %w[foo bar]
           )
         end
       end
@@ -61,14 +62,18 @@ RSpec.describe 'check node attribute with Mddo-model' do
             prefix_sets: [{ 'name' => 'prefix set 1' }], # TBA
             as_path_sets: [{ 'name' => 'as-path set 1' }], # TBA
             community_sets: [{ 'name' => 'community set 1' }], # TBA
-            redistribute_list: [] # TBA
+            redistribute_list: [], # TBA
+            flags: %w[foo bar]
           )
         end
       end
       network 'nw_bgp_as' do
         type Netomox::NWTYPE_MDDO_BGP_AS
         node('node1') do
-          attribute(as_number: 65_550)
+          attribute(
+            as_number: 65_550,
+            flags: %w[foo bar]
+          )
         end
       end
     end
@@ -131,7 +136,8 @@ RSpec.describe 'check node attribute with Mddo-model' do
       'router-id-source' => 'static',
       'process-id' => 1,
       'log-adjacency-change' => false,
-      'redistribute' => [{ 'protocol' => 'static', 'metric-type' => 2 }]
+      'redistribute' => [{ 'protocol' => 'static', 'metric-type' => 2 }],
+      'flag' => %w[foo bar]
     }
     expect(attr&.to_data).to eq expected_attr
   end
@@ -149,7 +155,8 @@ RSpec.describe 'check node attribute with Mddo-model' do
       'prefix-set' => [{ 'name' => 'prefix set 1' }],
       'as-path-set' => [{ 'name' => 'as-path set 1' }],
       'community-set' => [{ 'name' => 'community set 1' }],
-      'redistribute' => []
+      'redistribute' => [],
+      'flag' => %w[foo bar]
     }
     expect(attr&.to_data).to eq expected_attr
   end
@@ -158,7 +165,8 @@ RSpec.describe 'check node attribute with Mddo-model' do
     attr = @nws.find_network('nw_bgp_as')&.find_node_by_name('node1')&.attribute
     expected_attr = {
       '_diff_state_' => @default_diff_state,
-      'as-number' => 65_550
+      'as-number' => 65_550,
+      'flag' => %w[foo bar]
     }
     expect(attr&.to_data).to eq expected_attr
   end

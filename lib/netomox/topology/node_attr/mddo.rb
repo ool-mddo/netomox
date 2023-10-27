@@ -107,7 +107,10 @@ module Netomox
       # @!attribute [r] router_id_source
       #   @return [Symbol]
       #   @todo enum (:static, :auto)
-      attr_accessor :node_type, :router_id, :process_id, :log_adjacency_change, :redistribute_list, :router_id_source
+      # @!attribute [rw] flags
+      #   @return [Array<String>]
+      attr_accessor :node_type, :router_id, :process_id, :log_adjacency_change, :redistribute_list, :router_id_source,
+                    :flags
 
       # Attribute definition of ospf-area node
       ATTR_DEFS = [
@@ -116,7 +119,8 @@ module Netomox
         { int: :process_id, ext: 'process-id', default: 'default' },
         { int: :log_adjacency_change, ext: 'log-adjacency-change', default: false },
         { int: :redistribute_list, ext: 'redistribute', default: [] },
-        { int: :router_id_source, ext: 'router-id-source', default: 'dynamic' }
+        { int: :router_id_source, ext: 'router-id-source', default: 'dynamic' },
+        { int: :flags, ext: 'flag', default: [] }
       ].freeze
 
       include Diffable
@@ -165,8 +169,10 @@ module Netomox
       #   @return [Array] # TODO: attr implementation
       # @!attribute [rw] redistribute_list
       #   @return [Array] # TODO: attr implementation
+      # @!attribute [rw] flags
+      #   @return [Array<String>]
       attr_accessor :router_id, :confederation_id, :confederation_members, :route_reflector, :peer_groups,
-                    :policies, :prefix_sets, :as_path_sets, :community_sets, :redistribute_list
+                    :policies, :prefix_sets, :as_path_sets, :community_sets, :redistribute_list, :flags
 
       # Attribute definition of bgp-proc node
       ATTR_DEFS = [
@@ -179,7 +185,8 @@ module Netomox
         { int: :prefix_sets, ext: 'prefix-set', default: [] },
         { int: :as_path_sets, ext: 'as-path-set', default: [] },
         { int: :community_sets, ext: 'community-set', default: [] },
-        { int: :redistribute_list, ext: 'redistribute', default: [] }
+        { int: :redistribute_list, ext: 'redistribute', default: [] },
+        { int: :flags, ext: 'flag', default: [] }
       ].freeze
 
       include Diffable
@@ -200,10 +207,15 @@ module Netomox
     class MddoBgpAsNodeAttribute < AttributeBase
       # @!attribute [rw] as_number
       #   @return [Integer] AS number
-      attr_accessor :as_number
+      # @!attribute [rw] flags
+      #   @return [Array<String>]
+      attr_accessor :as_number, :flags
 
       # Attribute definition of bgp-as node
-      ATTR_DEFS = [{ int: :as_number, ext: 'as-number', default: -1 }].freeze
+      ATTR_DEFS = [
+        { int: :as_number, ext: 'as-number', default: -1 },
+        { int: :flags, ext: 'flag', default: [] }
+      ].freeze
 
       include Diffable
 
