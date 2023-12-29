@@ -1,0 +1,268 @@
+# frozen_string_literal: true
+
+RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
+  before do
+    nws = Netomox::DSL::Networks.new do
+      network 'test-bgp-proc' do
+        type Netomox::NWTYPE_MDDO_BGP_PROC
+      end
+    end
+    @tp_key = "#{Netomox::NS_TOPO}:termination-point"
+    @bgp_proc_nw = nws.network('test-bgp-proc')
+    @bgp_proc_attr_key = "#{Netomox::NS_MDDO}:bgp-proc-node-attributes"
+  end
+
+  it 'returns bgp-community-set', :attr, :bgp_attr do
+    args = [
+      { name: 'aggregated', communities: [{ community: '65518:1' }] },
+      { name: 'any', communities: [{ community: '"":""' }] },
+      { name: 'peer', communities: [{ community: '65518:2' }] }
+    ]
+    community_sets = args.map { |c| Netomox::DSL::BgpCommunitySet.new(**c) }
+    community_sets_data = [
+      { 'name' => 'aggregated', 'communities' => [{ 'community' => '65518:1' }] },
+      { 'name' => 'any', 'communities' => [{ 'community' => '"":""' }] },
+      { 'name' => 'peer', 'communities' => [{ 'community' => '65518:2' }] }
+    ]
+    expect(community_sets.map(&:topo_data)).to eq community_sets_data
+  end
+
+  it 'returns bgp-policy-condition-route-filter-length', :attr, :bgp_attr do
+    rfl = Netomox::DSL::BgpPolicyConditionRFLength.new(min: 32, max: 25)
+    rfl_data = { 'min' => 32, 'max' => 25 }
+    expect(rfl.topo_data).to eq rfl_data
+  end
+
+  it 'returns bgp-policy-condition-route-filter-length (default)', :attr, :bgp_attr do
+    rfl = Netomox::DSL::BgpPolicyConditionRFLength.new
+    rfl_data = {}
+    expect(rfl.topo_data).to eq rfl_data
+  end
+
+  it 'returns bgp-policy-prefix-list-filter', :attr, :bgp_attr do
+    plf = Netomox::DSL::BgpPolicyPrefixListFilter.new(prefix_list: 'default-ipv4', match_type: 'exact')
+    pfl_data = { 'prefix-list' => 'default-ipv4', 'match-type' => 'exact' }
+    expect(plf.topo_data).to eq pfl_data
+  end
+
+  it 'returns bgp-policy-condition-route-filter (prefix-length-range)', :attr, :bgp_attr do
+    args = { length: { max: 32, min: 25 }, match_type: 'prefix-length-range', prefix: '0.0.0.0/0' }
+    crf = Netomox::DSL::BgpPolicyConditionRouteFilter.new(**args)
+    crf_data = {
+      'length' => { 'max' => 32, 'min' => 25 },
+      'prefix' => '0.0.0.0/0',
+      'match-type' => 'prefix-length-range'
+    }
+    expect(crf.topo_data).to eq crf_data
+  end
+
+  it 'returns bgp-policy-condition-route-filter (exact-1)', :attr, :bgp_attr do
+    args = { match_type: 'exact', prefix: '10.120.0.0/17' }
+    crf = Netomox::DSL::BgpPolicyConditionRouteFilter.new(**args)
+    crf_data = {
+      'length' => {},
+      'prefix' => '10.120.0.0/17',
+      'match-type' => 'exact'
+    }
+    expect(crf.topo_data).to eq crf_data
+  end
+
+  it 'returns bgp-policy-condition-route-filter (exact-2)', :attr, :bgp_attr do
+    args = { length: { max: 16, min: 16 }, match_type: 'exact', prefix: '10.100.0.0/16' }
+    crf = Netomox::DSL::BgpPolicyConditionRouteFilter.new(**args)
+    crf_data = {
+      'length' => { 'max' => 16, 'min' => 16 },
+      'prefix' => '10.100.0.0/16',
+      'match-type' => 'exact'
+    }
+    expect(crf.topo_data).to eq crf_data
+  end
+
+  it 'returns bgp-policy-action-community', :attr, :bgp_attr do
+    ac = Netomox::DSL::BgpPolicyActionCommunity.new(action: 'set', name: 'aggregated')
+    ac_data = { 'action' => 'set', 'name' => 'aggregated' }
+    expect(ac.topo_data).to eq ac_data
+  end
+
+  it 'returns bgp-policy-condition', :attr, :bgp_attr do
+    args = [
+      { protocol: 'bgp' },
+      { rib: 'inet.0' },
+      { route_filter: { prefix: '0.0.0.0/0', length: {}, match_type: 'exact' } },
+      { policy: 'reject-in-rule-ipv4' },
+      { as_path_group: 'asXXXXX-origin' },
+      { community: ['aggregated'] },
+      { prefix_list_filter: { prefix_list: 'default-ipv4', match_type: 'exact' } }
+    ]
+    conditions = args.map { |a| Netomox::DSL::BgpPolicyCondition.new(**a) }
+    conditions_data = [
+      { 'protocol' => 'bgp' },
+      { 'rib' => 'inet.0' },
+      { 'route-filter' => { 'prefix' => '0.0.0.0/0', 'length' => {}, 'match-type' => 'exact' } },
+      { 'policy' => 'reject-in-rule-ipv4' },
+      { 'as-path-group' => 'asXXXXX-origin' },
+      { 'community' => ['aggregated'] },
+      { 'prefix-list-filter' => { 'prefix-list' => 'default-ipv4', 'match-type' => 'exact' } }
+    ]
+    expect(conditions.map(&:topo_data)).to eq conditions_data
+  end
+
+  it 'returns bgp-policy-action', :attr, :bgp_attr do
+    args = [
+      { target: 'accept' },
+      { community: { action: 'set', name: 'aggregated' } },
+      { next_hop: '172.31.255.1' },
+      { local_preference: 300 },
+      { metric: 100 }
+    ]
+    actions = args.map { |a| Netomox::DSL::BgpPolicyAction.new(**a) }
+    actions_data = [
+      { 'target' => 'accept' },
+      { 'community' => { 'action' => 'set', 'name' => 'aggregated' } },
+      { 'next-hop' => '172.31.255.1' },
+      { 'local-preference' => 300 },
+      { 'metric' => 100 }
+    ]
+    expect(actions.map(&:topo_data)).to eq actions_data
+  end
+
+  it 'returns bgp-policy-statement', :attr, :bgp_attr do
+    args = [
+      {
+        name: '10',
+        if: 'if',
+        conditions: [{ policy: 'reject-in-rule-ipv4' }],
+        actions: [{ target: 'reject' }]
+      },
+      {
+        name: '20',
+        if: 'if',
+        conditions: [{ as_path_group: 'asXXXXX-origin' }],
+        actions: [{ metric: 100 }, { target: 'accept' }]
+      }
+    ]
+    statements = args.map { |a| Netomox::DSL::BgpPolicyStatement.new(**a) }
+    statements_data = [
+      {
+        'name' => '10',
+        'if' => 'if',
+        'conditions' => [{ 'policy' => 'reject-in-rule-ipv4' }],
+        'actions' => [{ 'target' => 'reject' }]
+      },
+      {
+        'name' => '20',
+        'if' => 'if',
+        'conditions' => [{ 'as-path-group' => 'asXXXXX-origin' }],
+        'actions' => [{ 'metric' => 100 }, { 'target' => 'accept' }]
+      }
+    ]
+    expect(statements.map(&:topo_data)).to eq statements_data
+  end
+
+  it 'returns bgp-policy', :attr, :bgp_attr do
+    args = [
+      {
+        name: 'ipv4-core',
+        default: { actions: [{ target: 'reject' }] },
+        statements: []
+      }
+    ]
+    policies = args.map { |p| Netomox::DSL::BgpPolicy.new(**p) }
+    policies_data = [
+      {
+        'name' => 'ipv4-core',
+        'default' => { 'actions' => [{ 'target' => 'reject' }] },
+        'statements' => []
+      }
+    ]
+    expect(policies.map(&:topo_data)).to eq policies_data
+  end
+
+  # rubocop:disable Rspec/ExampleLength
+  it 'generate node that has bgp-policy attribute', :attr, :bgp_attr do
+    community_sets = [
+      { communities: [{ community: '65518:1' }], name: 'aggregated' }
+    ]
+    policies = [
+      {
+        default: { actions: [{ target: 'reject' }] },
+        name: 'ipv4-core',
+        statements: [
+          {
+            actions: [{ target: 'accept' }],
+            conditions: [{ protocol: 'bgp' }],
+            if: 'if',
+            name: 'bgp'
+          },
+          {
+            actions: [
+              { community: { action: 'set', name: 'aggregated' } },
+              { next_hop: '172.31.255.1' },
+              { target: 'accept' }
+            ],
+            conditions: [
+              { protocol: 'static' },
+              { rib: 'inet.0' },
+              { route_filter: { length: {}, match_type: 'exact', prefix: '10.100.0.0/16' } }
+            ],
+            if: 'if',
+            name: 'aggregated-static'
+          }
+        ]
+      }
+    ]
+    node = Netomox::DSL::Node.new(@bgp_proc_nw, 'nodeX') do
+      attribute({ router_id: '192.168.255.2', community_sets:, policies: })
+    end
+
+    community_set_data = [
+      { 'communities' => [{ 'community' => '65518:1' }], 'name' => 'aggregated' }
+    ]
+    policies_data = [
+      {
+        'default' => { 'actions' => [{ 'target' => 'reject' }] },
+        'name' => 'ipv4-core',
+        'statements' => [
+          {
+            'actions' => [{ 'target' => 'accept' }],
+            'conditions' => [{ 'protocol' => 'bgp' }],
+            'if' => 'if',
+            'name' => 'bgp'
+          },
+          {
+            'actions' => [
+              { 'community' => { 'action' => 'set', 'name' => 'aggregated' } },
+              { 'next-hop' => '172.31.255.1' },
+              { 'target' => 'accept' }
+            ],
+            'conditions' => [
+              { 'protocol' => 'static' },
+              { 'rib' => 'inet.0' },
+              { 'route-filter' => { 'length' => {}, 'match-type' => 'exact', 'prefix' => '10.100.0.0/16' } }
+            ],
+            'if' => 'if',
+            'name' => 'aggregated-static'
+          }
+        ]
+      }
+    ]
+    node_data = {
+      'node-id' => 'nodeX',
+      @tp_key => [],
+      @bgp_proc_attr_key => {
+        'router-id' => '192.168.255.2',
+        'confederation-id' => -1,
+        'confederation-member' => [],
+        'route-reflector' => false,
+        'peer-group' => [],
+        'policy' => policies_data,
+        'prefix-set' => [],
+        'as-path-set' => [],
+        'community-set' => community_set_data,
+        'redistribute' => []
+      }
+    }
+    expect(node.topo_data).to eq node_data
+  end
+  # rubocop:enable Rspec/ExampleLength
+end

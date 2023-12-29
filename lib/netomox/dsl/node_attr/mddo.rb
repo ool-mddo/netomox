@@ -4,6 +4,7 @@ require 'netomox/const'
 require 'netomox/dsl/node_attr/rfc_prefix'
 require 'netomox/dsl/node_attr/mddo_l3_static_route'
 require 'netomox/dsl/node_attr/mddo_ospf_redistribute'
+require 'netomox/dsl/node_attr/mddo_bgp_proc'
 
 module Netomox
   module DSL
@@ -201,13 +202,13 @@ module Netomox
       # @!attribute [rw] peer_groups
       #   @return [Array] # TODO: attr implementation
       # @!attribute [rw] policies
-      #   @return [Array] # TODO: attr implementation
+      #   @return [Array<BgpPolicy>]
       # @!attribute [rw] prefix_sets
-      #   @return [Array] # TODO: attr implementation
+      #   @return [Array<PrefixSet>]
       # @!attribute [rw] as_path_sets
-      #   @return [Array] # TODO: attr implementation
+      #   @return [Array<BgpAsPathSet>]
       # @!attribute [rw] community_sets
-      #   @return [Array] # TODO: attr implementation
+      #   @return [Array<BgpCommunitySet>]
       # @!attribute [rw] redistribute_list
       #   @return [Array] # TODO: attr implementation
       # @!attribute [rw] flags
@@ -218,14 +219,17 @@ module Netomox
       #   @return [String]
       attr_reader :type
 
-      # rubocop:disable Metrics/ParameterLists
+      # rubocop:disable Metrics/ParameterLists, Metrics/AbcSize
 
       # @param [String] router_id
       # @param [Integer] confederation_id
       # @param [Array<Integer>] confederation_members
       # @param [Boolean] route_reflector
       # @param [Array] peer_groups
-      # @param [Array] policies
+      # @param [Array<Hash>] policies
+      # @param [Array<Hash>] prefix_sets
+      # @param [Array<Hash>] as_path_sets
+      # @param [Array<Hash>] community_sets
       # @param [Array<Hash>] redistribute_list
       # @param [Array<String>] flags
       def initialize(router_id: '', confederation_id: -1, confederation_members: [], route_reflector: false,
@@ -236,29 +240,30 @@ module Netomox
         @confederation_members = confederation_members
         @route_reflector = route_reflector
         @peer_groups = peer_groups
-        @policies = policies
-        @prefix_sets = prefix_sets
-        @as_path_sets = as_path_sets
-        @community_sets = community_sets
+        @policies = policies.map { |p| BgpPolicy.new(**p) }
+        @prefix_sets = prefix_sets.map { |p| PrefixSet.new(**p) }
+        @as_path_sets = as_path_sets.map { |a| BgpAsPathSet.new(**a) }
+        @community_sets = community_sets.map { |c| BgpCommunitySet.new(**c) }
         @redistribute_list = redistribute_list
         @flags = flags
         @type = "#{NS_MDDO}:bgp-proc-node-attributes"
       end
-      # rubocop:enable Metrics/ParameterLists
+      # rubocop:enable Metrics/ParameterLists, Metrics/AbcSize
 
       # Convert to RFC8345 topology data
       # @return [Hash]
       def topo_data
+        warn '# DEBUG: MddoBgpProcNodeAttribute#topo_data'
         {
           'router-id' => @router_id,
           'confederation-id' => @confederation_id,
           'confederation-member' => @confederation_members,
           'route-reflector' => @route_reflector,
           'peer-group' => @peer_groups,
-          'policy' => @policies,
-          'prefix-set' => @prefix_sets,
-          'as-path-set' => @as_path_sets,
-          'community-set' => @community_sets,
+          'policy' => @policies.map(&:topo_data),
+          'prefix-set' => @prefix_sets.map(&:topo_data),
+          'as-path-set' => @as_path_sets.map(&:topo_data),
+          'community-set' => @community_sets.map(&:topo_data),
           'redistribute' => @redistribute_list,
           'flag' => @flags
         }

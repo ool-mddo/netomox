@@ -112,9 +112,16 @@ module Netomox
       end
       # rubocop:enable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/PerceivedComplexity
 
+      # Get attribute (for debug)
+      # @return [Object]
+      def _attribute
+        @attribute
+      end
+
       # Convert to RFC8345 topology data
       # @return [Hash]
       def topo_data
+        warn '# DEBUG Netomox::DSL::Node#topo_data'
         data = {
           'node-id' => @name,
           "#{NS_TOPO}:termination-point" => @term_points.map(&:topo_data)
