@@ -253,7 +253,6 @@ module Netomox
       # Convert to RFC8345 topology data
       # @return [Hash]
       def topo_data
-        warn '# DEBUG: MddoBgpProcNodeAttribute#topo_data'
         {
           'router-id' => @router_id,
           'confederation-id' => @confederation_id,

@@ -12,6 +12,32 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
     @bgp_proc_attr_key = "#{Netomox::NS_MDDO}:bgp-proc-node-attributes"
   end
 
+  it 'returns prefix-set', :attr, :bgp_attr do
+    args = [
+      { name: 'default-ipv4', prefixes: [{ prefix: '0.0.0.0/0' }] },
+      { name: 'aggregated-ipv4', prefixes: [{ prefix: '10.100.0.0/16' }, { prefix: '10.110.0.0/16' }] }
+    ]
+    prefix_sets = args.map { |p| Netomox::DSL::PrefixSet.new(**p) }
+    prefix_sets_data = [
+      { 'name' => 'default-ipv4', 'prefixes' => [{ 'prefix' => '0.0.0.0/0' }] },
+      { 'name' => 'aggregated-ipv4', 'prefixes' => [{ 'prefix' => '10.100.0.0/16' }, { 'prefix' => '10.110.0.0/16' }] }
+    ]
+    expect(prefix_sets.map(&:topo_data)).to eq prefix_sets_data
+  end
+
+  it 'returns bgp-as-path-set', :attr, :bgp_attr do
+    args = [
+      { group_name: 'aspath-longer200', as_path: { name: 'aspath-longer200', pattern: '.{200,}' } },
+      { group_name: 'any', as_path: { name: 'any', pattern: '.*' } }
+    ]
+    as_path_set = args.map { |a| Netomox::DSL::BgpAsPathSet.new(**a) }
+    as_path_set_data = [
+      { 'group-name' => 'aspath-longer200', 'as-path' => { 'name' => 'aspath-longer200', 'pattern' => '.{200,}' } },
+      { 'group-name' => 'any', 'as-path' => { 'name' => 'any', 'pattern' => '.*' } }
+    ]
+    expect(as_path_set.map(&:topo_data)).to eq as_path_set_data
+  end
+
   it 'returns bgp-community-set', :attr, :bgp_attr do
     args = [
       { name: 'aggregated', communities: [{ community: '65518:1' }] },
@@ -178,8 +204,14 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
     expect(policies.map(&:topo_data)).to eq policies_data
   end
 
-  # rubocop:disable Rspec/ExampleLength
+  # rubocop:disable RSpec/ExampleLength
   it 'generate node that has bgp-policy attribute', :attr, :bgp_attr do
+    prefix_sets = [
+      { name: 'default-ipv4', prefixes: [{ prefix: '0.0.0.0/0' }] }
+    ]
+    as_path_sets = [
+      { group_name: 'any', as_path: { name: 'any', pattern: '.*' } }
+    ]
     community_sets = [
       { communities: [{ community: '65518:1' }], name: 'aggregated' }
     ]
@@ -212,9 +244,22 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       }
     ]
     node = Netomox::DSL::Node.new(@bgp_proc_nw, 'nodeX') do
-      attribute({ router_id: '192.168.255.2', community_sets:, policies: })
+      attr = {
+        router_id: '192.168.255.2',
+        prefix_sets:,
+        as_path_sets:,
+        community_sets:,
+        policies:
+      }
+      attribute(attr)
     end
 
+    prefix_set_data = [
+      { 'name' => 'default-ipv4', 'prefixes' => [{ 'prefix' => '0.0.0.0/0' }] }
+    ]
+    as_path_set_data = [
+      { 'group-name' => 'any', 'as-path' => { 'name' => 'any', 'pattern' => '.*' } }
+    ]
     community_set_data = [
       { 'communities' => [{ 'community' => '65518:1' }], 'name' => 'aggregated' }
     ]
@@ -256,13 +301,13 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
         'route-reflector' => false,
         'peer-group' => [],
         'policy' => policies_data,
-        'prefix-set' => [],
-        'as-path-set' => [],
+        'prefix-set' => prefix_set_data,
+        'as-path-set' => as_path_set_data,
         'community-set' => community_set_data,
         'redistribute' => []
       }
     }
     expect(node.topo_data).to eq node_data
   end
-  # rubocop:enable Rspec/ExampleLength
+  # rubocop:enable RSpec/ExampleLength
 end

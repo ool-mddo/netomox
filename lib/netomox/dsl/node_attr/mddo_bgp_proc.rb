@@ -14,7 +14,7 @@ module Netomox
       # @param [Array<String>] prefixes
       def initialize(name: '', prefixes: [])
         @name = name
-        @prefixes = prefixes
+        @prefixes = prefixes.map { |p| Prefix.new(**p) }
       end
 
       # Convert to RFC8345 topology data
@@ -22,23 +22,46 @@ module Netomox
       def topo_data
         {
           'name' => @name,
-          'prefix' => @prefixes.map(&:to_data)
+          'prefixes' => @prefixes.map(&:topo_data)
         }
+      end
+    end
+
+    # sub-data of prefix-set
+    class Prefix
+      # @!attribute [rw] key
+      #   @return [String]
+      # @!attribute [rw] value
+      #   @return [String]
+      attr_accessor :key, :value
+
+      # @param [Hash] prefix
+      # NOTE: prefix is single key-value hash
+      #   like: `prefix = { 'prefix' => 'x.x.x.x/nn' }`
+      def initialize(prefix)
+        @key = :prefix
+        @value = prefix[@key]
+      end
+
+      # Convert to RFC8345 topology data
+      # @return [Hash]
+      def topo_data
+        { 'prefix' => @value }
       end
     end
 
     # attribute for mddo-topology bgp-proc node bgp-policy: bgp-as-path-set
     class BgpAsPathSet
-      # @!attribute [rw] as_paths
-      #   @return [Array<BgpAsPath>]
+      # @!attribute [rw] as_path
+      #   @return [BgpAsPath]
       # @!attribute [rw] group_name
       #   @return [String]
-      attr_accessor :as_paths, :group_name
+      attr_accessor :as_path, :group_name
 
-      # @param [Array<Hash>] as_paths,
+      # @param [Hash] as_path,
       # @param [String] group_name
-      def initialize(as_paths: [], group_name: '')
-        @as_paths = as_paths.map { |p| BgpAsPath.new(**p) }
+      def initialize(as_path: {}, group_name: '')
+        @as_path = BgpAsPath.new(**as_path)
         @group_name = group_name
       end
 
@@ -46,7 +69,7 @@ module Netomox
       # @return [Hash]
       def topo_data
         {
-          'as-path' => @as_paths.map(&:topo_data),
+          'as-path' => @as_path.topo_data,
           'group-name' => @group_name
         }
       end
