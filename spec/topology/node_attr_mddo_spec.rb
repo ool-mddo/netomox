@@ -155,6 +155,7 @@ RSpec.describe 'check node attribute with Mddo-model' do
     expect(attr&.to_data).to eq expected_attr
   end
 
+  # rubocop:disable RSpec/ExampleLength
   it 'has MDDO bgp-proc node attribute' do
     attr = @nws.find_network('nw_bgp_proc')&.find_node_by_name('node1')&.attribute
     expected_attr = {
@@ -186,14 +187,30 @@ RSpec.describe 'check node attribute with Mddo-model' do
           ]
         }
       ],
-      'prefix-set' => [{ 'name' => 'default-ipv4', 'prefixes' => [{ 'prefix' => '0.0.0.0/0' }] }],
-      'as-path-set' => [{ 'group-name' => 'any', 'as-path' => { 'name' => 'any', 'pattern' => '.*' } }],
-      'community-set' => [{ 'communities' => [{ 'community' => '65518:1' }], 'name' => 'aggregated' }],
+      'prefix-set' => [
+        {
+          '_diff_state_' => @default_diff_state,
+          'name' => 'default-ipv4', 'prefixes' => [{ 'prefix' => '0.0.0.0/0' }]
+        }
+      ],
+      'as-path-set' => [
+        {
+          '_diff_state_' => @default_diff_state,
+          'group-name' => 'any', 'as-path' => { 'name' => 'any', 'pattern' => '.*' }
+        }
+      ],
+      'community-set' => [
+        {
+          '_diff_state_' => @default_diff_state,
+          'communities' => [{ 'community' => '65518:1' }], 'name' => 'aggregated'
+        }
+      ],
       'redistribute' => []
 >>>>>>> 65b2cab (Fix bgp-proc tests)
     }
     expect(attr&.to_data).to eq expected_attr
   end
+  # rubocop:enable RSpec/ExampleLength
 
   it 'has MDDO bgp-as node attribute' do
     attr = @nws.find_network('nw_bgp_as')&.find_node_by_name('node1')&.attribute
