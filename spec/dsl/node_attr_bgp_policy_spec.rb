@@ -17,7 +17,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { name: 'default-ipv4', prefixes: [{ prefix: '0.0.0.0/0' }] },
       { name: 'aggregated-ipv4', prefixes: [{ prefix: '10.100.0.0/16' }, { prefix: '10.110.0.0/16' }] }
     ]
-    prefix_sets = args.map { |p| Netomox::DSL::PrefixSet.new(**p) }
+    prefix_sets = args.map { |p| Netomox::DSL::BgpPrefixSet.new(**p) }
     prefix_sets_data = [
       { 'name' => 'default-ipv4', 'prefixes' => [{ 'prefix' => '0.0.0.0/0' }] },
       { 'name' => 'aggregated-ipv4', 'prefixes' => [{ 'prefix' => '10.100.0.0/16' }, { 'prefix' => '10.110.0.0/16' }] }

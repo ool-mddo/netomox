@@ -3,7 +3,7 @@
 module Netomox
   module DSL
     # attribute for mddo-topology bgp-proc node bgp-policy: prefix-set
-    class PrefixSet
+    class BgpPrefixSet
       # @!attribute [rw] name
       #   @return [String]
       # @!attribute [rw] prefixes
@@ -14,7 +14,7 @@ module Netomox
       # @param [Array<String>] prefixes
       def initialize(name: '', prefixes: [])
         @name = name
-        @prefixes = prefixes.map { |p| Prefix.new(**p) }
+        @prefixes = prefixes.map { |p| BgpPrefix.new(**p) }
       end
 
       # Convert to RFC8345 topology data
@@ -28,7 +28,7 @@ module Netomox
     end
 
     # sub-data of prefix-set
-    class Prefix
+    class BgpPrefix
       # @!attribute [rw] key
       #   @return [String]
       # @!attribute [rw] value
@@ -152,18 +152,18 @@ module Netomox
     class BgpPolicy
       # @!attribute [rw] name
       #   @return [String]
-      # @!attribute [rw] default_actions
-      #   @return [Array<BgpPolicyAction>]
+      # @!attribute [rw] default
+      #   @return [BgpPolicyDefaultStatement]
       # @!attribute [rw] statements
       #   @return [Array<BgpPolicyStatement>]
-      attr_accessor :name, :default_actions, :statements
+      attr_accessor :name, :default, :statements
 
       # @param [String] name
       # @param [Array<Hash>] default
       # @param [Array<Hash>] statements
-      def initialize(name: '', default: [], statements: [])
+      def initialize(name: '', default: {}, statements: [])
         @name = name
-        @default_actions = default[:actions].map { |d| BgpPolicyAction.new(**d) }
+        @default = BgpPolicyDefaultStatement.new(**default)
         @statements = statements.map { |s| BgpPolicyStatement.new(**s) }
       end
 
@@ -172,9 +172,27 @@ module Netomox
       def topo_data
         {
           'name' => @name,
-          'default' => { 'actions' => @default_actions.map(&:topo_data) },
+          'default' => @default.topo_data,
           'statements' => @statements.map(&:topo_data)
         }
+      end
+    end
+
+    # sub-data of bgp-policy
+    class BgpPolicyDefaultStatement
+      # @!attribute [rw] actions
+      #   @return [Array<BgpPolicyAction>]
+      attr_accessor :actions
+
+      # @param [Array<Hash>] actions
+      def initialize(actions: [])
+        @actions = actions.map { |a| BgpPolicyAction.new(**a) }
+      end
+
+      # Convert to RFC8345 topology data
+      # @return [Hash]
+      def topo_data
+        { 'actions' => @actions.map(&:topo_data) }
       end
     end
 
@@ -279,7 +297,7 @@ module Netomox
       end
     end
 
-    # sub-data of bgp-policy-action-community
+    # sub-data of bgp-policy-action
     class BgpPolicyActionCommunity
       # @!attribute [rw] action
       #   @return [String]

@@ -204,7 +204,7 @@ module Netomox
       # @!attribute [rw] policies
       #   @return [Array<BgpPolicy>]
       # @!attribute [rw] prefix_sets
-      #   @return [Array<PrefixSet>]
+      #   @return [Array<BgpPrefixSet>]
       # @!attribute [rw] as_path_sets
       #   @return [Array<BgpAsPathSet>]
       # @!attribute [rw] community_sets
@@ -241,7 +241,7 @@ module Netomox
         @route_reflector = route_reflector
         @peer_groups = peer_groups
         @policies = policies.map { |p| BgpPolicy.new(**p) }
-        @prefix_sets = prefix_sets.map { |p| PrefixSet.new(**p) }
+        @prefix_sets = prefix_sets.map { |p| BgpPrefixSet.new(**p) }
         @as_path_sets = as_path_sets.map { |a| BgpAsPathSet.new(**a) }
         @community_sets = community_sets.map { |c| BgpCommunitySet.new(**c) }
         @redistribute_list = redistribute_list
