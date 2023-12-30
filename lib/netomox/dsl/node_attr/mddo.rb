@@ -4,7 +4,7 @@ require 'netomox/const'
 require 'netomox/dsl/node_attr/rfc_prefix'
 require 'netomox/dsl/node_attr/mddo_l3_static_route'
 require 'netomox/dsl/node_attr/mddo_ospf_redistribute'
-require 'netomox/dsl/node_attr/mddo_bgp_proc'
+require 'netomox/dsl/node_attr/mddo_bgp_policy'
 
 module Netomox
   module DSL
