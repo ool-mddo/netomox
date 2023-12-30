@@ -61,7 +61,7 @@ module Netomox
       # @return [MddoBgpPolicyConditionRouteFilterBody] Converted attribute data
       def convert_route_filter(data)
         key = @attr_table.ext_of(:route_filter)
-        MddoBgpPolicyConditionRouteFilterBody.new(data, key)
+        MddoBgpPolicyConditionRouteFilterBody.new(data[key], key)
       end
     end
 
@@ -135,7 +135,7 @@ module Netomox
       # @return [MddoBgpPolicyPrefixListFilter] Converted attribute data
       def convert_prefix_list_filter(data)
         key = @attr_table.ext_of(:prefix_list_filter)
-        MddoBgpPolicyPrefixListFilter.new(data, key)
+        MddoBgpPolicyPrefixListFilter.new(data[key], key)
       end
     end
 
@@ -168,7 +168,7 @@ module Netomox
       # @param [Hash] data Attribute data (RFC8345)
       # @return [MddoBgpPolicyConditionRFLength] Converted attribute data
       def convert_condition_rf_length(data)
-        key = @attr_table.ext_of(:conditions)
+        key = @attr_table.ext_of(:length)
         MddoBgpPolicyConditionRFLength.new(data[key], key)
       end
     end
@@ -212,6 +212,16 @@ module Netomox
       # @param [String] type Attribute type (keyword of data in RFC8345)
       def initialize(data, type)
         super(ATTR_DEFS, data, type)
+      end
+
+      # @return [Boolean]
+      def empty?
+        @min.negative? && @max.negative?
+      end
+
+      # @return [Hash]
+      def to_data
+        empty? ? {} : super
       end
     end
   end

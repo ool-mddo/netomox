@@ -45,7 +45,7 @@ module Netomox
       # @return [MddoBgpPolicyActionCommunityBody] Converted attribute data
       def convert_community(data)
         key = @attr_table.ext_of(:community)
-        MddoBgpPolicyActionCommunityBody.new(data, key)
+        MddoBgpPolicyActionCommunityBody.new(data[key], key)
       end
     end
 
