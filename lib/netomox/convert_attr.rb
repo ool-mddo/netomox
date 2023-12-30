@@ -34,8 +34,7 @@ module Netomox
   }.freeze
 
   # Attribute to pass-through its value
-  #   These are not implemented its object yet... (bgp-proc node attribute)
-  PASS_THROUGH_ATTR_INT_KEYS = %i[policies prefix_sets as_path_sets community_sets].freeze
+  PASS_THROUGH_ATTR_INT_KEYS = %i[].freeze
 
   module_function
 

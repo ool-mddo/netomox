@@ -153,10 +153,23 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
       confederation_id: 65_530,
       confederation_members: [65_531],
       route_reflector: false,
-      policies: [{ 'name' => 'test policy 1' }], # TBA
-      prefix_sets: [{ 'name' => 'prefix set 1' }], # TBA
-      as_path_sets: [{ 'name' => 'as-path set 1' }], # TBA
-      community_sets: [{ 'name' => 'community set 1' }], # TBA
+      policies: [
+        {
+          default: { actions: [{ target: 'reject' }] },
+          name: 'ipv4-core',
+          statements: [
+            {
+              actions: [{ target: 'accept' }],
+              conditions: [{ protocol: 'bgp' }],
+              if: 'if',
+              name: 'bgp'
+            }
+          ]
+        }
+      ],
+      prefix_sets: [{ name: 'default-ipv4', prefixes: [{ prefix: '0.0.0.0/0' }] }],
+      as_path_sets: [{ group_name: 'any', as_path: { name: 'any', pattern: '.*' } }],
+      community_sets: [{ communities: [{ community: '65518:1' }], name: 'aggregated' }],
       redistribute_list: [], # TBA
       flags: %w[foo bar]
     }
@@ -172,10 +185,23 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
         'confederation-member' => [65_531],
         'route-reflector' => false,
         'peer-group' => [],
-        'policy' => [{ 'name' => 'test policy 1' }],
-        'prefix-set' => [{ 'name' => 'prefix set 1' }],
-        'as-path-set' => [{ 'name' => 'as-path set 1' }],
-        'community-set' => [{ 'name' => 'community set 1' }],
+        'policy' => [
+          {
+            'default' => { 'actions' => [{ 'target' => 'reject' }] },
+            'name' => 'ipv4-core',
+            'statements' => [
+              {
+                'actions' => [{ 'target' => 'accept' }],
+                'conditions' => [{ 'protocol' => 'bgp' }],
+                'if' => 'if',
+                'name' => 'bgp'
+              }
+            ]
+          }
+        ],
+        'prefix-set' => [{ 'name' => 'default-ipv4', 'prefixes' => [{ 'prefix' => '0.0.0.0/0' }] }],
+        'as-path-set' => [{ 'group-name' => 'any', 'as-path' => { 'name' => 'any', 'pattern' => '.*' } }],
+        'community-set' => [{ 'communities' => [{ 'community' => '65518:1' }], 'name' => 'aggregated' }],
         'redistribute' => [],
         'flag' => %w[foo bar]
       }
