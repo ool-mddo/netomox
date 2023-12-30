@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'netomox/topology/attr_base'
+require_relative 'mddo_bgp_policy_action'
+require_relative 'mddo_bgp_policy_condition'
 
 module Netomox
   module Topology
@@ -147,6 +149,140 @@ module Netomox
       # @param [String] type Attribute type (keyword of data in RFC8345)
       def initialize(data, type)
         super(ATTR_DEFS, data, type)
+      end
+    end
+
+    # bgp-policy
+    class MddoBgpPolicy < AttributeBase
+      # @!attribute [rw] name
+      #   @return [String]
+      # @!attribute [rw] default
+      #   @return [MddoBgpPolicyDefaultStatement]
+      # @!attribute [rw] statements
+      #   @return [Array<MddoBgpPolicyStatement>]
+      attr_accessor :name, :default, :statements
+
+      # Attribute defs
+      ATTR_DEFS = [
+        { int: :name, ext: 'name', default: '' },
+        { int: :default, ext: 'default', default: [] },
+        { int: :statements, ext: 'statements', default: [] }
+      ].freeze
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @param [String] type Attribute type (keyword of data in RFC8345)
+      def initialize(data, type)
+        super(ATTR_DEFS, data, type)
+        @default = convert_default(data)
+        @statements = convert_statements(data)
+      end
+
+      private
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @return [MddoBgpPolicyDefaultStatement] Converted attribute data
+      def convert_default(data)
+        key = @attr_table.ext_of(:default)
+        MddoBgpPolicyDefaultStatement.new(data[key], key)
+      end
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @return [Array<MddoBgpPolicyStatement>] Converted attribute data
+      def convert_statements(data)
+        key = @attr_table.ext_of(:statements)
+        operative_array_key?(data, key) ? data[key].map { |d| MddoBgpPolicyStatement.new(d, key) } : []
+      end
+    end
+
+    class BgpPolicyStatementBase < AttributeBase
+      # action keyword and corresponding attribute class
+      ACTION_OF = {
+        'target' => MddoBgpPolicyActionTarget,
+        'community' => MddoBgpPolicyActionCommunity,
+        'next-hop' => MddoBgpPolicyActionNextHop,
+        'local-preference' => MddoBgpPolicyActionLocalPreference,
+        'metric' => MddoBgpPolicyActionMetric
+      }.freeze
+
+      # condition keyword and corresponding attribute class
+      CONDITION_OF = {
+        'protocol' => MddoBgpPolicyConditionProtocol,
+        'rib' => MddoBgpPolicyConditionRib,
+        'route-filter' => MddoBgpPolicyConditionRouteFilter,
+        'policy' => MddoBgpPolicyConditionPolicy,
+        'as-path-group' => MddoBgpPolicyConditionAsPathGroup,
+        'community' => MddoBgpPolicyConditionCommunity,
+        'prefix-list-filter' => MddoBgpPolicyConditionPrefixListFilter
+      }.freeze
+    end
+
+    # sub-data of bgp-policy
+    class MddoBgpPolicyDefaultStatement < BgpPolicyStatementBase
+      # @!attribute [rw] actions
+      #   @return [Array<MddoBgpPolicyAction>]
+      attr_accessor :actions
+
+      # Attribute defs
+      ATTR_DEFS = [{ int: :actions, ext: 'actions', default: [] }].freeze
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @param [String] type Attribute type (keyword of data in RFC8345)
+      def initialize(data, type)
+        super(ATTR_DEFS, data, type)
+      end
+
+      private
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @return [Array<MddoBgpPolicyAction>] Converted attribute data
+      def convert_statements(data)
+        key = @attr_table.ext_of(:actions)
+        operative_array_key?(data, key) ? data[key].map { |d| ACTION_OF[d.keys[0]].new(d, key) } : []
+      end
+    end
+
+    # sub-data of bgp-policy
+    class MddoBgpPolicyStatement < BgpPolicyStatementBase
+      # @!attribute [rw] name
+      #   @return [String]
+      # @!attribute [rw] actions
+      #   @return [Array<MddoBgpPolicyAction>]
+      # @!attribute [rw] conditions
+      #   @return [Array<MddoBgpPolicyCondition>]
+      # @!attribute [rw] if
+      #   @return [String]
+      attr_accessor :name, :actions, :conditions, :if
+
+      # Attribute defs
+      ATTR_DEFS = [
+        { int: :name, ext: 'name', default: '' },
+        { int: :actions, ext: 'actions', default: [] },
+        { int: :conditions, ext: 'conditions', default: [] },
+        { int: :if, ext: 'if', default: '__UNKNOWN__' }
+      ].freeze
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @param [String] type Attribute type (keyword of data in RFC8345)
+      def initialize(data, type)
+        super(ATTR_DEFS, data, type)
+        @actions = convert_actions(data)
+        @conditions = convert_conditions(data)
+      end
+
+      private
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @return [Array<MddoBgpPolicyAction>] Converted attribute data
+      def convert_actions(data)
+        key = @attr_table.ext_of(:actions)
+        operative_array_key?(data, key) ? data[key].map { |d| ACTION_OF[d.keys[0]].new(d, key) } : []
+      end
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @return [Array<MddoBgpPolicyCondition>] Converted attribute data
+      def convert_conditions(data)
+        key = @attr_table.ext_of(:conditions)
+        operative_array_key?(data, key) ? data[key].map { |d| CONDITION_OF[d.keys[0]].new(d, key) } : []
       end
     end
   end

@@ -161,7 +161,7 @@ module Netomox
       # @!attribute [rw] peer_groups
       #   @return [Array] # TODO: attr implementation
       # @!attribute [rw] policies
-      #   @return [Array] # TODO: attr implementation
+      #   @return [Array<MddoBgpPolicy>]
       # @!attribute [rw] prefix_sets
       #   @return [Array<MddoBgpPrefixSet>]
       # @!attribute [rw] as_path_sets
@@ -196,6 +196,8 @@ module Netomox
       # @param [String] type Attribute type (keyword of data in RFC8345)
       def initialize(data, type)
         super(ATTR_DEFS, data, type)
+
+        @policies = convert_policies(data)
         @prefix_sets = convert_prefix_sets(data)
         @as_path_sets = convert_as_path_sets(data)
         @community_sets = convert_community_sets(data)
@@ -207,6 +209,13 @@ module Netomox
       end
 
       private
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @return [Array<MddoBgpPolicy>] Converted attribute data
+      def convert_policies(data)
+        key = @attr_table.ext_of(:policies)
+        operative_array_key?(data, key) ? data[key].map { |p| MddoBgpPolicy.new(p, key) } : []
+      end
 
       # @param [Hash] data Attribute data (RFC8345)
       # @return [Array<MddoBgpPrefixSet>] Converted attribute data

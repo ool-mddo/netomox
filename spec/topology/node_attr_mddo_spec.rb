@@ -175,10 +175,15 @@ RSpec.describe 'check node attribute with Mddo-model' do
 =======
       'policy' => [
         {
-          'default' => { 'actions' => [{ 'target' => 'reject' }] },
+          '_diff_state_' => @default_diff_state,
+          'default' => {
+            '_diff_state_' => @default_diff_state,
+            'actions' => [{ 'target' => 'reject' }]
+          },
           'name' => 'ipv4-core',
           'statements' => [
             {
+              '_diff_state_' => @default_diff_state,
               'actions' => [{ 'target' => 'accept' }],
               'conditions' => [{ 'protocol' => 'bgp' }],
               'if' => 'if',
