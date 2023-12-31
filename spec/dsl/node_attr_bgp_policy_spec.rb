@@ -17,7 +17,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { name: 'default-ipv4', prefixes: [{ prefix: '0.0.0.0/0' }] },
       { name: 'aggregated-ipv4', prefixes: [{ prefix: '10.100.0.0/16' }, { prefix: '10.110.0.0/16' }] }
     ]
-    prefix_sets = args.map { |p| Netomox::DSL::BgpPrefixSet.new(**p) }
+    prefix_sets = args.map { |p| Netomox::DSL::MddoBgpPrefixSet.new(**p) }
     prefix_sets_data = [
       { 'name' => 'default-ipv4', 'prefixes' => [{ 'prefix' => '0.0.0.0/0' }] },
       { 'name' => 'aggregated-ipv4', 'prefixes' => [{ 'prefix' => '10.100.0.0/16' }, { 'prefix' => '10.110.0.0/16' }] }
@@ -30,7 +30,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { group_name: 'aspath-longer200', as_path: { name: 'aspath-longer200', pattern: '.{200,}' } },
       { group_name: 'any', as_path: { name: 'any', pattern: '.*' } }
     ]
-    as_path_set = args.map { |a| Netomox::DSL::BgpAsPathSet.new(**a) }
+    as_path_set = args.map { |a| Netomox::DSL::MddoBgpAsPathSet.new(**a) }
     as_path_set_data = [
       { 'group-name' => 'aspath-longer200', 'as-path' => { 'name' => 'aspath-longer200', 'pattern' => '.{200,}' } },
       { 'group-name' => 'any', 'as-path' => { 'name' => 'any', 'pattern' => '.*' } }
@@ -44,7 +44,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { name: 'any', communities: [{ community: '"":""' }] },
       { name: 'peer', communities: [{ community: '65518:2' }] }
     ]
-    community_sets = args.map { |c| Netomox::DSL::BgpCommunitySet.new(**c) }
+    community_sets = args.map { |c| Netomox::DSL::MddoBgpCommunitySet.new(**c) }
     community_sets_data = [
       { 'name' => 'aggregated', 'communities' => [{ 'community' => '65518:1' }] },
       { 'name' => 'any', 'communities' => [{ 'community' => '"":""' }] },
@@ -66,14 +66,14 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
   end
 
   it 'returns bgp-policy-prefix-list-filter', :attr, :bgp_attr do
-    plf = Netomox::DSL::BgpPolicyPrefixListFilter.new(prefix_list: 'default-ipv4', match_type: 'exact')
+    plf = Netomox::DSL::MddoBgpPolicyPrefixListFilter.new(prefix_list: 'default-ipv4', match_type: 'exact')
     pfl_data = { 'prefix-list' => 'default-ipv4', 'match-type' => 'exact' }
     expect(plf.topo_data).to eq pfl_data
   end
 
   it 'returns bgp-policy-condition-route-filter (prefix-length-range)', :attr, :bgp_attr do
     args = { length: { max: 32, min: 25 }, match_type: 'prefix-length-range', prefix: '0.0.0.0/0' }
-    crf = Netomox::DSL::BgpPolicyConditionRouteFilter.new(**args)
+    crf = Netomox::DSL::MddoBgpPolicyConditionRouteFilter.new(**args)
     crf_data = {
       'length' => { 'max' => 32, 'min' => 25 },
       'prefix' => '0.0.0.0/0',
@@ -84,7 +84,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
 
   it 'returns bgp-policy-condition-route-filter (exact-1)', :attr, :bgp_attr do
     args = { match_type: 'exact', prefix: '10.120.0.0/17' }
-    crf = Netomox::DSL::BgpPolicyConditionRouteFilter.new(**args)
+    crf = Netomox::DSL::MddoBgpPolicyConditionRouteFilter.new(**args)
     crf_data = {
       'length' => {},
       'prefix' => '10.120.0.0/17',
@@ -95,7 +95,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
 
   it 'returns bgp-policy-condition-route-filter (exact-2)', :attr, :bgp_attr do
     args = { length: { max: 16, min: 16 }, match_type: 'exact', prefix: '10.100.0.0/16' }
-    crf = Netomox::DSL::BgpPolicyConditionRouteFilter.new(**args)
+    crf = Netomox::DSL::MddoBgpPolicyConditionRouteFilter.new(**args)
     crf_data = {
       'length' => { 'max' => 16, 'min' => 16 },
       'prefix' => '10.100.0.0/16',
@@ -105,7 +105,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
   end
 
   it 'returns bgp-policy-action-community', :attr, :bgp_attr do
-    ac = Netomox::DSL::BgpPolicyActionCommunity.new(action: 'set', name: 'aggregated')
+    ac = Netomox::DSL::MddoBgpPolicyActionCommunity.new(action: 'set', name: 'aggregated')
     ac_data = { 'action' => 'set', 'name' => 'aggregated' }
     expect(ac.topo_data).to eq ac_data
   end
@@ -120,7 +120,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { community: ['aggregated'] },
       { prefix_list_filter: { prefix_list: 'default-ipv4', match_type: 'exact' } }
     ]
-    conditions = args.map { |a| Netomox::DSL::BgpPolicyCondition.new(**a) }
+    conditions = args.map { |a| Netomox::DSL::MddoBgpPolicyCondition.new(**a) }
     conditions_data = [
       { 'protocol' => 'bgp' },
       { 'rib' => 'inet.0' },
@@ -141,7 +141,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { local_preference: 300 },
       { metric: 100 }
     ]
-    actions = args.map { |a| Netomox::DSL::BgpPolicyAction.new(**a) }
+    actions = args.map { |a| Netomox::DSL::MddoBgpPolicyAction.new(**a) }
     actions_data = [
       { 'target' => 'accept' },
       { 'community' => { 'action' => 'set', 'name' => 'aggregated' } },
@@ -167,7 +167,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
         actions: [{ metric: 100 }, { target: 'accept' }]
       }
     ]
-    statements = args.map { |a| Netomox::DSL::BgpPolicyStatement.new(**a) }
+    statements = args.map { |a| Netomox::DSL::MddoBgpPolicyStatement.new(**a) }
     statements_data = [
       {
         'name' => '10',
@@ -193,7 +193,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
         statements: []
       }
     ]
-    policies = args.map { |p| Netomox::DSL::BgpPolicy.new(**p) }
+    policies = args.map { |p| Netomox::DSL::MddoBgpPolicy.new(**p) }
     policies_data = [
       {
         'name' => 'ipv4-core',

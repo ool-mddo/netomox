@@ -202,13 +202,13 @@ module Netomox
       # @!attribute [rw] peer_groups
       #   @return [Array] # TODO: attr implementation
       # @!attribute [rw] policies
-      #   @return [Array<BgpPolicy>]
+      #   @return [Array<MddoBgpPolicy>]
       # @!attribute [rw] prefix_sets
-      #   @return [Array<BgpPrefixSet>]
+      #   @return [Array<MddoBgpPrefixSet>]
       # @!attribute [rw] as_path_sets
-      #   @return [Array<BgpAsPathSet>]
+      #   @return [Array<MddoBgpAsPathSet>]
       # @!attribute [rw] community_sets
-      #   @return [Array<BgpCommunitySet>]
+      #   @return [Array<MddoBgpCommunitySet>]
       # @!attribute [rw] redistribute_list
       #   @return [Array] # TODO: attr implementation
       # @!attribute [rw] flags
@@ -240,10 +240,10 @@ module Netomox
         @confederation_members = confederation_members
         @route_reflector = route_reflector
         @peer_groups = peer_groups
-        @policies = policies.map { |p| BgpPolicy.new(**p) }
-        @prefix_sets = prefix_sets.map { |p| BgpPrefixSet.new(**p) }
-        @as_path_sets = as_path_sets.map { |a| BgpAsPathSet.new(**a) }
-        @community_sets = community_sets.map { |c| BgpCommunitySet.new(**c) }
+        @policies = policies.map { |p| MddoBgpPolicy.new(**p) }
+        @prefix_sets = prefix_sets.map { |p| MddoBgpPrefixSet.new(**p) }
+        @as_path_sets = as_path_sets.map { |a| MddoBgpAsPathSet.new(**a) }
+        @community_sets = community_sets.map { |c| MddoBgpCommunitySet.new(**c) }
         @redistribute_list = redistribute_list
         @flags = flags
         @type = "#{NS_MDDO}:bgp-proc-node-attributes"

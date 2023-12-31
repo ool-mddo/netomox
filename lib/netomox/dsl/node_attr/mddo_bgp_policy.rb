@@ -3,7 +3,7 @@
 module Netomox
   module DSL
     # attribute for mddo-topology bgp-proc node bgp-policy: prefix-set
-    class BgpPrefixSet
+    class MddoBgpPrefixSet
       # @!attribute [rw] name
       #   @return [String]
       # @!attribute [rw] prefixes
@@ -14,7 +14,7 @@ module Netomox
       # @param [Array<String>] prefixes
       def initialize(name: '', prefixes: [])
         @name = name
-        @prefixes = prefixes.map { |p| BgpPrefix.new(**p) }
+        @prefixes = prefixes.map { |p| MddoBgpPrefix.new(**p) }
       end
 
       # Convert to RFC8345 topology data
@@ -28,7 +28,7 @@ module Netomox
     end
 
     # sub-data of prefix-set
-    class BgpPrefix
+    class MddoBgpPrefix
       # @!attribute [rw] key
       #   @return [String]
       # @!attribute [rw] value
@@ -51,9 +51,9 @@ module Netomox
     end
 
     # attribute for mddo-topology bgp-proc node bgp-policy: bgp-as-path-set
-    class BgpAsPathSet
+    class MddoBgpAsPathSet
       # @!attribute [rw] as_path
-      #   @return [BgpAsPath]
+      #   @return [MddoBgpAsPath]
       # @!attribute [rw] group_name
       #   @return [String]
       attr_accessor :as_path, :group_name
@@ -61,7 +61,7 @@ module Netomox
       # @param [Hash] as_path,
       # @param [String] group_name
       def initialize(as_path: {}, group_name: '')
-        @as_path = BgpAsPath.new(**as_path)
+        @as_path = MddoBgpAsPath.new(**as_path)
         @group_name = group_name
       end
 
@@ -76,7 +76,7 @@ module Netomox
     end
 
     # sub-data of as-path-set
-    class BgpAsPath
+    class MddoBgpAsPath
       # @!attribute [rw] name
       #   @return [String]
       # @!attribute [rw] pattern
@@ -101,7 +101,7 @@ module Netomox
     end
 
     # attribute for mddo-topology bgp-proc node bgp-policy: bgp-community-set
-    class BgpCommunitySet
+    class MddoBgpCommunitySet
       # @!attribute [rw] name
       #   @return [String]
       # @!attribute [rw] communities
@@ -112,7 +112,7 @@ module Netomox
       # @param [Array<String>] communities
       def initialize(name: '', communities: [])
         @name = name
-        @communities = communities.map { |c| BgpCommunity.new(**c) }
+        @communities = communities.map { |c| MddoBgpCommunity.new(**c) }
       end
 
       # Convert to RFC8345 topology data
@@ -126,7 +126,7 @@ module Netomox
     end
 
     # sub-data of bgp-community-set
-    class BgpCommunity
+    class MddoBgpCommunity
       # @!attribute [rw] key
       #   @return [String]
       # @!attribute [rw] value
@@ -149,13 +149,13 @@ module Netomox
     end
 
     # attribute for mddo-topology bgp-proc node bgp-policy: bgp-policy
-    class BgpPolicy
+    class MddoBgpPolicy
       # @!attribute [rw] name
       #   @return [String]
       # @!attribute [rw] default
-      #   @return [BgpPolicyDefaultStatement]
+      #   @return [MddoBgpPolicyDefaultStatement]
       # @!attribute [rw] statements
-      #   @return [Array<BgpPolicyStatement>]
+      #   @return [Array<MddoBgpPolicyStatement>]
       attr_accessor :name, :default, :statements
 
       # @param [String] name
@@ -163,8 +163,8 @@ module Netomox
       # @param [Array<Hash>] statements
       def initialize(name: '', default: {}, statements: [])
         @name = name
-        @default = BgpPolicyDefaultStatement.new(**default)
-        @statements = statements.map { |s| BgpPolicyStatement.new(**s) }
+        @default = MddoBgpPolicyDefaultStatement.new(**default)
+        @statements = statements.map { |s| MddoBgpPolicyStatement.new(**s) }
       end
 
       # Convert to RFC8345 topology data
@@ -179,14 +179,14 @@ module Netomox
     end
 
     # sub-data of bgp-policy
-    class BgpPolicyDefaultStatement
+    class MddoBgpPolicyDefaultStatement
       # @!attribute [rw] actions
-      #   @return [Array<BgpPolicyAction>]
+      #   @return [Array<MddoBgpPolicyAction>]
       attr_accessor :actions
 
       # @param [Array<Hash>] actions
       def initialize(actions: [])
-        @actions = actions.map { |a| BgpPolicyAction.new(**a) }
+        @actions = actions.map { |a| MddoBgpPolicyAction.new(**a) }
       end
 
       # Convert to RFC8345 topology data
@@ -197,13 +197,13 @@ module Netomox
     end
 
     # sub-data of bgp-policy
-    class BgpPolicyStatement
+    class MddoBgpPolicyStatement
       # @!attribute [rw] name
       #   @return [String]
       # @!attribute [rw] actions
-      #   @return [Array<BgpPolicyAction>]
+      #   @return [Array<MddoBgpPolicyAction>]
       # @!attribute [rw] conditions
-      #   @return [Array<BgpPolicyCondition>]
+      #   @return [Array<MddoBgpPolicyCondition>]
       # @!attribute [rw] if
       #   @return [String]
       attr_accessor :name, :actions, :conditions, :if
@@ -214,8 +214,8 @@ module Netomox
       # @param [Hash] attrs (if-keyword: it cannot use as value name)
       def initialize(name: '', actions: [], conditions: [], **attrs)
         @name = name
-        @actions = actions.map { |a| BgpPolicyAction.new(**a) }
-        @conditions = conditions.map { |c| BgpPolicyCondition.new(**c) }
+        @actions = actions.map { |a| MddoBgpPolicyAction.new(**a) }
+        @conditions = conditions.map { |c| MddoBgpPolicyCondition.new(**c) }
         @if = attrs.key?(:if) ? attrs[:if] : '__UNKNOWN__'
       end
 
@@ -232,11 +232,11 @@ module Netomox
     end
 
     # sub-data of bgp-policy and bgp-policy-statement
-    class BgpPolicyAction
+    class MddoBgpPolicyAction
       # @!attribute [rw] key
       #   @return [String]
       # @!attribute [rw] value
-      #   @return [Integer, String. BgpPolicyActionCommunity]
+      #   @return [Integer, String. MddoBgpPolicyActionCommunity]
       attr_accessor :key, :value
 
       # @param [Hash] action
@@ -248,7 +248,7 @@ module Netomox
         value = action[@key]
         @value = case @key.downcase.to_sym
                  when :community
-                   BgpPolicyActionCommunity.new(**value)
+                   MddoBgpPolicyActionCommunity.new(**value)
                  else
                    value
                  end
@@ -264,11 +264,11 @@ module Netomox
     end
 
     # sub-data of bgp-policy-statement
-    class BgpPolicyCondition
+    class MddoBgpPolicyCondition
       # @!attribute [rw] key
       #   @return [String]
       # @!attribute [rw] value
-      #   @return [String, BgpPolicyConditionRouteFilter, BgpPolicyPrefixListFilter, Array<String>]
+      #   @return [String, MddoBgpPolicyConditionRouteFilter, BgpPolicyPrefixListFilter, Array<String>]
       attr_accessor :key, :value
 
       # @param [Hash] condition
@@ -280,9 +280,9 @@ module Netomox
         value = condition[@key]
         @value = case @key.downcase.to_sym
                  when :route_filter
-                   BgpPolicyConditionRouteFilter.new(**value)
+                   MddoBgpPolicyConditionRouteFilter.new(**value)
                  when :prefix_list_filter
-                   BgpPolicyPrefixListFilter.new(**value)
+                   MddoBgpPolicyPrefixListFilter.new(**value)
                  else
                    value
                  end
@@ -298,7 +298,7 @@ module Netomox
     end
 
     # sub-data of bgp-policy-action
-    class BgpPolicyActionCommunity
+    class MddoBgpPolicyActionCommunity
       # @!attribute [rw] action
       #   @return [String]
       # @!attribute [rw] name
@@ -323,7 +323,7 @@ module Netomox
     end
 
     # sub-data of bgp-policy-condition
-    class BgpPolicyConditionRouteFilter
+    class MddoBgpPolicyConditionRouteFilter
       # @!attribute [rw] length
       #   @return [BgpPolicyConditionRFLength]
       # @!attribute [rw] match_type
@@ -353,7 +353,7 @@ module Netomox
     end
 
     # sub-data of bgp-policy-condition
-    class BgpPolicyPrefixListFilter
+    class MddoBgpPolicyPrefixListFilter
       # @!attribute [rw] match_type
       #   @return [String]
       # @!attribute [rw] prefix_list A name of prefix-set
