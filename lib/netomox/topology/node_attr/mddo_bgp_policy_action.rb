@@ -84,11 +84,11 @@ module Netomox
     # action: local-preference
     class MddoBgpPolicyActionLocalPreference < MddoBgpPolicyAction
       # @!attribute [rw] local_preference
-      #   @return [Integer]
+      #   @return [Integer, String]
       attr_accessor :local_preference
 
       # Attribute defs
-      ATTR_DEFS = [{ int: :local_preference, ext: 'local-preference', default: '' }].freeze
+      ATTR_DEFS = [{ int: :local_preference, ext: 'local-preference', default: '', convert: ->(d) { d.to_i } }].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
       # @param [String] type Attribute type (keyword of data in RFC8345)
@@ -100,11 +100,11 @@ module Netomox
     # action: metric
     class MddoBgpPolicyActionMetric < MddoBgpPolicyAction
       # @!attribute [rw] metric
-      #   @return [Integer]
+      #   @return [Integer, String]
       attr_accessor :metric
 
       # Attribute defs
-      ATTR_DEFS = [{ int: :metric, ext: 'metric', default: -1 }].freeze
+      ATTR_DEFS = [{ int: :metric, ext: 'metric', default: -1, convert: ->(d) { d.to_i } }].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
       # @param [String] type Attribute type (keyword of data in RFC8345)

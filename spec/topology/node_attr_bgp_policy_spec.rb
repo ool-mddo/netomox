@@ -18,13 +18,19 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { target: 'accept' },
               { community: { action: 'set', name: 'aggregated' } },
               { next_hop: '172.31.255.1' },
+              # accept both Integer and String number
               { local_preference: 300 },
-              { metric: 100 }
+              { local_preference: '310' },
+              # accept both Integer and String number
+              { metric: 100 },
+              { metric: '110' }
             ],
             conditions: [
               { protocol: 'bgp' },
               { rib: 'inet.0' },
               { route_filter: { prefix: '0.0.0.0/0', length: {}, match_type: 'exact' } },
+              # accept both Integer and String number
+              { route_filter: { prefix: '0.0.0.0/0', length: { min: 32, max: '25' }, match_type: 'exact' } },
               { policy: 'reject-in-rule-ipv4' },
               { as_path_group: 'asXXXXX-origin' },
               { community: ['aggregated'] },
@@ -68,12 +74,15 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { 'community' => { 'action' => 'set', 'name' => 'aggregated' } },
               { 'next-hop' => '172.31.255.1' },
               { 'local-preference' => 300 },
-              { 'metric' => 100 }
+              { 'local-preference' => 310 },
+              { 'metric' => 100 },
+              { 'metric' => 110 }
             ],
             'conditions' => [
               { 'protocol' => 'bgp' },
               { 'rib' => 'inet.0' },
               { 'route-filter' => { 'prefix' => '0.0.0.0/0', 'length' => {}, 'match-type' => 'exact' } },
+              { 'route-filter' => { 'prefix' => '0.0.0.0/0', 'length' => { 'min' => 32, 'max' => 25 }, 'match-type' => 'exact' } },
               { 'policy' => 'reject-in-rule-ipv4' },
               { 'as-path-group' => 'asXXXXX-origin' },
               { 'community' => ['aggregated'] },

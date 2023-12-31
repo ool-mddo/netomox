@@ -135,6 +135,8 @@ module Netomox
           ext_key = @attr_table.ext_of(int_key)
           default = @attr_table.default_of(int_key)
           value = data[ext_key] || default
+          # value convert e.g.: "42" -> 42 if it have to handle both Integer and String as input
+          value = @attr_table.convert_of(int_key).call(value)
           send("#{int_key}=", value)
         end
       end

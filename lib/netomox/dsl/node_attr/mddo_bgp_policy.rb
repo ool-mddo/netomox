@@ -385,11 +385,11 @@ module Netomox
       #   @return [Integer]
       attr_accessor :max, :min
 
-      # @param [Integer] max
-      # @param [Integer] min
+      # @param [Integer, String] max
+      # @param [Integer, String] min
       def initialize(min: -1, max: -1)
-        @min = min
-        @max = max
+        @min = min.to_i
+        @max = max.to_i
       end
 
       # Convert to RFC8345 topology data

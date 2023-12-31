@@ -4,15 +4,30 @@ module Netomox
   module Topology
     # one record of attribute table
     class AttributeTableLine
-      attr_reader :int, :ext, :default, :empty_check
+      # @!attribute [r] int
+      #   @return [Symbol]
+      # @!attribute [r] ext
+      #   @return [String]
+      # @!attribute [r] default
+      #   @return [Object]
+      # @!attribute [r] empty_check
+      #   @return [Symbol]
+      # @!attribute [r] convert
+      #   @return [Proc]
+      attr_reader :int, :ext, :default, :empty_check, :convert
 
       # @param [Symbol] int Internal attribute keyword (as property/method name)
       # @param [String] ext External attribute keyword (for YANG or other data files)
-      # @param [String] default Default value
-      def initialize(int:, ext:, default: '')
+      # @param [String] default [optional] Default value
+      # @param [Proc] convert [optional] convert function (single-argument function)
+      def initialize(int:, ext:, default: '', convert: ->(d) { d })
         @int = int
         @ext = ext
         @default = default
+        # convert function: when accept Integer and String value
+        # e.g.: accept "42" and 42 as 42 : convert = ->(d) { d.to_i }
+        # default function is identity function (it outputs input object)
+        @convert = convert
         @empty_check = select_empty_check_method
       end
 
@@ -64,6 +79,12 @@ module Netomox
       # @return [String] default value of int_key
       def default_of(int_key)
         find_line_by(int_key).default
+      end
+
+      # @param [Symbol] int_key Internal keyword
+      # @return [Proc] convert function
+      def convert_of(int_key)
+        find_line_by(int_key).convert
       end
 
       # @param [Symbol] int_key Internal keyword
