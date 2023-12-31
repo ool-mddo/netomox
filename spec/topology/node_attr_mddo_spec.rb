@@ -165,14 +165,6 @@ RSpec.describe 'check node attribute with Mddo-model' do
       'confederation-member' => [65_532],
       'route-reflector' => false,
       'peer-group' => [],
-<<<<<<< HEAD
-      'policy' => [{ 'name' => 'test policy 1' }],
-      'prefix-set' => [{ 'name' => 'prefix set 1' }],
-      'as-path-set' => [{ 'name' => 'as-path set 1' }],
-      'community-set' => [{ 'name' => 'community set 1' }],
-      'redistribute' => [],
-      'flag' => %w[foo bar]
-=======
       'policy' => [
         {
           'default' => {
@@ -204,8 +196,8 @@ RSpec.describe 'check node attribute with Mddo-model' do
           'communities' => [{ 'community' => '65518:1' }], 'name' => 'aggregated'
         }
       ],
-      'redistribute' => []
->>>>>>> 65b2cab (Fix bgp-proc tests)
+      'redistribute' => [],
+      'flag' => %w[foo bar]
     }
     expect(attr&.to_data).to eq expected_attr
   end

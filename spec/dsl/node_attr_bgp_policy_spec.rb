@@ -304,7 +304,8 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
         'prefix-set' => prefix_set_data,
         'as-path-set' => as_path_set_data,
         'community-set' => community_set_data,
-        'redistribute' => []
+        'redistribute' => [],
+        'flag' => []
       }
     }
     expect(node.topo_data).to eq node_data

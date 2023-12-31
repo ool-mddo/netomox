@@ -93,7 +93,8 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
       'prefix-set' => [],
       'as-path-set' => [],
       'community-set' => [],
-      'redistribute' => []
+      'redistribute' => [],
+      'flag' => []
     }
     expect(attr&.to_data).to eq expected_attr
   end
