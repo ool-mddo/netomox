@@ -7,7 +7,7 @@ require_relative 'mddo_bgp_policy_condition'
 module Netomox
   module Topology
     # prefix-set for bgp-policy
-    class MddoBgpPrefixSet < AttributeBase
+    class MddoBgpPrefixSet < SubAttributeBase
       # @!attribute [rw] name
       #   @return [String]
       # @!attribute [rw] prefixes
@@ -54,7 +54,7 @@ module Netomox
     end
 
     # as-path-set for bgp-policy
-    class MddoBgpAsPathSet < AttributeBase
+    class MddoBgpAsPathSet < SubAttributeBase
       # @!attribute [rw] as_path
       #   @return [MddoBgpAsPath]
       # @!attribute [rw] group_name
@@ -106,7 +106,7 @@ module Netomox
     end
 
     # bgp-community-set for bgp-policy
-    class MddoBgpCommunitySet < AttributeBase
+    class MddoBgpCommunitySet < SubAttributeBase
       # @!attribute [rw] name
       #   @return [String]
       # @!attribute [rw] communities
@@ -153,7 +153,7 @@ module Netomox
     end
 
     # bgp-policy
-    class MddoBgpPolicy < AttributeBase
+    class MddoBgpPolicy < SubAttributeBase
       # @!attribute [rw] name
       #   @return [String]
       # @!attribute [rw] default
@@ -194,7 +194,7 @@ module Netomox
       end
     end
 
-    class BgpPolicyStatementBase < AttributeBase
+    class BgpPolicyStatementBase < SubAttributeBase
       # action keyword and corresponding attribute class
       ACTION_OF = {
         'target' => MddoBgpPolicyActionTarget,

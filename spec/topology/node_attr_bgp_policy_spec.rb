@@ -54,15 +54,12 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
 
     expected_policies = [
       {
-        '_diff_state_' => @default_diff_state,
         'default' => {
-          '_diff_state_' => @default_diff_state,
           'actions' => [{ 'target' => 'reject' }]
         },
         'name' => 'ipv4-core',
         'statements' => [
           {
-            '_diff_state_' => @default_diff_state,
             'actions' => [
               { 'target' => 'accept' },
               { 'community' => { 'action' => 'set', 'name' => 'aggregated' } },

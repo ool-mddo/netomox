@@ -175,15 +175,12 @@ RSpec.describe 'check node attribute with Mddo-model' do
 =======
       'policy' => [
         {
-          '_diff_state_' => @default_diff_state,
           'default' => {
-            '_diff_state_' => @default_diff_state,
             'actions' => [{ 'target' => 'reject' }]
           },
           'name' => 'ipv4-core',
           'statements' => [
             {
-              '_diff_state_' => @default_diff_state,
               'actions' => [{ 'target' => 'accept' }],
               'conditions' => [{ 'protocol' => 'bgp' }],
               'if' => 'if',
@@ -194,19 +191,16 @@ RSpec.describe 'check node attribute with Mddo-model' do
       ],
       'prefix-set' => [
         {
-          '_diff_state_' => @default_diff_state,
           'name' => 'default-ipv4', 'prefixes' => [{ 'prefix' => '0.0.0.0/0' }]
         }
       ],
       'as-path-set' => [
         {
-          '_diff_state_' => @default_diff_state,
           'group-name' => 'any', 'as-path' => { 'name' => 'any', 'pattern' => '.*' }
         }
       ],
       'community-set' => [
         {
-          '_diff_state_' => @default_diff_state,
           'communities' => [{ 'community' => '65518:1' }], 'name' => 'aggregated'
         }
       ],
