@@ -113,6 +113,22 @@ module Netomox
       end
     end
 
+    # condition: prefix-list
+    class MddoBgpPolicyConditionPrefixList < MddoBgpPolicyCondition
+      # @!attribute [rw] prefix_list
+      #   @return [Array<String>]
+      attr_accessor :prefix_list
+
+      # Attribute defs
+      ATTR_DEFS = [{ int: :prefix_list, ext: 'prefix-list', default: [] }].freeze
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @param [String] type Attribute type (keyword of data in RFC8345)
+      def initialize(data, type)
+        super(ATTR_DEFS, data, type)
+      end
+    end
+
     # condition: prefix-list-filter
     class MddoBgpPolicyConditionPrefixListFilter < MddoBgpPolicyCondition
       # @!attribute [rw] prefix_list_filter

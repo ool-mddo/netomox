@@ -194,9 +194,10 @@ module Netomox
       end
     end
 
+    # Base class of bgp policy statement
     class BgpPolicyStatementBase < SubAttributeBase
       # action keyword and corresponding attribute class
-      ACTION_OF = {
+      ACTION_ATTR = {
         'target' => MddoBgpPolicyActionTarget,
         'community' => MddoBgpPolicyActionCommunity,
         'next-hop' => MddoBgpPolicyActionNextHop,
@@ -205,15 +206,34 @@ module Netomox
       }.freeze
 
       # condition keyword and corresponding attribute class
-      CONDITION_OF = {
+      CONDITION_ATTR = {
         'protocol' => MddoBgpPolicyConditionProtocol,
         'rib' => MddoBgpPolicyConditionRib,
         'route-filter' => MddoBgpPolicyConditionRouteFilter,
         'policy' => MddoBgpPolicyConditionPolicy,
         'as-path-group' => MddoBgpPolicyConditionAsPathGroup,
         'community' => MddoBgpPolicyConditionCommunity,
+        'prefix-list' => MddoBgpPolicyConditionPrefixList,
         'prefix-list-filter' => MddoBgpPolicyConditionPrefixListFilter
       }.freeze
+
+      protected
+
+      # @param [String] action_key
+      # @return [MddoBgpPolicyAction] Action attribute class correspond with the action key
+      def action_attr(action_key)
+        return ACTION_ATTR[action_key] if ACTION_ATTR.key?(action_key)
+
+        Netomox.logger.error "Unknown bgp-policy action keyword: #{action_key}"
+      end
+
+      # @param [String] condition_key
+      # @return [MddoBgpPolicyCondition] Condition attribute class correspond with the action key
+      def condition_attr(condition_key)
+        return CONDITION_ATTR[condition_key] if CONDITION_ATTR.key?(condition_key)
+
+        Netomox.logger.error "Unknown bgp-policy action keyword: #{condition_key}"
+      end
     end
 
     # sub-data of bgp-policy
@@ -237,7 +257,7 @@ module Netomox
       # @return [Array<MddoBgpPolicyAction>] Converted attribute data
       def convert_statements(data)
         key = @attr_table.ext_of(:actions)
-        operative_array_key?(data, key) ? data[key].map { |d| ACTION_OF[d.keys[0]].new(d, key) } : []
+        operative_array_key?(data, key) ? data[key].map { |d| action_attr(d.keys[0]).new(d, key) } : []
       end
     end
 
@@ -275,14 +295,14 @@ module Netomox
       # @return [Array<MddoBgpPolicyAction>] Converted attribute data
       def convert_actions(data)
         key = @attr_table.ext_of(:actions)
-        operative_array_key?(data, key) ? data[key].map { |d| ACTION_OF[d.keys[0]].new(d, key) } : []
+        operative_array_key?(data, key) ? data[key].map { |d| action_attr(d.keys[0]).new(d, key) } : []
       end
 
       # @param [Hash] data Attribute data (RFC8345)
       # @return [Array<MddoBgpPolicyCondition>] Converted attribute data
       def convert_conditions(data)
         key = @attr_table.ext_of(:conditions)
-        operative_array_key?(data, key) ? data[key].map { |d| CONDITION_OF[d.keys[0]].new(d, key) } : []
+        operative_array_key?(data, key) ? data[key].map { |d| condition_attr(d.keys[0]).new(d, key) } : []
       end
     end
   end
