@@ -198,6 +198,7 @@ module Netomox
     class BgpPolicyStatementBase < SubAttributeBase
       # action keyword and corresponding attribute class
       ACTION_ATTR = {
+        'apply' => MddoBgpPolicyActionApply,
         'target' => MddoBgpPolicyActionTarget,
         'community' => MddoBgpPolicyActionCommunity,
         'next-hop' => MddoBgpPolicyActionNextHop,

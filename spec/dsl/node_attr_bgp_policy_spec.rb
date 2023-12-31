@@ -137,6 +137,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
 
   it 'returns bgp-policy-action', :attr, :bgp_attr do
     args = [
+      { apply: 'reject-in-ipv4' },
       { target: 'accept' },
       { community: { action: 'set', name: 'aggregated' } },
       { next_hop: '172.31.255.1' },
@@ -145,6 +146,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
     ]
     actions = args.map { |a| Netomox::DSL::MddoBgpPolicyAction.new(**a) }
     actions_data = [
+      { 'apply' => 'reject-in-ipv4' },
       { 'target' => 'accept' },
       { 'community' => { 'action' => 'set', 'name' => 'aggregated' } },
       { 'next-hop' => '172.31.255.1' },

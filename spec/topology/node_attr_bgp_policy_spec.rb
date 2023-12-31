@@ -14,6 +14,7 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
         statements: [
           {
             actions: [
+              { apply: 'reject-in-ipv4' },
               { target: 'accept' },
               { community: { action: 'set', name: 'aggregated' } },
               { next_hop: '172.31.255.1' },
@@ -62,6 +63,7 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
         'statements' => [
           {
             'actions' => [
+              { 'apply' => 'reject-in-ipv4' },
               { 'target' => 'accept' },
               { 'community' => { 'action' => 'set', 'name' => 'aggregated' } },
               { 'next-hop' => '172.31.255.1' },

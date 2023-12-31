@@ -7,6 +7,22 @@ module Netomox
     # base class of action of bgp-policy
     class MddoBgpPolicyAction < SubAttributeBase; end
 
+    # action: apply
+    class MddoBgpPolicyActionApply < MddoBgpPolicyAction
+      # @!attribute [rw] apply
+      #   @return [String]
+      attr_accessor :apply
+
+      # Attribute defs
+      ATTR_DEFS = [{ int: :apply, ext: 'apply', default: '' }].freeze
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @param [String] type Attribute type (keyword of data in RFC8345)
+      def initialize(data, type)
+        super(ATTR_DEFS, data, type)
+      end
+    end
+
     # action: target
     class MddoBgpPolicyActionTarget < MddoBgpPolicyAction
       # @!attribute [rw] target
