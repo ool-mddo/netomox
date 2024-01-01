@@ -10,15 +10,15 @@ module Netomox
       #   @return [String]
       # @!attribute [rw] metric
       #   @return [Integer]
-      # @!attribute [rw] flag
+      # @!attribute [rw] flags
       #   @return [Array<String>]
-      attr_accessor :prefix, :metric, :flag
+      attr_accessor :prefix, :metric, :flags
 
       # Attribute definition of L3 prefix ()for L3 node)
       ATTR_DEFS = [
         { int: :prefix, ext: 'prefix', default: '' },
         { int: :metric, ext: 'metric', default: 0 },
-        { int: :flag, ext: 'flag', default: '' }
+        { int: :flags, ext: 'flag', default: [] }
       ].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
