@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'netomox/dsl/error'
+
 module Netomox
   module DSL
     # attribute for mddo-topology bgp-proc node bgp-policy: prefix-set
@@ -225,27 +227,23 @@ module Netomox
       end
     end
 
-    # sub-data of bgp-policy and bgp-policy-statement
-    class MddoBgpPolicyAction
+    # Base class of bgp-policy action/condition
+    class MddoBgpPolicyElementBase
       # @!attribute [rw] key
-      #   @return [String]
+      #   @return [Symbol]
       # @!attribute [rw] value
       #   @return [Integer, String. MddoBgpPolicyActionCommunity]
       attr_accessor :key, :value
 
-      # @param [Hash] action
-      # NOTE: action is single key-value hash
-      #   like `action = { key => [Integer, String, Hash] }`
-      def initialize(action)
-        @key = action.keys[0]
+      # @param [Hash] data Data of bgp-policy action/condition
+      # @param [Array<Symbol>] keyword_list
+      def initialize(data, keyword_list)
+        @key = data.keys[0]
+        unless keyword_list.include?(@key)
+          raise DSLInvalidArgumentError, "Unknown bgp-policy element keyword: #{@key} in #{data}"
+        end
 
-        value = action[@key]
-        @value = case @key.downcase.to_sym
-                 when :community
-                   MddoBgpPolicyActionCommunity.new(**value)
-                 else
-                   value
-                 end
+        @value = instantiate_value(data[@key])
       end
 
       # Convert to RFC8345 topology data
@@ -254,40 +252,66 @@ module Netomox
         {
           @key.to_s.gsub('_', '-') => @value.respond_to?(:topo_data) ? @value.topo_data : @value
         }
+      end
+
+      protected
+
+      # @param [Object] value Value of bgp-policy action/condition
+      # @return [Object] Instance of the value
+      def instantiate_value(value)
+        value
+      end
+    end
+
+    # sub-data of bgp-policy and bgp-policy-statement
+    class MddoBgpPolicyAction < MddoBgpPolicyElementBase
+      # action keywords
+      KEYWORDS = %i[apply target community next_hop local_preference metric].freeze
+
+      # @param [Hash] action_data
+      #   NOTE: action is single key-value hash; like `action = { key => [Integer, String, Hash] }`
+      def initialize(action_data)
+        super(action_data, KEYWORDS)
+      end
+
+      protected
+
+      # @param [Hash] value Value of bgp-policy action/condition
+      # @return [Object] Value of @key
+      def instantiate_value(value)
+        case @key
+        when :community
+          MddoBgpPolicyActionCommunity.new(**value)
+        else
+          value
+        end
       end
     end
 
     # sub-data of bgp-policy-statement
-    class MddoBgpPolicyCondition
-      # @!attribute [rw] key
-      #   @return [String]
-      # @!attribute [rw] value
-      #   @return [String, MddoBgpPolicyConditionRouteFilter, BgpPolicyPrefixListFilter, Array<String>]
-      attr_accessor :key, :value
+    class MddoBgpPolicyCondition < MddoBgpPolicyElementBase
+      # action keywords
+      KEYWORDS = %i[protocol rib route_filter policy as_path_group community prefix_list prefix_list_filter].freeze
 
-      # @param [Hash] condition
-      # NOTE: condition is single key-value hash
-      #   like `condition = { key => [String, Hash, Array<String>] }`
-      def initialize(condition)
-        @key = condition.keys[0]
-
-        value = condition[@key]
-        @value = case @key.downcase.to_sym
-                 when :route_filter
-                   MddoBgpPolicyConditionRouteFilter.new(**value)
-                 when :prefix_list_filter
-                   MddoBgpPolicyConditionPrefixListFilter.new(**value)
-                 else
-                   value
-                 end
+      # @param [Hash] condition_data
+      #   NOTE: condition is single key-value hash; like `condition = { key => [String, Hash, Array<String>] }`
+      def initialize(condition_data)
+        super(condition_data, KEYWORDS)
       end
 
-      # Convert to RFC8345 topology data
-      # @return [Hash]
-      def topo_data
-        {
-          @key.to_s.gsub('_', '-') => @value.respond_to?(:topo_data) ? @value.topo_data : @value
-        }
+      private
+
+      # @param [Hash] value Value of bgp-policy action/condition
+      # @return [Object] Value of @key
+      def instantiate_value(value)
+        case @key
+        when :route_filter
+          MddoBgpPolicyConditionRouteFilter.new(**value)
+        when :prefix_list_filter
+          MddoBgpPolicyConditionPrefixListFilter.new(**value)
+        else
+          value
+        end
       end
     end
 

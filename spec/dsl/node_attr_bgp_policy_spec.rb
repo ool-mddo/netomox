@@ -135,6 +135,14 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
     expect(conditions.map(&:topo_data)).to eq conditions_data
   end
 
+  it 'raises exception if unknown condition keyword' do
+    key = :police
+    arg = { key => 'reject-in-rule-ipv4' }
+    expect do
+      Netomox::DSL::MddoBgpPolicyCondition.new(**arg)
+    end.to raise_error(Netomox::DSL::DSLInvalidArgumentError, "Unknown bgp-policy element keyword: #{key} in #{arg}")
+  end
+
   it 'returns bgp-policy-action', :attr, :bgp_attr do
     args = [
       { apply: 'reject-in-ipv4' },
@@ -154,6 +162,14 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { 'metric' => 100 }
     ]
     expect(actions.map(&:topo_data)).to eq actions_data
+  end
+
+  it 'raises exception if unknown action keyword' do
+    key = :apple
+    arg = { key => 'reject-in-ipv4' }
+    expect do
+      Netomox::DSL::MddoBgpPolicyAction.new(**arg)
+    end.to raise_error(Netomox::DSL::DSLInvalidArgumentError, "Unknown bgp-policy element keyword: #{key} in #{arg}")
   end
 
   it 'returns bgp-policy-statement', :attr, :bgp_attr do
