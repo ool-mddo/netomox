@@ -195,7 +195,7 @@ module Netomox
     end
 
     # Base class of bgp policy statement
-    class BgpPolicyStatementBase < SubAttributeBase
+    class MddoBgpPolicyStatementBase < SubAttributeBase
       # action keyword and corresponding attribute class
       ACTION_ATTR = {
         'apply' => MddoBgpPolicyActionApply,
@@ -238,7 +238,7 @@ module Netomox
     end
 
     # sub-data of bgp-policy
-    class MddoBgpPolicyDefaultStatement < BgpPolicyStatementBase
+    class MddoBgpPolicyDefaultStatement < MddoBgpPolicyStatementBase
       # @!attribute [rw] actions
       #   @return [Array<MddoBgpPolicyAction>]
       attr_accessor :actions
@@ -263,7 +263,7 @@ module Netomox
     end
 
     # sub-data of bgp-policy
-    class MddoBgpPolicyStatement < BgpPolicyStatementBase
+    class MddoBgpPolicyStatement < MddoBgpPolicyStatementBase
       # @!attribute [rw] name
       #   @return [String]
       # @!attribute [rw] actions

@@ -66,7 +66,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
   end
 
   it 'returns bgp-policy-prefix-list-filter', :attr, :bgp_attr do
-    plf = Netomox::DSL::MddoBgpPolicyPrefixListFilter.new(prefix_list: 'default-ipv4', match_type: 'exact')
+    plf = Netomox::DSL::MddoBgpPolicyConditionPrefixListFilter.new(prefix_list: 'default-ipv4', match_type: 'exact')
     pfl_data = { 'prefix-list' => 'default-ipv4', 'match-type' => 'exact' }
     expect(plf.topo_data).to eq pfl_data
   end

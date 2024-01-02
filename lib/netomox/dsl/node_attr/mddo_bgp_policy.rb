@@ -29,24 +29,21 @@ module Netomox
 
     # sub-data of prefix-set
     class MddoBgpPrefix
-      # @!attribute [rw] key
+      # @!attribute [rw] prefix
       #   @return [String]
-      # @!attribute [rw] value
-      #   @return [String]
-      attr_accessor :key, :value
+      attr_accessor :prefix
 
-      # @param [Hash] prefix
+      # @param [Hash] prefix_data
       # NOTE: prefix is single key-value hash
       #   like: `prefix = { 'prefix' => 'x.x.x.x/nn' }`
-      def initialize(prefix)
-        @key = :prefix
-        @value = prefix[@key]
+      def initialize(prefix_data)
+        @prefix = prefix_data[:prefix]
       end
 
       # Convert to RFC8345 topology data
       # @return [Hash]
       def topo_data
-        { 'prefix' => @value }
+        { 'prefix' => @prefix }
       end
     end
 
@@ -127,24 +124,21 @@ module Netomox
 
     # sub-data of bgp-community-set
     class MddoBgpCommunity
-      # @!attribute [rw] key
+      # @!attribute [rw] community
       #   @return [String]
-      # @!attribute [rw] value
-      #   @return [String]
-      attr_accessor :key, :value
+      attr_accessor :community
 
-      # @param [Hash] community
+      # @param [Hash] community_data
       # NOTE: community is single key-value hash
       #   like: `community = { 'community' => [String] }`
-      def initialize(community)
-        @key = :community
-        @value = community[@key]
+      def initialize(community_data)
+        @community = community_data[:community]
       end
 
       # Convert to RFC8345 topology data
       # @return [Hash]
       def topo_data
-        { 'community' => @value }
+        { 'community' => @community }
       end
     end
 
@@ -282,7 +276,7 @@ module Netomox
                  when :route_filter
                    MddoBgpPolicyConditionRouteFilter.new(**value)
                  when :prefix_list_filter
-                   MddoBgpPolicyPrefixListFilter.new(**value)
+                   MddoBgpPolicyConditionPrefixListFilter.new(**value)
                  else
                    value
                  end
@@ -353,7 +347,7 @@ module Netomox
     end
 
     # sub-data of bgp-policy-condition
-    class MddoBgpPolicyPrefixListFilter
+    class MddoBgpPolicyConditionPrefixListFilter
       # @!attribute [rw] match_type
       #   @return [String]
       # @!attribute [rw] prefix_list A name of prefix-set
