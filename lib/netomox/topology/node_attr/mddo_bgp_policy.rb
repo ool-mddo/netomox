@@ -264,13 +264,16 @@ module Netomox
 
     # sub-data of bgp-policy
     class MddoBgpPolicyStatement < MddoBgpPolicyStatementBase
+      # default value of 'if' attr
+      DEFAULT_IF_VALUE = '__UNKNOWN__'
+
       # @!attribute [rw] name
       #   @return [String]
       # @!attribute [rw] actions
       #   @return [Array<MddoBgpPolicyAction>]
       # @!attribute [rw] conditions
       #   @return [Array<MddoBgpPolicyCondition>]
-      # @!attribute [rw] if
+      # @!attribute [rw] if (NOTICE: optional)
       #   @return [String]
       attr_accessor :name, :actions, :conditions, :if
 
@@ -279,7 +282,7 @@ module Netomox
         { int: :name, ext: 'name', default: '' },
         { int: :actions, ext: 'actions', default: [] },
         { int: :conditions, ext: 'conditions', default: [] },
-        { int: :if, ext: 'if', default: '__UNKNOWN__' }
+        { int: :if, ext: 'if', default: DEFAULT_IF_VALUE }
       ].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
@@ -288,6 +291,14 @@ module Netomox
         super(ATTR_DEFS, data, type)
         @actions = convert_actions(data)
         @conditions = convert_conditions(data)
+      end
+
+      # Convert to data for RFC8345 format
+      # @return [Hash]
+      def to_data
+        data = super
+        data.delete('if') if @if == DEFAULT_IF_VALUE
+        data
       end
 
       private

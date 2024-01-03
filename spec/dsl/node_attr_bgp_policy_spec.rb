@@ -174,12 +174,13 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
 
   it 'returns bgp-policy-statement', :attr, :bgp_attr do
     args = [
+      # without-if
       {
         name: '10',
-        if: 'if',
         conditions: [{ policy: 'reject-in-rule-ipv4' }],
         actions: [{ target: 'reject' }]
       },
+      # with-if
       {
         name: '20',
         if: 'if',
@@ -191,7 +192,6 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
     statements_data = [
       {
         'name' => '10',
-        'if' => 'if',
         'conditions' => [{ 'policy' => 'reject-in-rule-ipv4' }],
         'actions' => [{ 'target' => 'reject' }]
       },

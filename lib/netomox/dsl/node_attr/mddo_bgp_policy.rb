@@ -194,13 +194,16 @@ module Netomox
 
     # sub-data of bgp-policy
     class MddoBgpPolicyStatement
+      # default value of 'if' attr
+      DEFAULT_IF_VALUE = '__UNKNOWN__'
+
       # @!attribute [rw] name
       #   @return [String]
       # @!attribute [rw] actions
       #   @return [Array<MddoBgpPolicyAction>]
       # @!attribute [rw] conditions
       #   @return [Array<MddoBgpPolicyCondition>]
-      # @!attribute [rw] if
+      # @!attribute [rw] if (NOTICE: optional)
       #   @return [String]
       attr_accessor :name, :actions, :conditions, :if
 
@@ -212,18 +215,20 @@ module Netomox
         @name = name
         @actions = actions.map { |a| MddoBgpPolicyAction.new(**a) }
         @conditions = conditions.map { |c| MddoBgpPolicyCondition.new(**c) }
-        @if = attrs.key?(:if) ? attrs[:if] : '__UNKNOWN__'
+        @if = attrs.key?(:if) ? attrs[:if] : DEFAULT_IF_VALUE
       end
 
       # Convert to RFC8345 topology data
       # @return [Hash]
       def topo_data
-        {
+        data = {
           'name' => @name,
           'actions' => @actions.map(&:topo_data),
           'conditions' => @conditions.map(&:topo_data),
           'if' => @if
         }
+        data.delete('if') if @if == DEFAULT_IF_VALUE
+        data
       end
     end
 

@@ -37,8 +37,19 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { prefix_list: 'asXXXXX-adv-ipv4' },
               { prefix_list_filter: { prefix_list: 'default-ipv4', match_type: 'exact' } }
             ],
+            # with-if
             if: 'if',
             name: 'bgp'
+          },
+          {
+            actions: [
+              { target: 'accept' }
+            ],
+            conditions: [
+              { protocol: 'bgp' }
+            ],
+            # without-if
+            name: 'test-statement'
           }
         ]
       }
@@ -91,6 +102,15 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
             ],
             'if' => 'if',
             'name' => 'bgp'
+          },
+          {
+            'actions' => [
+              { 'target' => 'accept' }
+            ],
+            'conditions' => [
+              { 'protocol' => 'bgp' }
+            ],
+            'name' => 'test-statement'
           }
         ]
       }
