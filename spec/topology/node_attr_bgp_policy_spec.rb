@@ -34,7 +34,7 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { policy: 'reject-in-rule-ipv4' },
               { as_path_group: 'asXXXXX-origin' },
               { community: ['aggregated'] },
-              { prefix_list: ['asXXXXX-adv-ipv4'] },
+              { prefix_list: 'asXXXXX-adv-ipv4' },
               { prefix_list_filter: { prefix_list: 'default-ipv4', match_type: 'exact' } }
             ],
             if: 'if',
@@ -86,7 +86,7 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { 'policy' => 'reject-in-rule-ipv4' },
               { 'as-path-group' => 'asXXXXX-origin' },
               { 'community' => ['aggregated'] },
-              { 'prefix-list' => ['asXXXXX-adv-ipv4'] },
+              { 'prefix-list' => 'asXXXXX-adv-ipv4' },
               { 'prefix-list-filter' => { 'prefix-list' => 'default-ipv4', 'match-type' => 'exact' } }
             ],
             'if' => 'if',
