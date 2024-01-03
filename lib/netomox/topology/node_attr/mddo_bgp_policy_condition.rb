@@ -132,7 +132,7 @@ module Netomox
     # condition: prefix-list-filter
     class MddoBgpPolicyConditionPrefixListFilter < MddoBgpPolicyCondition
       # @!attribute [rw] prefix_list_filter
-      #   @return [MddoBgpPolicyPrefixListFilter]
+      #   @return [MddoBgpPolicyConditionPLFilterBody]
       attr_accessor :prefix_list_filter
 
       # Attribute defs
@@ -148,10 +148,10 @@ module Netomox
       private
 
       # @param [Hash] data Attribute data (RFC8345)
-      # @return [MddoBgpPolicyPrefixListFilter] Converted attribute data
+      # @return [MddoBgpPolicyConditionPLFilterBody] Converted attribute data
       def convert_prefix_list_filter(data)
         key = @attr_table.ext_of(:prefix_list_filter)
-        MddoBgpPolicyPrefixListFilter.new(data[key], key)
+        MddoBgpPolicyConditionPLFilterBody.new(data[key], key)
       end
     end
 
@@ -190,7 +190,7 @@ module Netomox
     end
 
     # sub-data of bgp-policy-condition
-    class MddoBgpPolicyPrefixListFilter < SubAttributeBase
+    class MddoBgpPolicyConditionPLFilterBody < SubAttributeBase
       # @!attribute [rw] match_type
       #   @return [String]
       # @!attribute [rw] prefix_list A name of prefix-set
