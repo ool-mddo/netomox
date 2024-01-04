@@ -7,7 +7,7 @@ module Netomox
   module DiffView
     # Topology diff data viewer (Utility functions)
     class Viewer
-      def initialize(data:, indent: ' ', print_all: true, color: true)
+      def initialize(data:, indent: ' ', print_all: true, color: true, debug: false)
         @data = case data
                 when String then JSON.parse(data)
                 else data
@@ -19,6 +19,7 @@ module Netomox
         @indent_b = "#{indent}  " # 2-space indent
         @print_all = print_all
         @color = color
+        @debug = debug
       end
 
       def coloring(str, state = nil)

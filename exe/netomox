@@ -26,6 +26,7 @@ module Netomox
                    desc: 'Print diff with color.'
     option :output, type: :string, default: nil, aliases: :o,
                     desc: 'Output diff json data to file'
+    option :debug, type: :boolean, default: false, aliases: :d, desc: 'Enable debug print'
     def diff(file1, file2)
       run_diff(file1, file2)
     end
@@ -98,7 +99,9 @@ module Netomox
     end
 
     def write_diff_stdout(json_str)
-      diff_view = DiffView::Viewer.new(data: json_str, print_all: options[:all], color: options[:color])
+      diff_view = DiffView::Viewer.new(
+        data: json_str, print_all: options[:all], color: options[:color], debug: options[:debug]
+      )
       puts diff_view
       return unless options[:verbose]
 

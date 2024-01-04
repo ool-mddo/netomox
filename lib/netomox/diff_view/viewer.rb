@@ -27,6 +27,12 @@ module Netomox
 
       private
 
+      # @param [Integer] indent Indent level
+      # @param [String] message Debug message to print
+      def debug_print(indent, message)
+        warn "# #{'  ' * indent}DEBUG_#{indent}: #{message}" if @debug
+      end
+
       # @param [Hash] next_data
       # @param [Array<ViewerDiffElement>] dd_list (one diff-data array)
       # @return [void]
@@ -111,46 +117,57 @@ module Netomox
       end
 
       # @param [String] jsonpath
+      # @param [Object] data
       # @return [Object]
-      def data_by_jsonpath(jsonpath)
+      def data_by_jsonpath(jsonpath, data)
         # jsonpath of diff_data always returns array has a object: [object]
-        JsonPath.new(jsonpath).on(@data)[0]
+        JsonPath.new(jsonpath).on(data)[0]
       end
 
-      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength
 
       # @return [void]
-      def relocate_diff_data
+      def relocate_diff_data(data)
         self_dd_list = []
         dd_paths = @diff_state.dd_paths.uniq
+        debug_print 0, "dd_paths: #{dd_paths}"
         dd_paths.each do |dd_path|
           dd_list = detect_diff_data(dd_path)
+          debug_print 1, "dd_path: #{dd_path}"
+          debug_print 1, "dd_list: #{dd_list.map(&:to_s)}"
 
-          # dd_key is jsonpath: for example foo, foo.bar, baz[0]
-          dd_path_elements = dd_path.split('.')
-          # when dd_key is empty or '.', ignore it
-          # because attribute is always hash (always exist key if appears diff)
-          next if dd_path_elements.empty?
-
-          # Is the found diff-data for itself or child-attribute?
-          child_data = data_by_jsonpath(dd_path_elements[0])
-          unless child_data.is_a?(Hash)
-            self_dd_list.push(*dd_list) # save diff-data entry for self
+          child_data = data_by_jsonpath(dd_path, data)
+          if child_data.is_a?(Hash)
+            debug_print 1, 'child_data is Hash, copy_diff_state'
+            copy_diff_state(child_data, dd_list)
             next
           end
 
-          # relocate diff-data to child-attribute and discard it for self
-          # (move the diff-data to jsonpath-specified object)
-          dd_list.each(&:rewrite_path_to_child!)
-          # for Array<Hash> diff:
-          # e.g. prefix: [{x:foo,...}, {x:bar,...}], dd=['+', prefix[1], {x:bar,...}]
-          dd_list[0].rewrite_path_to_dot! if dd_path_elements[0] =~ /^\w+\[\d+\]$/ && child_data == dd_list[0].dd_after
-          # copy diff-data to child object
-          copy_diff_state(child_data, dd_list)
+          dd_path_parent = dd_path.split('.')[0...-1].join('.')
+          debug_print 1, "child_data is NOT Hash, dd_path_parent:#{dd_path_parent}"
+          until dd_path_parent.empty?
+            debug_print 2, "dd_path_element: #{dd_path_parent}, data: #{data}"
+            child_data = data_by_jsonpath(dd_path_parent, data)
+            debug_print 2, "child_data: #{child_data}"
+            if child_data.is_a?(Hash)
+              dd_list.each(&:rewrite_path_to_child!)
+              debug_print 2, "rewrite_path_to_child: #{dd_list.map(&:to_s)}"
+              debug_print 2, 'child_data is Hash, copy_diff_state'
+              copy_diff_state(child_data, dd_list)
+              break
+            end
+            dd_path_parent = dd_path.split('.')[0...-1]
+          end
+
+          next unless dd_path_parent.empty?
+
+          debug_print 1, 'dd_list was kept for self'
+          self_dd_list.push(*dd_list)
         end
+        # overwrite dd_list
         @diff_state.diff_data = self_dd_list
       end
-      # rubocop:enable Metrics/AbcSize
+      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength
 
       # @return [Array<String>]
       def stringify_data
@@ -158,7 +175,7 @@ module Netomox
         when Array
           stringify_array
         when Hash
-          relocate_diff_data if @diff_state&.exist_diff_data?
+          relocate_diff_data(@data) if @diff_state&.exist_diff_data?
           stringify_hash
         else
           raise StandardError 'Data is literal (single value)?'
@@ -181,7 +198,7 @@ module Netomox
       def stringify_array_value(value)
         case value
         when Array, Hash
-          dv = Viewer.new(data: value, indent: @indent_b, print_all: @print_all)
+          dv = Viewer.new(data: value, indent: @indent_b, print_all: @print_all, debug: @debug)
           # stringify array element recursively with deep indent
           dv.stringify
         else
@@ -268,7 +285,7 @@ module Netomox
       def stringify_hash_key_array(key, value)
         return nil if allowed_empty?(key) && empty_value?(value)
 
-        dv = Viewer.new(data: value, indent: @indent_b, print_all: @print_all)
+        dv = Viewer.new(data: value, indent: @indent_b, print_all: @print_all, debug: @debug)
         v_str = dv.stringify
         v_state = hash_key_array_color(v_str)
         "#{head_mark(v_state)}#{@indent_b}#{coloring(key, v_state)}: #{v_str}"
@@ -280,7 +297,7 @@ module Netomox
       def stringify_hash_key_hash(key, value)
         return nil if allowed_empty?(key) && empty_value?(value)
 
-        dv = Viewer.new(data: value, indent: @indent_b, print_all: @print_all)
+        dv = Viewer.new(data: value, indent: @indent_b, print_all: @print_all, debug: @debug)
         # set key color belongs to its value(Hash)
         # decide dv diff_state before make key str
         # NOTICE: detect_state (diff_state) defined AFTER stringify

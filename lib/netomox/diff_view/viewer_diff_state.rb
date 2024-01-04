@@ -66,7 +66,8 @@ module Netomox
 
       # @return [String]
       def to_s
-        to_data.to_s
+        data = { type_sign: @type_sign, path: @path, dd_all: @dd_all }
+        data.to_s
       end
 
       private
