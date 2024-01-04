@@ -57,7 +57,7 @@ module Netomox
         !@data.key?(key) || @data[key].nil?
       end
 
-      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
       # @param [Array<ViewerDiffElement>] dd_list
       # @return [Array(ViewerDiffElement)] detected diff-data
@@ -67,12 +67,18 @@ module Netomox
 
         # Insert deleted data
         dd = dd_list[0] # alias
+        debug_print 2, "detect_diff_data_len1, dd: #{dd}"
 
         # NOTICE: Error when multiple hierarchy path (foo.bar.baz)
         path_key, index = dd.path_matches_array
+        debug_print 2, "path_key: #{path_key}, index=#{index}"
+
         if path_key && index
           @data[path_key] = [] if exist_data?(path_key)
           @data[path_key].insert(index, dd.dd_before.dup) # duplicate to avoid circular reference
+
+          return [ViewerDiffElement.new([dd.type_sign, dd.path, dd.dd_before, nil])] unless dd.dd_before.is_a?(Hash)
+
           return dd.dd_before.keys.map do |k|
             ViewerDiffElement.new([dd.type_sign, k, dd.dd_before[k], ''])
           end
@@ -83,7 +89,7 @@ module Netomox
         @data[path_key] = dd.dd_all if exist_data?(path_key)
         [dd]
       end
-      # rubocop:enable Metrics/AbcSize
+      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
       # @param [Array<ViewerDiffElement>] dd_list
       # @return [Boolean]
