@@ -9,6 +9,9 @@ module Netomox
   module Topology
     # Base of sub-attribute class (doesn't have diff_state)
     class SubAttributeBase
+      # @!attribute [r] keys
+      #   @return [Object]
+      attr_reader :keys
       # @!attribute [rw] path
       #   @return [String]
       # @!attribute [rw] type
@@ -84,6 +87,27 @@ module Netomox
         data
       end
 
+      # @param [Symbol] int_key Internal attribute key
+      # @return [Boolean]
+      def key?(int_key)
+        @keys.include?(int_key)
+      end
+
+      # @param [Symbol] int_key Internal attribute key
+      # @return [Object] Value of the key
+      #   NOTICE: If it key has sub-attribute class instance, return the raw attribute instance
+      #   NOT #topo_data (converted topology data)
+      def [](int_key)
+        send(int_key)
+      end
+
+      # @param [Symbol] int_key Internal attribute key
+      # @param [Object] value New value of the key
+      # @return [Object] New value
+      def []=(int_key, value)
+        send("#{int_key}=", value)
+      end
+
       protected
 
       # @param [Hash] data Attribute data (RFC8345)
@@ -135,6 +159,8 @@ module Netomox
           ext_key = @attr_table.ext_of(int_key)
           default = @attr_table.default_of(int_key)
           value = data[ext_key] || default
+          # value convert e.g.: "42" -> 42 if it have to handle both Integer and String as input
+          value = @attr_table.convert_of(int_key).call(value)
           send("#{int_key}=", value)
         end
       end

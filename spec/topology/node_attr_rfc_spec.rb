@@ -38,5 +38,35 @@ RSpec.describe 'check node attribute with RFC' do
     expect(attr&.to_data).to eq expected_attr
   end
 
+  it 'returns attribute keys' do
+    attr = @nws.find_network('nw1')&.find_node_by_name('node1')&.attribute
+    expected_attr_keys = %i[prefixes router_id flags name].sort
+    expect(attr&.keys&.sort).to eq expected_attr_keys
+
+    sub_attr = attr[:prefixes]
+    expected_sub_attr_keys = %i[prefix metric flags].sort
+    expect(sub_attr[0].keys.sort).to eq expected_sub_attr_keys
+  end
+
+  it 'detect a key is attribute key' do
+    attr = @nws.find_network('nw1')&.find_node_by_name('node1')&.attribute
+    expect(attr&.key?(:prefixes)).to be true
+    expect(attr&.key?(:unknown_key)).to be false
+  end
+
+  it 'can access attribute with internal-keyword' do
+    attr = @nws.find_network('nw1')&.find_node_by_name('node1')&.attribute
+    expected_flags = %w[layer3 node]
+    # reference
+    expect(attr[:flags]).to eq expected_flags
+    expect(attr.flags).to eq expected_flags
+
+    # change value
+    expected_flags = %w[hoge fuga]
+    attr[:flags][0] = 'hoge'
+    attr.flags[1] = 'fuga'
+    expect(attr[:flags]).to eq expected_flags
+  end
+
   # TODO: L2 network attribute, it changed RFC8944
 end

@@ -4,6 +4,7 @@ require 'netomox/topology/attr_base'
 require 'netomox/topology/node_attr/base'
 require 'netomox/topology/node_attr/mddo_l3_static_route'
 require 'netomox/topology/node_attr/mddo_ospf_redistribute'
+require 'netomox/topology/node_attr/mddo_bgp_policy'
 
 module Netomox
   module Topology
@@ -160,13 +161,13 @@ module Netomox
       # @!attribute [rw] peer_groups
       #   @return [Array] # TODO: attr implementation
       # @!attribute [rw] policies
-      #   @return [Array] # TODO: attr implementation
+      #   @return [Array<MddoBgpPolicy>]
       # @!attribute [rw] prefix_sets
-      #   @return [Array] # TODO: attr implementation
+      #   @return [Array<MddoBgpPrefixSet>]
       # @!attribute [rw] as_path_sets
-      #   @return [Array] # TODO: attr implementation
+      #   @return [Array<MddoBgpAsPathSet>]
       # @!attribute [rw] community_sets
-      #   @return [Array] # TODO: attr implementation
+      #   @return [Array<MddoBgpCommunitySet>]
       # @!attribute [rw] redistribute_list
       #   @return [Array] # TODO: attr implementation
       # @!attribute [rw] flags
@@ -195,11 +196,46 @@ module Netomox
       # @param [String] type Attribute type (keyword of data in RFC8345)
       def initialize(data, type)
         super(ATTR_DEFS, data, type)
+
+        @policies = convert_policies(data)
+        @prefix_sets = convert_prefix_sets(data)
+        @as_path_sets = convert_as_path_sets(data)
+        @community_sets = convert_community_sets(data)
       end
 
       # @return [String]
       def to_s
         "attribute: #{@router_id}"
+      end
+
+      private
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @return [Array<MddoBgpPolicy>] Converted attribute data
+      def convert_policies(data)
+        key = @attr_table.ext_of(:policies)
+        operative_array_key?(data, key) ? data[key].map { |p| MddoBgpPolicy.new(p, key) } : []
+      end
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @return [Array<MddoBgpPrefixSet>] Converted attribute data
+      def convert_prefix_sets(data)
+        key = @attr_table.ext_of(:prefix_sets)
+        operative_array_key?(data, key) ? data[key].map { |p| MddoBgpPrefixSet.new(p, key) } : []
+      end
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @return [Array<MddoBgpAsPathSet>] Converted attribute data
+      def convert_as_path_sets(data)
+        key = @attr_table.ext_of(:as_path_sets)
+        operative_array_key?(data, key) ? data[key].map { |p| MddoBgpAsPathSet.new(p, key) } : []
+      end
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @return [Array<MddoBgpCommunitySet>] Converted attribute data
+      def convert_community_sets(data)
+        key = @attr_table.ext_of(:community_sets)
+        operative_array_key?(data, key) ? data[key].map { |p| MddoBgpCommunitySet.new(p, key) } : []
       end
     end
 
