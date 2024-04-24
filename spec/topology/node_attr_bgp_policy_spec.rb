@@ -61,7 +61,7 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
         node 'node1' do
           attr = {
             router_id: '10.0.0.1',
-            policies:
+            policies: policies
           }
           attribute(attr)
         end

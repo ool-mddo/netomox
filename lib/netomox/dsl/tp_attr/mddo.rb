@@ -292,7 +292,7 @@ module Netomox
       # @param [String] description Interface description
       # @param [Array<String>] flags Flags
       def initialize(description: '', flags: [])
-        super(description:, flags:)
+        super(description: description, flags: flags)
         @type = "#{NS_MDDO}:bgp-as-termination-point-attributes"
       end
     end

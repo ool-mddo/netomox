@@ -266,10 +266,10 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
     node = Netomox::DSL::Node.new(@bgp_proc_nw, 'nodeX') do
       attr = {
         router_id: '192.168.255.2',
-        prefix_sets:,
-        as_path_sets:,
-        community_sets:,
-        policies:
+        prefix_sets: prefix_sets,
+        as_path_sets: as_path_sets,
+        community_sets: community_sets,
+        policies: policies
       }
       attribute(attr)
     end

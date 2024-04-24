@@ -24,8 +24,8 @@ module Netomox
       # @yield Code Block to eval in this instance
       # @yieldreturn [void]
       # @return [void]
-      def register(&)
-        instance_eval(&)
+      def register(&block)
+        instance_eval(&block)
       end
 
       protected

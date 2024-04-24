@@ -53,7 +53,7 @@ module Netomox
       # @param [String] name Node name
       # @yield Code block to eval this instance
       # @yieldreturn [void]
-      def initialize(parent, name, &)
+      def initialize(parent, name, &block)
         super(parent, name)
         @term_points = []
         @type = @parent.type
@@ -61,7 +61,7 @@ module Netomox
         @attribute = {} # for augments
         @tp_prefix = 'p'
         @tp_number = 0
-        register(&) if block_given?
+        register(&block) if block_given?
       end
 
       # Add or access term-point by name
@@ -69,12 +69,12 @@ module Netomox
       # @yield Code block to eval the term-point
       # @yieldreturn [void]
       # @return [TermPoint]
-      def term_point(name, &)
+      def term_point(name, &block)
         tp = find_term_point(name)
         if tp
-          tp.register(&) if block_given?
+          tp.register(&block) if block_given?
         else
-          tp = TermPoint.new(self, name, &)
+          tp = TermPoint.new(self, name, &block)
           @term_points.push(tp)
         end
         tp

@@ -75,8 +75,8 @@ module Netomox
           rel_type: :connected,
           labels: [],
           property: {
-            source:,
-            destination:
+            source: source,
+            destination: destination
           }
         }
       end

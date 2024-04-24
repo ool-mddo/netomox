@@ -49,12 +49,12 @@ module Netomox
       # @param [String] name Term-point name
       # @yield Code block to eval in this instance
       # @yieldreturn [void]
-      def initialize(parent, name, &)
+      def initialize(parent, name, &block)
         super(parent, name)
         @supports = [] # supporting termination point
         @type = @parent.type
         @attribute = {} # for augments
-        register(&) if block_given?
+        register(&block) if block_given?
       end
 
       # Add supporting term-point
