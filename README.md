@@ -11,7 +11,7 @@ See also:
 ## Installation
 
 * Install tools for development tools (in Ubuntu, `apt install build-essentials`)
-* Install `ruby`(>2.3), `ruby-dev`, `ruby-bundler`
+* Install `ruby`(>=3.0.2), `ruby-dev`, `ruby-bundler`
 * Install packages used in this application
   * `git clone` and `bundle install --path=vendor/bundle`
 

@@ -13,10 +13,10 @@ module Netomox
 
       # @yield Code block to eval this instance
       # @yieldreturn [void]
-      def initialize(&)
+      def initialize(&block)
         super(nil, 'networks')
         @networks = []
-        register(&) if block_given?
+        register(&block) if block_given?
       end
 
       # Add or access network by name
@@ -24,12 +24,12 @@ module Netomox
       # @yield Code block to eval the network
       # @yieldreturn [void]
       # @return [Network]
-      def network(name, &)
+      def network(name, &block)
         nw = find_network(name)
         if nw
-          nw.register(&) if block_given?
+          nw.register(&block) if block_given?
         else
-          nw = Network.new(self, name, &)
+          nw = Network.new(self, name, &block)
           @networks.push(nw)
         end
         nw

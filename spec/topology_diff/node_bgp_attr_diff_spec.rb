@@ -21,7 +21,7 @@ RSpec.describe 'bgp-proc bgp-policy related attribute', :attr, :bgp, :diff, :nod
     ]
     @ps_nodes = prefix_sets_list.map do |prefix_sets|
       node = Netomox::DSL::Node.new(parent.call('bgp_proc'), 'nodeX') do
-        attribute(router_id: '10.0.0.1', prefix_sets:)
+        attribute(router_id: '10.0.0.1', prefix_sets: prefix_sets)
       end
       Netomox::Topology::Node.new(node.topo_data, '')
     end
@@ -37,7 +37,7 @@ RSpec.describe 'bgp-proc bgp-policy related attribute', :attr, :bgp, :diff, :nod
     ]
     @aps_nodes = as_path_sets_list.map do |as_path_sets|
       node = Netomox::DSL::Node.new(parent.call('bgp_proc'), 'nodeX') do
-        attribute(router_id: '10.0.0.1', as_path_sets:)
+        attribute(router_id: '10.0.0.1', as_path_sets: as_path_sets)
       end
       Netomox::Topology::Node.new(node.topo_data, '')
     end
@@ -54,7 +54,7 @@ RSpec.describe 'bgp-proc bgp-policy related attribute', :attr, :bgp, :diff, :nod
     ]
     @cs_nodes = community_sets_list.map do |community_sets|
       node = Netomox::DSL::Node.new(parent.call('bgp_proc'), 'nodeX') do
-        attribute(router_id: '10.0.0.1', community_sets:)
+        attribute(router_id: '10.0.0.1', community_sets: community_sets)
       end
       Netomox::Topology::Node.new(node.topo_data, '')
     end
