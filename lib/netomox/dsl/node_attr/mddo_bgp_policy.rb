@@ -271,7 +271,8 @@ module Netomox
     # sub-data of bgp-policy and bgp-policy-statement
     class MddoBgpPolicyAction < MddoBgpPolicyElementBase
       # action keywords
-      KEYWORDS = %i[apply target community next_hop local_preference metric].freeze
+      #   NOTE: unknown_bgp_action_key -> to test Netomox::Topology::MddoBgpPolicyAction
+      KEYWORDS = %i[apply target community next_hop local_preference metric unknown_bgp_action_key].freeze
 
       # @param [Hash] action_data
       #   NOTE: action is single key-value hash; like `action = { key => [Integer, String, Hash] }`

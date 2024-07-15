@@ -221,11 +221,12 @@ module Netomox
       protected
 
       # @param [String] action_key
-      # @return [MddoBgpPolicyAction] Action attribute class correspond with the action key
+      # @return [MddoBgpPolicyAction, nil] Action attribute class correspond with the action key
       def action_attr(action_key)
         return ACTION_ATTR[action_key] if ACTION_ATTR.key?(action_key)
 
         Netomox.logger.error "Unknown bgp-policy action keyword: #{action_key}"
+        nil # error
       end
 
       # @param [String] condition_key
@@ -258,7 +259,10 @@ module Netomox
       # @return [Array<MddoBgpPolicyAction>] Converted attribute data
       def convert_statements(data)
         key = @attr_table.ext_of(:actions)
-        operative_array_key?(data, key) ? data[key].map { |d| action_attr(d.keys[0]).new(d, key) } : []
+        return [] unless operative_array_key?(data, key)
+
+        # NOTE: if policy action includes unknown keyword, action_attr returns nil -> ignore it
+        data[key].map { |d| action_attr(d.keys[0])&.new(d, key) }.compact
       end
     end
 
@@ -307,7 +311,10 @@ module Netomox
       # @return [Array<MddoBgpPolicyAction>] Converted attribute data
       def convert_actions(data)
         key = @attr_table.ext_of(:actions)
-        operative_array_key?(data, key) ? data[key].map { |d| action_attr(d.keys[0]).new(d, key) } : []
+        return [] unless operative_array_key?(data, key)
+
+        # NOTE: if policy action includes unknown keyword, action_attr returns nil -> ignore it
+        data[key].map { |d| action_attr(d.keys[0])&.new(d, key) }.compact
       end
 
       # @param [Hash] data Attribute data (RFC8345)

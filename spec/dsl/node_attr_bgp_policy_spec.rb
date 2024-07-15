@@ -150,7 +150,8 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { community: { action: 'set', name: 'aggregated' } },
       { next_hop: '172.31.255.1' },
       { local_preference: 300 },
-      { metric: 100 }
+      { metric: 100 },
+      { unknown_bgp_action_key: 'unknown_value' } # to test Netomox::Topology::MddoBgpPolicyAction
     ]
     actions = args.map { |a| Netomox::DSL::MddoBgpPolicyAction.new(**a) }
     actions_data = [
@@ -159,7 +160,8 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { 'community' => { 'action' => 'set', 'name' => 'aggregated' } },
       { 'next-hop' => '172.31.255.1' },
       { 'local-preference' => 300 },
-      { 'metric' => 100 }
+      { 'metric' => 100 },
+      { 'unknown-bgp-action-key' => 'unknown_value' } # to test Netomox::Topology::MddoBgpPolicyAction
     ]
     expect(actions.map(&:topo_data)).to eq actions_data
   end

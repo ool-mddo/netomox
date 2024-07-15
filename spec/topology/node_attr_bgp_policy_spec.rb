@@ -18,6 +18,8 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { target: 'accept' },
               { community: { action: 'set', name: 'aggregated' } },
               { next_hop: '172.31.255.1' },
+              # to test Netomox::Topology::MddoBgpPolicyAction
+              { unknown_bgp_action_key: 'unknown_value' },
               # accept both Integer and String number
               { local_preference: 300 },
               { local_preference: '310' },
@@ -84,6 +86,7 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { 'target' => 'accept' },
               { 'community' => { 'action' => 'set', 'name' => 'aggregated' } },
               { 'next-hop' => '172.31.255.1' },
+              # skip unknown-bgp-action-key and continue next token
               { 'local-preference' => 300 },
               { 'local-preference' => 310 },
               { 'metric' => 100 },
