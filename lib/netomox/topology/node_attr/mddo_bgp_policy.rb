@@ -204,7 +204,7 @@ module Netomox
         'next-hop' => MddoBgpPolicyActionNextHop,
         'local-preference' => MddoBgpPolicyActionLocalPreference,
         'metric' => MddoBgpPolicyActionMetric,
-        'as-path-prepend' => MddoBgpAsPathPrepend
+        'as-path-prepend' => MddoBgpPolicyActionAsPathPrepend
       }.freeze
 
       # condition keyword and corresponding attribute class

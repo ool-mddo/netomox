@@ -135,7 +135,7 @@ module Netomox
     end
 
     # action: as-path-prepend
-    class MddoBgpAsPathPrepend < MddoBgpPolicyAction
+    class MddoBgpPolicyActionAsPathPrepend < MddoBgpPolicyAction
       # @!attribute [rw] as_path_prepend
       #   @return [String]
       attr_accessor :as_path_prepend
