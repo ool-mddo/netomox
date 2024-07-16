@@ -25,7 +25,8 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { local_preference: '310' },
               # accept both Integer and String number
               { metric: 100 },
-              { metric: '110' }
+              { metric: '110' },
+              { as_path_prepend: '65001 65001 65001' }
             ],
             conditions: [
               { protocol: 'bgp' },
@@ -90,7 +91,8 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { 'local-preference' => 300 },
               { 'local-preference' => 310 },
               { 'metric' => 100 },
-              { 'metric' => 110 }
+              { 'metric' => 110 },
+              { 'as-path-prepend' => '65001 65001 65001' }
             ],
             'conditions' => [
               { 'protocol' => 'bgp' },

@@ -133,5 +133,21 @@ module Netomox
         super(ATTR_DEFS, data, type)
       end
     end
+
+    # action: as-path-prepend
+    class MddoBgpAsPathPrepend < MddoBgpPolicyAction
+      # @!attribute [rw] as_path_prepend
+      #   @return [String]
+      attr_accessor :as_path_prepend
+
+      # Attribute defs
+      ATTR_DEFS = [{ int: :as_path_prepend, ext: 'as-path-prepend', default: '' }].freeze
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @param [String] type Attribute type (keyword of data in RFC8345)
+      def initialize(data, type)
+        super(ATTR_DEFS, data, type)
+      end
+    end
   end
 end
