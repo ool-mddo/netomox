@@ -143,6 +143,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
     end.to raise_error(Netomox::DSL::DSLInvalidArgumentError, "Unknown bgp-policy element keyword: #{key} in #{arg}")
   end
 
+  # rubocop:disable RSpec/ExampleLength
   it 'returns bgp-policy-action', :attr, :bgp_attr do
     args = [
       { apply: 'reject-in-ipv4' },
@@ -151,7 +152,14 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { next_hop: '172.31.255.1' },
       { local_preference: 300 },
       { metric: 100 },
-      { as_path_prepend: '65001 65001 65001' },
+      {
+        as_path_prepend: [
+          { asn: 65_001 }, # omit repeat key (default: 1)
+          { asn: 65_001, repeat: 1 },
+          { asn: 65_002, repeat: 2 },
+          { asn: 65_003, repeat: 3 }
+        ]
+      },
       { unknown_bgp_action_key: 'unknown_value' } # to test Netomox::Topology::MddoBgpPolicyAction
     ]
     actions = args.map { |a| Netomox::DSL::MddoBgpPolicyAction.new(**a) }
@@ -162,11 +170,19 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { 'next-hop' => '172.31.255.1' },
       { 'local-preference' => 300 },
       { 'metric' => 100 },
-      { 'as-path-prepend' => '65001 65001 65001' },
+      {
+        'as-path-prepend' => [
+          { 'asn' => 65_001, 'repeat' => 1 },
+          { 'asn' => 65_001, 'repeat' => 1 },
+          { 'asn' => 65_002, 'repeat' => 2 },
+          { 'asn' => 65_003, 'repeat' => 3 }
+        ]
+      },
       { 'unknown-bgp-action-key' => 'unknown_value' } # to test Netomox::Topology::MddoBgpPolicyAction
     ]
     expect(actions.map(&:topo_data)).to eq actions_data
   end
+  # rubocop:enable RSpec/ExampleLength
 
   it 'raises exception if unknown action keyword' do
     key = :apple

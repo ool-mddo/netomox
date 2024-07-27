@@ -26,7 +26,14 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               # accept both Integer and String number
               { metric: 100 },
               { metric: '110' },
-              { as_path_prepend: '65001 65001 65001' }
+              {
+                as_path_prepend: [
+                  # asn and repeat accept both Integer and String number
+                  { asn: 65_001, repeat: '1' },
+                  { asn: '65001', repeat: 1 },
+                  { asn: 65_002, repeat: 2 }
+                ]
+              }
             ],
             conditions: [
               { protocol: 'bgp' },
@@ -92,7 +99,13 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { 'local-preference' => 310 },
               { 'metric' => 100 },
               { 'metric' => 110 },
-              { 'as-path-prepend' => '65001 65001 65001' }
+              {
+                'as-path-prepend' => [
+                  { 'asn' => 65_001, 'repeat' => 1 },
+                  { 'asn' => 65_001, 'repeat' => 1 },
+                  { 'asn' => 65_002, 'repeat' => 2 }
+                ]
+              }
             ],
             'conditions' => [
               { 'protocol' => 'bgp' },

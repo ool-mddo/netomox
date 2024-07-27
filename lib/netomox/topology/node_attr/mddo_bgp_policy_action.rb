@@ -113,7 +113,7 @@ module Netomox
       end
     end
 
-    # sub-data of bgp-policy-action
+    # sub-data of bgp-policy-action, community
     class MddoBgpPolicyActionCommunityBody < SubAttributeBase
       # @!attribute [rw] action
       #   @return [String]
@@ -141,7 +141,38 @@ module Netomox
       attr_accessor :as_path_prepend
 
       # Attribute defs
-      ATTR_DEFS = [{ int: :as_path_prepend, ext: 'as-path-prepend', default: '' }].freeze
+      ATTR_DEFS = [{ int: :as_path_prepend, ext: 'as-path-prepend', default: [] }].freeze
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @param [String] type Attribute type (keyword of data in RFC8345)
+      def initialize(data, type)
+        super(ATTR_DEFS, data, type)
+        @as_path_prepend = convert_as_path_prepend_list(data)
+      end
+
+      private
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @return [Array<MddoBgpPolicyActionAsPathPrependElement>] Converted attribute data
+      def convert_as_path_prepend_list(data)
+        key = @attr_table.ext_of(:as_path_prepend)
+        data[key].map { |datum| MddoBgpPolicyActionAsPathPrependElement.new(datum, key) }
+      end
+    end
+
+    # sub-data of bgp-policy-action, as-path-prepend
+    class MddoBgpPolicyActionAsPathPrependElement < SubAttributeBase
+      # @!attribute [rw] asn
+      #   @return [Integer]
+      # @!attribute [rw] repeat
+      #   @return [Integer]
+      attr_accessor :asn, :repeat
+
+      # Attribute defs
+      ATTR_DEFS = [
+        { int: :asn, ext: 'asn', default: -1, convert: ->(d) { d.to_i } },
+        { int: :repeat, ext: 'repeat', default: 1, convert: ->(d) { d.to_i } }
+      ].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
       # @param [String] type Attribute type (keyword of data in RFC8345)
