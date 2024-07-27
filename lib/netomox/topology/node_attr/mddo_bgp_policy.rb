@@ -56,14 +56,14 @@ module Netomox
     # as-path-set for bgp-policy
     class MddoBgpAsPathSet < SubAttributeBase
       # @!attribute [rw] as_path
-      #   @return [MddoBgpAsPath]
+      #   @return [Array<MddoBgpAsPath>]
       # @!attribute [rw] group_name
       #   @return [String]
       attr_accessor :as_path, :group_name
 
       # Attribute defs
       ATTR_DEFS = [
-        { int: :as_path, ext: 'as-path', default: {} },
+        { int: :as_path, ext: 'as-path', default: [] },
         { int: :group_name, ext: 'group-name', default: '' }
       ].freeze
 
@@ -77,10 +77,10 @@ module Netomox
       private
 
       # @param [Hash] data Attribute data (RFC8345)
-      # @return [MddoBgpAsPath] Converted attribute data
+      # @return [Array<MddoBgpAsPath>] Converted attribute data
       def convert_as_path(data)
         key = @attr_table.ext_of(:as_path)
-        MddoBgpAsPath.new(data[key], key)
+        operative_array_key?(data, key) ? data[key].map { |d| MddoBgpAsPath.new(d, key) } : []
       end
     end
 

@@ -53,15 +53,15 @@ module Netomox
     # attribute for mddo-topology bgp-proc node bgp-policy: bgp-as-path-set
     class MddoBgpAsPathSet
       # @!attribute [rw] as_path
-      #   @return [MddoBgpAsPath]
+      #   @return [Array<MddoBgpAsPath>]
       # @!attribute [rw] group_name
       #   @return [String]
       attr_accessor :as_path, :group_name
 
-      # @param [Hash] as_path,
+      # @param [Array<Hash>] as_path
       # @param [String] group_name
-      def initialize(as_path: {}, group_name: '')
-        @as_path = MddoBgpAsPath.new(**as_path)
+      def initialize(as_path: [], group_name: '')
+        @as_path = as_path.map { |v| MddoBgpAsPath.new(**v) }
         @group_name = group_name
       end
 
@@ -69,7 +69,7 @@ module Netomox
       # @return [Hash]
       def topo_data
         {
-          'as-path' => @as_path.topo_data,
+          'as-path' => @as_path.map(&:topo_data),
           'group-name' => @group_name
         }
       end

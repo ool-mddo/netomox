@@ -27,13 +27,13 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
 
   it 'returns bgp-as-path-set', :attr, :bgp_attr do
     args = [
-      { group_name: 'aspath-longer200', as_path: { name: 'aspath-longer200', pattern: '.{200,}' } },
-      { group_name: 'any', as_path: { name: 'any', pattern: '.*' } }
+      { group_name: 'aspath-longer200', as_path: [{ name: 'aspath-longer200', pattern: '.{200,}' }] },
+      { group_name: 'any', as_path: [{ name: 'any', pattern: '.*' }] }
     ]
     as_path_set = args.map { |a| Netomox::DSL::MddoBgpAsPathSet.new(**a) }
     as_path_set_data = [
-      { 'group-name' => 'aspath-longer200', 'as-path' => { 'name' => 'aspath-longer200', 'pattern' => '.{200,}' } },
-      { 'group-name' => 'any', 'as-path' => { 'name' => 'any', 'pattern' => '.*' } }
+      { 'group-name' => 'aspath-longer200', 'as-path' => [{ 'name' => 'aspath-longer200', 'pattern' => '.{200,}' }] },
+      { 'group-name' => 'any', 'as-path' => [{ 'name' => 'any', 'pattern' => '.*' }] }
     ]
     expect(as_path_set.map(&:topo_data)).to eq as_path_set_data
   end
@@ -252,7 +252,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { name: 'default-ipv4', prefixes: [{ prefix: '0.0.0.0/0' }] }
     ]
     as_path_sets = [
-      { group_name: 'any', as_path: { name: 'any', pattern: '.*' } }
+      { group_name: 'hoge', as_path: [{ name: '01', pattern: '65001+' }, { name: 'any', pattern: '.*' }] }
     ]
     community_sets = [
       { communities: [{ community: '65518:1' }], name: 'aggregated' }
@@ -300,7 +300,13 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { 'name' => 'default-ipv4', 'prefixes' => [{ 'prefix' => '0.0.0.0/0' }] }
     ]
     as_path_set_data = [
-      { 'group-name' => 'any', 'as-path' => { 'name' => 'any', 'pattern' => '.*' } }
+      {
+        'group-name' => 'hoge',
+        'as-path' => [
+          { 'name' => '01', 'pattern' => '65001+' },
+          { 'name' => 'any', 'pattern' => '.*' }
+        ]
+      }
     ]
     community_set_data = [
       { 'communities' => [{ 'community' => '65518:1' }], 'name' => 'aggregated' }

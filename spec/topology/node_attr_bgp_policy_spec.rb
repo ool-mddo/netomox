@@ -7,6 +7,9 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
 
   # rubocop:disable RSpec/ExampleLength
   it 'generate bgp-policy actions' do
+    as_path_sets = [
+      { group_name: 'hoge', as_path: [{ name: '01', pattern: '65001+' }, { name: 'any', pattern: '.*' }] }
+    ]
     policies = [
       {
         default: { actions: [{ target: 'reject' }] },
@@ -73,6 +76,7 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
         node 'node1' do
           attr = {
             router_id: '10.0.0.1',
+            as_path_sets: as_path_sets,
             policies: policies
           }
           attribute(attr)
@@ -83,6 +87,15 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
     target_nws = Netomox::Topology::Networks.new(topo_data)
     attr = target_nws.find_network('bgp_proc')&.find_node_by_name('node1')&.attribute
 
+    expected_as_path_sets = [
+      {
+        'group-name' => 'hoge',
+        'as-path' => [
+          { 'name' => '01', 'pattern' => '65001+' },
+          { 'name' => 'any', 'pattern' => '.*' }
+        ]
+      }
+    ]
     expected_policies = [
       {
         'default' => {
@@ -145,7 +158,7 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
       'peer-group' => [],
       'policy' => expected_policies,
       'prefix-set' => [],
-      'as-path-set' => [],
+      'as-path-set' => expected_as_path_sets,
       'community-set' => [],
       'redistribute' => [],
       'flag' => []

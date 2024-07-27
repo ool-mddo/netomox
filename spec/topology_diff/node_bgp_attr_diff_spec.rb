@@ -27,12 +27,12 @@ RSpec.describe 'bgp-proc bgp-policy related attribute', :attr, :bgp, :diff, :nod
     end
 
     as_path_sets_list = [
-      [{ group_name: 'any', as_path: { name: 'any', pattern: '.*' } }], # [0] original
-      [{ group_name: 'any', as_path: { name: 'any', pattern: '.*' } }], # [1] kept (unchanged)
-      [{ group_name: 'any', as_path: { name: 'any', pattern: '..*' } }], # [2] changed as-path pattern
+      [{ group_name: 'any', as_path: [{ name: 'any', pattern: '.*' }] }], # [0] original
+      [{ group_name: 'any', as_path: [{ name: 'any', pattern: '.*' }] }], # [1] kept (unchanged)
+      [{ group_name: 'any', as_path: [{ name: 'any', pattern: '..*' }] }], # [2] changed as-path pattern
       [
-        { group_name: 'any', as_path: { name: 'any', pattern: '.*' } },
-        { group_name: 'hoge', as_path: { name: 'hoge', pattern: '10\.*' } }
+        { group_name: 'any', as_path: [{ name: 'any', pattern: '.*' }] },
+        { group_name: 'hoge', as_path: [{ name: 'hoge', pattern: '10\.*' }] }
       ] # [3] added as-path-set
     ]
     @aps_nodes = as_path_sets_list.map do |as_path_sets|
@@ -131,8 +131,8 @@ RSpec.describe 'bgp-proc bgp-policy related attribute', :attr, :bgp, :diff, :nod
       expect(d_node.diff_state.detect).to eq :changed
       expect(d_node.attribute.diff_state.detect).to eq :changed
       dd_expected = [
-        ['-', 'as-path-set[0]', { 'as-path' => { 'name' => 'any', 'pattern' => '.*' }, 'group-name' => 'any' }],
-        ['+', 'as-path-set[0]', { 'as-path' => { 'name' => 'any', 'pattern' => '..*' }, 'group-name' => 'any' }]
+        ['-', 'as-path-set[0]', { 'as-path' => [{ 'name' => 'any', 'pattern' => '.*' }], 'group-name' => 'any' }],
+        ['+', 'as-path-set[0]', { 'as-path' => [{ 'name' => 'any', 'pattern' => '..*' }], 'group-name' => 'any' }]
       ]
       expect(d_node.attribute.diff_state.diff_data).to eq dd_expected
     end
@@ -142,7 +142,7 @@ RSpec.describe 'bgp-proc bgp-policy related attribute', :attr, :bgp, :diff, :nod
       expect(d_node.diff_state.detect).to eq :changed
       expect(d_node.attribute.diff_state.detect).to eq :changed
       dd_expected = [
-        ['+', 'as-path-set[1]', { 'as-path' => { 'name' => 'hoge', 'pattern' => '10\\.*' }, 'group-name' => 'hoge' }]
+        ['+', 'as-path-set[1]', { 'as-path' => [{ 'name' => 'hoge', 'pattern' => '10\\.*' }], 'group-name' => 'hoge' }]
       ]
       expect(d_node.attribute.diff_state.diff_data).to eq dd_expected
     end
@@ -152,7 +152,7 @@ RSpec.describe 'bgp-proc bgp-policy related attribute', :attr, :bgp, :diff, :nod
       expect(d_node.diff_state.detect).to eq :changed
       expect(d_node.attribute.diff_state.detect).to eq :changed
       dd_expected = [
-        ['-', 'as-path-set[1]', { 'as-path' => { 'name' => 'hoge', 'pattern' => '10\\.*' }, 'group-name' => 'hoge' }]
+        ['-', 'as-path-set[1]', { 'as-path' => [{ 'name' => 'hoge', 'pattern' => '10\\.*' }], 'group-name' => 'hoge' }]
       ]
       expect(d_node.attribute.diff_state.diff_data).to eq dd_expected
     end
