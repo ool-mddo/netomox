@@ -235,7 +235,7 @@ module Netomox
       def condition_attr(condition_key)
         return CONDITION_ATTR[condition_key] if CONDITION_ATTR.key?(condition_key)
 
-        Netomox.logger.error "Unknown bgp-policy action keyword: #{condition_key}"
+        Netomox.logger.error "Unknown bgp-policy condition keyword: #{condition_key}"
       end
     end
 
