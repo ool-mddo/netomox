@@ -119,7 +119,8 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { as_path_group: 'asXXXXX-origin' },
       { community: ['aggregated'] },
       { prefix_list: 'asXXXXX-adv-ipv4' },
-      { prefix_list_filter: { prefix_list: 'default-ipv4', match_type: 'exact' } }
+      { prefix_list_filter: { prefix_list: 'default-ipv4', match_type: 'exact' } },
+      { unknown_bgp_condition_key: 'unknown_condition' }
     ]
     conditions = args.map { |a| Netomox::DSL::MddoBgpPolicyCondition.new(**a) }
     conditions_data = [
@@ -130,7 +131,8 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { 'as-path-group' => 'asXXXXX-origin' },
       { 'community' => ['aggregated'] },
       { 'prefix-list' => 'asXXXXX-adv-ipv4' },
-      { 'prefix-list-filter' => { 'prefix-list' => 'default-ipv4', 'match-type' => 'exact' } }
+      { 'prefix-list-filter' => { 'prefix-list' => 'default-ipv4', 'match-type' => 'exact' } },
+      { 'unknown-bgp-condition-key' => 'unknown_condition' } # to test Netomox::Topology::MddoBgpPolicyCondition
     ]
     expect(conditions.map(&:topo_data)).to eq conditions_data
   end

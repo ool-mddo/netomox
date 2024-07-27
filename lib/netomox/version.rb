@@ -2,5 +2,5 @@
 
 module Netomox
   # Netomox version
-  VERSION = '0.10.0.pre3'
+  VERSION = '0.10.0.pre4'
 end

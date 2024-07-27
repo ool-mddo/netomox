@@ -41,6 +41,8 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { route_filter: { prefix: '0.0.0.0/0', length: {}, match_type: 'exact' } },
               # accept both Integer and String number
               { route_filter: { prefix: '0.0.0.0/0', length: { min: 32, max: '25' }, match_type: 'exact' } },
+              # to test Netomox::Topology::MddoBgpPolicyAction
+              { unknown_bgp_condition_key: 'unknown_condition' },
               { policy: 'reject-in-rule-ipv4' },
               { as_path_group: 'asXXXXX-origin' },
               { community: ['aggregated'] },
@@ -112,6 +114,7 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { 'rib' => 'inet.0' },
               { 'route-filter' => { 'prefix' => '0.0.0.0/0', 'length' => {}, 'match-type' => 'exact' } },
               { 'route-filter' => { 'prefix' => '0.0.0.0/0', 'length' => { 'min' => 32, 'max' => 25 }, 'match-type' => 'exact' } },
+              # skip unknown-bgp-condition-key and continue next token
               { 'policy' => 'reject-in-rule-ipv4' },
               { 'as-path-group' => 'asXXXXX-origin' },
               { 'community' => ['aggregated'] },

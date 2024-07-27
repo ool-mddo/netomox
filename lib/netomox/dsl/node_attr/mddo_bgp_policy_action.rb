@@ -19,8 +19,8 @@ module Netomox
 
       protected
 
-      # @param [Array<Hash>|Hash] value Value of bgp-policy action/condition
-      # @return [Array<Object>|Object] Value of @key
+      # @param [Array<Hash>, Hash] value Value of bgp-policy action/condition
+      # @return [Array<Object>, Object] Value of @key
       def instantiate_value(value)
         case @key
         when :community
@@ -41,8 +41,8 @@ module Netomox
       #   @return [Integer]
       attr_accessor :asn, :repeat
 
-      # @param [String|Integer] asn AS number
-      # repeat [String|Integer] repeat Repeat number (default: 1)
+      # @param [String, Integer] asn AS number
+      # repeat [String, Integer] repeat Repeat number (default: 1)
       def initialize(asn: -1, repeat: 1)
         # asn is "(asn)x(repeat)" or "(asn)*(repeat)" string
         if asn.is_a?(String) && asn =~ /(\d+)[x*](\d+)/

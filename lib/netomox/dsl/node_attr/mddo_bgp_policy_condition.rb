@@ -7,10 +7,12 @@ module Netomox
     # sub-data of bgp-policy-statement
     class MddoBgpPolicyCondition < MddoBgpPolicyElementBase
       # action keywords
-      KEYWORDS = %i[protocol rib route_filter policy as_path_group community prefix_list prefix_list_filter].freeze
+      KEYWORDS = %i[protocol rib route_filter policy as_path_group community prefix_list prefix_list_filter
+                    unknown_bgp_condition_key].freeze
 
       # @param [Hash] condition_data
       #   NOTE: condition is single key-value hash; like `condition = { key => [String, Hash, Array<String>] }`
+      #   NOTE: unknown_bgp_condition_key -> to test Netomox::Topology::MddoBgpPolicyCondition
       def initialize(condition_data)
         super(condition_data, KEYWORDS)
       end

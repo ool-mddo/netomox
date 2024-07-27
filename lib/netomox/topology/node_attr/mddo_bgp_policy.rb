@@ -231,11 +231,12 @@ module Netomox
       end
 
       # @param [String] condition_key
-      # @return [MddoBgpPolicyCondition] Condition attribute class correspond with the action key
+      # @return [MddoBgpPolicyCondition, nil] Condition attribute class correspond with the action key
       def condition_attr(condition_key)
         return CONDITION_ATTR[condition_key] if CONDITION_ATTR.key?(condition_key)
 
         Netomox.logger.error "Unknown bgp-policy condition keyword: #{condition_key}"
+        nil # error
       end
     end
 
@@ -322,7 +323,7 @@ module Netomox
       # @return [Array<MddoBgpPolicyCondition>] Converted attribute data
       def convert_conditions(data)
         key = @attr_table.ext_of(:conditions)
-        operative_array_key?(data, key) ? data[key].map { |d| condition_attr(d.keys[0]).new(d, key) } : []
+        operative_array_key?(data, key) ? data[key].map { |d| condition_attr(d.keys[0])&.new(d, key) }.compact : []
       end
     end
   end
