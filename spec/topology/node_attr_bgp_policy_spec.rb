@@ -12,7 +12,6 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
     ]
     policies = [
       {
-        default: { actions: [{ target: 'reject' }] },
         name: 'ipv4-core',
         statements: [
           {
@@ -66,7 +65,14 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
             # without-if
             name: 'test-statement'
           }
-        ]
+        ],
+        default: {
+          actions: [
+            # to test Netomox::Topology::MddoBgpPolicyAction
+            { unknown_bgp_action_key: 'unknown_value' },
+            { target: 'reject' }
+          ]
+        }
       }
     ]
 
@@ -99,6 +105,7 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
     expected_policies = [
       {
         'default' => {
+          # skip unknown-bgp-action-key and continue next token
           'actions' => [{ 'target' => 'reject' }]
         },
         'name' => 'ipv4-core',

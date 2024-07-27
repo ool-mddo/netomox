@@ -253,6 +253,7 @@ module Netomox
       # @param [String] type Attribute type (keyword of data in RFC8345)
       def initialize(data, type)
         super(ATTR_DEFS, data, type)
+        @actions = convert_statements(data)
       end
 
       private
