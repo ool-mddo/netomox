@@ -8,7 +8,7 @@ RSpec.describe 'check node attribute with RFC' do
         node('node1') do
           attribute(
             prefixes: [
-              { prefix: '192.168.0.0/24', metric: 1, flags: 'test' },
+              { prefix: '192.168.0.0/24', metric: 1, flags: ['test'] },
               { prefix: '192.168.1.0/24', metric: 10, flags: %w[foo bar] }
             ],
             router_id: '192.168.0.1',
@@ -28,10 +28,10 @@ RSpec.describe 'check node attribute with RFC' do
     expected_attr = {
       '_diff_state_' => @default_diff_state,
       'prefix' => [
-        { 'prefix' => '192.168.0.0/24', 'metric' => 1, 'flag' => 'test' },
+        { 'prefix' => '192.168.0.0/24', 'metric' => 1, 'flag' => ['test'] },
         { 'prefix' => '192.168.1.0/24', 'metric' => 10, 'flag' => %w[foo bar] }
       ],
-      'router-id' => ['192.168.0.1'],
+      'router-id' => '192.168.0.1',
       'flag' => %w[layer3 node],
       'name' => 'node1'
     }

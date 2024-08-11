@@ -114,7 +114,7 @@ module Netomox
       # Attribute defs
       ATTR_DEFS = [
         { int: :name, ext: 'name', default: '' },
-        { int: :default, ext: 'default', default: [] },
+        { int: :default, ext: 'default', default: {} },
         { int: :statements, ext: 'statements', default: [] }
       ].freeze
 

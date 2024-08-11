@@ -28,7 +28,7 @@ RSpec.describe 'check node attribute with Mddo-model' do
           attribute(
             node_type: 'node',
             prefixes: [
-              { prefix: '192.168.0.0/24', metric: 1, flags: 'test' },
+              { prefix: '192.168.0.0/24', metric: 1, flags: ['test'] },
               { prefix: '192.168.1.0/24', metric: 10, flags: %w[foo bar] }
             ],
             static_routes: [
@@ -122,7 +122,7 @@ RSpec.describe 'check node attribute with Mddo-model' do
       '_diff_state_' => @default_diff_state,
       'node-type' => 'node',
       'prefix' => [
-        { 'prefix' => '192.168.0.0/24', 'metric' => 1, 'flag' => 'test' },
+        { 'prefix' => '192.168.0.0/24', 'metric' => 1, 'flag' => ['test'] },
         { 'prefix' => '192.168.1.0/24', 'metric' => 10, 'flag' => %w[foo bar] }
       ],
       'static-route' => [

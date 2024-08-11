@@ -39,7 +39,7 @@ module Netomox
         {
           'name' => @name,
           'flag' => @flags,
-          'router-id' => [@router_id],
+          'router-id' => @router_id,
           'prefix' => @prefixes.map(&:topo_data)
         }
       end

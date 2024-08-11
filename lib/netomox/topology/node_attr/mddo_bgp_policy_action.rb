@@ -88,7 +88,7 @@ module Netomox
       attr_accessor :local_preference
 
       # Attribute defs
-      ATTR_DEFS = [{ int: :local_preference, ext: 'local-preference', default: '', convert: ->(d) { d.to_i } }].freeze
+      ATTR_DEFS = [{ int: :local_preference, ext: 'local-preference', default: -1, convert: ->(d) { d.to_i } }].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
       # @param [String] type Attribute type (keyword of data in RFC8345)

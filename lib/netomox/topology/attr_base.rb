@@ -149,6 +149,30 @@ module Netomox
         end
       end
 
+      # @param [Object] value
+      # @return [Boolean] true if the value is Integer or String
+      def int_or_str?(value)
+        value.instance_of?(Integer) || value.instance_of?(String)
+      end
+
+      # @param [String] ext_key External key of the attribute
+      # @param [Object] default_value
+      # @param [Object] value
+      # @return [void]
+      def members_value_type_check(ext_key, default_value, value)
+        return if default_value.instance_of?(value.class)
+
+        message = "Attribute type mismatch: key=#{ext_key}, " \
+                  "default=`#{default_value}`(#{default_value.class.name}), value=`#{value}`(#{value.class.name})"
+        if int_or_str?(default_value) && int_or_str?(value)
+          # tolerate differences between strings and integers.
+          Netomox.logger.warn message
+        else
+          # others are error
+          Netomox.logger.error message
+        end
+      end
+
       # setup attribute members (keys) value according to @attr_table definition
       # @param [Hash] data RFC8345 data (attribute)
       # @return [void]
@@ -161,6 +185,9 @@ module Netomox
           value = data[ext_key] || default
           # value convert e.g.: "42" -> 42 if it have to handle both Integer and String as input
           value = @attr_table.convert_of(int_key).call(value)
+          # type check
+          members_value_type_check(ext_key, default, value)
+          # assignment action
           send("#{int_key}=", value)
         end
       end

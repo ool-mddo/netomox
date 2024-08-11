@@ -33,6 +33,7 @@ module Netomox
       attr_accessor :identifier
 
       # Attribute definition of network
+      # NOTE: identifier variation: integer(0) for cisco, string('0.0.0.0') for junos
       ATTR_DEFS = [{ int: :identifier, ext: 'identifier', default: '' }].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
