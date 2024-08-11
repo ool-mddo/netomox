@@ -27,13 +27,19 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
 
   it 'returns bgp-as-path-set', :attr, :bgp_attr do
     args = [
-      { group_name: 'aspath-longer200', as_path: [{ name: 'aspath-longer200', pattern: '.{200,}' }] },
-      { group_name: 'any', as_path: [{ name: 'any', pattern: '.*' }] }
+      { group_name: 'any', as_path: [{ name: 'any', pattern: '.*' }] },
+      { group_name: 'aspath-pattern', as_path: [{ name: 'aspath-pattern', pattern: '.{200,}' }] },
+      { group_name: 'aspath-length-min', as_path: [{ name: 'aspath-length-min', length: { min: 24 } }] },
+      { group_name: 'aspath-length-max', as_path: [{ name: 'aspath-length-max', length: { max: 24 } }] },
+      { group_name: 'aspath-length-eq', as_path: [{ name: 'aspath-length-eq', length: { eq: 24 } }] }
     ]
     as_path_set = args.map { |a| Netomox::DSL::MddoBgpAsPathSet.new(**a) }
     as_path_set_data = [
-      { 'group-name' => 'aspath-longer200', 'as-path' => [{ 'name' => 'aspath-longer200', 'pattern' => '.{200,}' }] },
-      { 'group-name' => 'any', 'as-path' => [{ 'name' => 'any', 'pattern' => '.*' }] }
+      { 'group-name' => 'any', 'as-path' => [{ 'name' => 'any', 'pattern' => '.*' }] },
+      { 'group-name' => 'aspath-pattern', 'as-path' => [{ 'name' => 'aspath-pattern', 'pattern' => '.{200,}' }] },
+      { 'group-name' => 'aspath-length-min', 'as-path' => [{ 'name' => 'aspath-length-min', 'length' => { 'min' => 24 } }] },
+      { 'group-name' => 'aspath-length-max', 'as-path' => [{ 'name' => 'aspath-length-max', 'length' => { 'max' => 24 } }] },
+      { 'group-name' => 'aspath-length-eq', 'as-path' => [{ 'name' => 'aspath-length-eq', 'length' => { 'eq' => 24 } }] }
     ]
     expect(as_path_set.map(&:topo_data)).to eq as_path_set_data
   end
@@ -252,7 +258,14 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { name: 'default-ipv4', prefixes: [{ prefix: '0.0.0.0/0' }] }
     ]
     as_path_sets = [
-      { group_name: 'hoge', as_path: [{ name: '01', pattern: '65001+' }, { name: 'any', pattern: '.*' }] }
+      {
+        group_name: 'hoge',
+        as_path: [
+          { name: 'any', pattern: '.*' },
+          { name: '01', pattern: '65001+' },
+          { name: '02', length: { min: 25 } }
+        ]
+      }
     ]
     community_sets = [
       { communities: [{ community: '65518:1' }], name: 'aggregated' }
@@ -303,8 +316,9 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       {
         'group-name' => 'hoge',
         'as-path' => [
+          { 'name' => 'any', 'pattern' => '.*' },
           { 'name' => '01', 'pattern' => '65001+' },
-          { 'name' => 'any', 'pattern' => '.*' }
+          { 'name' => '02', 'length' => { 'min' => 25 } }
         ]
       }
     ]

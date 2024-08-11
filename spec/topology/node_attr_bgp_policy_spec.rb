@@ -8,7 +8,16 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
   # rubocop:disable RSpec/ExampleLength
   it 'generate bgp-policy actions' do
     as_path_sets = [
-      { group_name: 'hoge', as_path: [{ name: '01', pattern: '65001+' }, { name: 'any', pattern: '.*' }] }
+      {
+        group_name: 'hoge',
+        as_path: [
+          { name: 'any', pattern: '.*' },
+          { name: '01', pattern: '65001+' },
+          { name: '02a', length: { min: '10' } },
+          { name: '02b', length: { max: 100 } },
+          { name: '02c', length: { eq: '15' } }
+        ]
+      }
     ]
     policies = [
       {
@@ -97,8 +106,11 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
       {
         'group-name' => 'hoge',
         'as-path' => [
+          { 'name' => 'any', 'pattern' => '.*' },
           { 'name' => '01', 'pattern' => '65001+' },
-          { 'name' => 'any', 'pattern' => '.*' }
+          { 'name' => '02a', 'length' => { 'min' => 10 } },
+          { 'name' => '02b', 'length' => { 'max' => 100 } },
+          { 'name' => '02c', 'length' => { 'eq' => 15 } }
         ]
       }
     ]

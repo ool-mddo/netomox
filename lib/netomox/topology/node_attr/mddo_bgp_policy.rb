@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require 'netomox/topology/attr_base'
-require_relative 'mddo_bgp_policy_action'
-require_relative 'mddo_bgp_policy_condition'
+require 'netomox/topology/node_attr/mddo_bgp_policy_as_path_set'
+require 'netomox/topology/node_attr/mddo_bgp_policy_action'
+require 'netomox/topology/node_attr/mddo_bgp_policy_condition'
 
 module Netomox
   module Topology
@@ -45,58 +46,6 @@ module Netomox
 
       # Attribute defs
       ATTR_DEFS = [{ int: :prefix, ext: 'prefix', default: '' }].freeze
-
-      # @param [Hash] data Attribute data (RFC8345)
-      # @param [String] type Attribute type (keyword of data in RFC8345)
-      def initialize(data, type)
-        super(ATTR_DEFS, data, type)
-      end
-    end
-
-    # as-path-set for bgp-policy
-    class MddoBgpAsPathSet < SubAttributeBase
-      # @!attribute [rw] as_path
-      #   @return [Array<MddoBgpAsPath>]
-      # @!attribute [rw] group_name
-      #   @return [String]
-      attr_accessor :as_path, :group_name
-
-      # Attribute defs
-      ATTR_DEFS = [
-        { int: :as_path, ext: 'as-path', default: [] },
-        { int: :group_name, ext: 'group-name', default: '' }
-      ].freeze
-
-      # @param [Hash] data Attribute data (RFC8345)
-      # @param [String] type Attribute type (keyword of data in RFC8345)
-      def initialize(data, type)
-        super(ATTR_DEFS, data, type)
-        @as_path = convert_as_path(data)
-      end
-
-      private
-
-      # @param [Hash] data Attribute data (RFC8345)
-      # @return [Array<MddoBgpAsPath>] Converted attribute data
-      def convert_as_path(data)
-        key = @attr_table.ext_of(:as_path)
-        operative_array_key?(data, key) ? data[key].map { |d| MddoBgpAsPath.new(d, key) } : []
-      end
-    end
-
-    # sub-data of as-path-set
-    class MddoBgpAsPath < SubAttributeBase
-      # @!attribute [rw] name
-      #   @return [String]
-      # @!attribute [rw] pattern
-      #   @return [String]
-      attr_accessor :name, :pattern
-
-      # Attribute defs
-      ATTR_DEFS = [
-        { int: :name, ext: 'name', default: '' },
-        { int: :pattern, ext: 'pattern', default: '' }
-      ].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
       # @param [String] type Attribute type (keyword of data in RFC8345)

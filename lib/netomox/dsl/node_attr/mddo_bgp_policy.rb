@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'netomox/dsl/node_attr/mddo_bgp_policy_as_path_set'
 require 'netomox/dsl/node_attr/mddo_bgp_policy_action'
 require 'netomox/dsl/node_attr/mddo_bgp_policy_condition'
 
@@ -47,56 +48,6 @@ module Netomox
       # @return [Hash]
       def topo_data
         { 'prefix' => @prefix }
-      end
-    end
-
-    # attribute for mddo-topology bgp-proc node bgp-policy: bgp-as-path-set
-    class MddoBgpAsPathSet
-      # @!attribute [rw] as_path
-      #   @return [Array<MddoBgpAsPath>]
-      # @!attribute [rw] group_name
-      #   @return [String]
-      attr_accessor :as_path, :group_name
-
-      # @param [Array<Hash>] as_path
-      # @param [String] group_name
-      def initialize(as_path: [], group_name: '')
-        @as_path = as_path.map { |v| MddoBgpAsPath.new(**v) }
-        @group_name = group_name
-      end
-
-      # Convert to RFC8345 topology data
-      # @return [Hash]
-      def topo_data
-        {
-          'as-path' => @as_path.map(&:topo_data),
-          'group-name' => @group_name
-        }
-      end
-    end
-
-    # sub-data of as-path-set
-    class MddoBgpAsPath
-      # @!attribute [rw] name
-      #   @return [String]
-      # @!attribute [rw] pattern
-      #   @return [String]
-      attr_accessor :name, :pattern
-
-      # @param [String] name
-      # @param [String pattern
-      def initialize(name: '', pattern: '')
-        @name = name
-        @pattern = pattern
-      end
-
-      # Convert to RFC8345 topology data
-      # @return [Hash]
-      def topo_data
-        {
-          'name' => @name,
-          'pattern' => @pattern
-        }
       end
     end
 
