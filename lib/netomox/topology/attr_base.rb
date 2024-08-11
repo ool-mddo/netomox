@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'netomox/topology/attr_base'
 require 'netomox/topology/diff_state'
 require 'netomox/topology/attr_table'
 
@@ -155,12 +154,21 @@ module Netomox
         value.instance_of?(Integer) || value.instance_of?(String)
       end
 
+      # @param [Object] value
+      # @return [Boolean] true if the value is Boolean
+      def boolean?(value)
+        value.is_a?(TrueClass) || value.is_a?(FalseClass)
+      end
+
       # @param [String] ext_key External key of the attribute
       # @param [Object] default_value
       # @param [Object] value
       # @return [void]
       def members_value_type_check(ext_key, default_value, value)
-        return if default_value.instance_of?(value.class)
+        # OK (instance or child-class instance). nothing to do
+        return if value.is_a?(default_value.class)
+        # ignore difference between TrueClass/FalseClass (same as Boolean)
+        return if boolean?(default_value) && boolean?(value)
 
         message = "Attribute type mismatch: key=#{ext_key}, " \
                   "default=`#{default_value}`(#{default_value.class.name}), value=`#{value}`(#{value.class.name})"
