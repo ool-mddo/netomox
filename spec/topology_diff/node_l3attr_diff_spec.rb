@@ -60,7 +60,7 @@ RSpec.describe 'node diff with L3 attribute', :attr, :diff, :l3attr, :node do
           { 'flag' => [], 'metric' => 100, 'prefix' => '192.168.10.0/24' },
           { 'flag' => [], 'metric' => 100, 'prefix' => '192.168.20.0/24' }
         ]],
-        ['+', 'router-id', ['']]
+        ['+', 'router-id', '']
       ]
       expect(d_node.attribute.diff_state.diff_data).to eq dd_expected
     end
@@ -77,7 +77,7 @@ RSpec.describe 'node diff with L3 attribute', :attr, :diff, :l3attr, :node do
           { 'flag' => [], 'metric' => 100, 'prefix' => '192.168.10.0/24' },
           { 'flag' => [], 'metric' => 100, 'prefix' => '192.168.20.0/24' }
         ]],
-        ['-', 'router-id', ['']]
+        ['-', 'router-id', '']
       ]
       expect(d_node.attribute.diff_state.diff_data).to eq dd_expected
     end

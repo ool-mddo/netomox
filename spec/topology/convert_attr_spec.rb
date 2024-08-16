@@ -24,7 +24,7 @@ RSpec.describe 'check attribute conversion functions' do
         }
       ],
       prefix_sets: [{ name: 'default-ipv4', prefixes: [{ prefix: '0.0.0.0/0' }] }],
-      as_path_sets: [{ group_name: 'any', as_path: { name: 'any', pattern: '.*' } }],
+      as_path_sets: [{ group_name: 'any', as_path: [{ name: 'any', pattern: '.*' }] }],
       community_sets: [{ communities: [{ community: '65518:1' }], name: 'aggregated' }],
       redistribute_list: [], # TBA
       flags: %w[foo bar]

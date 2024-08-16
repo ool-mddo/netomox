@@ -27,13 +27,19 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
 
   it 'returns bgp-as-path-set', :attr, :bgp_attr do
     args = [
-      { group_name: 'aspath-longer200', as_path: { name: 'aspath-longer200', pattern: '.{200,}' } },
-      { group_name: 'any', as_path: { name: 'any', pattern: '.*' } }
+      { group_name: 'any', as_path: [{ name: 'any', pattern: '.*' }] },
+      { group_name: 'aspath-pattern', as_path: [{ name: 'aspath-pattern', pattern: '.{200,}' }] },
+      { group_name: 'aspath-length-min', as_path: [{ name: 'aspath-length-min', length: { min: 24 } }] },
+      { group_name: 'aspath-length-max', as_path: [{ name: 'aspath-length-max', length: { max: 24 } }] },
+      { group_name: 'aspath-length-eq', as_path: [{ name: 'aspath-length-eq', length: { eq: 24 } }] }
     ]
     as_path_set = args.map { |a| Netomox::DSL::MddoBgpAsPathSet.new(**a) }
     as_path_set_data = [
-      { 'group-name' => 'aspath-longer200', 'as-path' => { 'name' => 'aspath-longer200', 'pattern' => '.{200,}' } },
-      { 'group-name' => 'any', 'as-path' => { 'name' => 'any', 'pattern' => '.*' } }
+      { 'group-name' => 'any', 'as-path' => [{ 'name' => 'any', 'pattern' => '.*' }] },
+      { 'group-name' => 'aspath-pattern', 'as-path' => [{ 'name' => 'aspath-pattern', 'pattern' => '.{200,}' }] },
+      { 'group-name' => 'aspath-length-min', 'as-path' => [{ 'name' => 'aspath-length-min', 'length' => { 'min' => 24 } }] },
+      { 'group-name' => 'aspath-length-max', 'as-path' => [{ 'name' => 'aspath-length-max', 'length' => { 'max' => 24 } }] },
+      { 'group-name' => 'aspath-length-eq', 'as-path' => [{ 'name' => 'aspath-length-eq', 'length' => { 'eq' => 24 } }] }
     ]
     expect(as_path_set.map(&:topo_data)).to eq as_path_set_data
   end
@@ -119,7 +125,8 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { as_path_group: 'asXXXXX-origin' },
       { community: ['aggregated'] },
       { prefix_list: 'asXXXXX-adv-ipv4' },
-      { prefix_list_filter: { prefix_list: 'default-ipv4', match_type: 'exact' } }
+      { prefix_list_filter: { prefix_list: 'default-ipv4', match_type: 'exact' } },
+      { unknown_bgp_condition_key: 'unknown_condition' }
     ]
     conditions = args.map { |a| Netomox::DSL::MddoBgpPolicyCondition.new(**a) }
     conditions_data = [
@@ -130,7 +137,8 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { 'as-path-group' => 'asXXXXX-origin' },
       { 'community' => ['aggregated'] },
       { 'prefix-list' => 'asXXXXX-adv-ipv4' },
-      { 'prefix-list-filter' => { 'prefix-list' => 'default-ipv4', 'match-type' => 'exact' } }
+      { 'prefix-list-filter' => { 'prefix-list' => 'default-ipv4', 'match-type' => 'exact' } },
+      { 'unknown-bgp-condition-key' => 'unknown_condition' } # to test Netomox::Topology::MddoBgpPolicyCondition
     ]
     expect(conditions.map(&:topo_data)).to eq conditions_data
   end
@@ -143,6 +151,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
     end.to raise_error(Netomox::DSL::DSLInvalidArgumentError, "Unknown bgp-policy element keyword: #{key} in #{arg}")
   end
 
+  # rubocop:disable RSpec/ExampleLength
   it 'returns bgp-policy-action', :attr, :bgp_attr do
     args = [
       { apply: 'reject-in-ipv4' },
@@ -150,7 +159,16 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { community: { action: 'set', name: 'aggregated' } },
       { next_hop: '172.31.255.1' },
       { local_preference: 300 },
-      { metric: 100 }
+      { metric: 100 },
+      {
+        as_path_prepend: [
+          { asn: 65_001 }, # omit repeat key (default: 1)
+          { asn: 65_001, repeat: 1 },
+          { asn: 65_002, repeat: 2 },
+          { asn: 65_003, repeat: 3 }
+        ]
+      },
+      { unknown_bgp_action_key: 'unknown_value' } # to test Netomox::Topology::MddoBgpPolicyAction
     ]
     actions = args.map { |a| Netomox::DSL::MddoBgpPolicyAction.new(**a) }
     actions_data = [
@@ -159,10 +177,20 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { 'community' => { 'action' => 'set', 'name' => 'aggregated' } },
       { 'next-hop' => '172.31.255.1' },
       { 'local-preference' => 300 },
-      { 'metric' => 100 }
+      { 'metric' => 100 },
+      {
+        'as-path-prepend' => [
+          { 'asn' => 65_001, 'repeat' => 1 },
+          { 'asn' => 65_001, 'repeat' => 1 },
+          { 'asn' => 65_002, 'repeat' => 2 },
+          { 'asn' => 65_003, 'repeat' => 3 }
+        ]
+      },
+      { 'unknown-bgp-action-key' => 'unknown_value' } # to test Netomox::Topology::MddoBgpPolicyAction
     ]
     expect(actions.map(&:topo_data)).to eq actions_data
   end
+  # rubocop:enable RSpec/ExampleLength
 
   it 'raises exception if unknown action keyword' do
     key = :apple
@@ -230,7 +258,14 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { name: 'default-ipv4', prefixes: [{ prefix: '0.0.0.0/0' }] }
     ]
     as_path_sets = [
-      { group_name: 'any', as_path: { name: 'any', pattern: '.*' } }
+      {
+        group_name: 'hoge',
+        as_path: [
+          { name: 'any', pattern: '.*' },
+          { name: '01', pattern: '65001+' },
+          { name: '02', length: { min: 25 } }
+        ]
+      }
     ]
     community_sets = [
       { communities: [{ community: '65518:1' }], name: 'aggregated' }
@@ -278,7 +313,14 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
       { 'name' => 'default-ipv4', 'prefixes' => [{ 'prefix' => '0.0.0.0/0' }] }
     ]
     as_path_set_data = [
-      { 'group-name' => 'any', 'as-path' => { 'name' => 'any', 'pattern' => '.*' } }
+      {
+        'group-name' => 'hoge',
+        'as-path' => [
+          { 'name' => 'any', 'pattern' => '.*' },
+          { 'name' => '01', 'pattern' => '65001+' },
+          { 'name' => '02', 'length' => { 'min' => 25 } }
+        ]
+      }
     ]
     community_set_data = [
       { 'communities' => [{ 'community' => '65518:1' }], 'name' => 'aggregated' }

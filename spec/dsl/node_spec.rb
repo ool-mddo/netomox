@@ -94,7 +94,7 @@ RSpec.describe 'node dsl', :dsl, :node do
       @l3attr_key => {
         'name' => '',
         'flag' => [],
-        'router-id' => [''],
+        'router-id' => '',
         'prefix' => [
           {
             'prefix' => '192.168.10.0/24',

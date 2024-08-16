@@ -7,9 +7,20 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
 
   # rubocop:disable RSpec/ExampleLength
   it 'generate bgp-policy actions' do
+    as_path_sets = [
+      {
+        group_name: 'hoge',
+        as_path: [
+          { name: 'any', pattern: '.*' },
+          { name: '01', pattern: '65001+' },
+          { name: '02a', length: { min: '10' } },
+          { name: '02b', length: { max: 100 } },
+          { name: '02c', length: { eq: '15' } }
+        ]
+      }
+    ]
     policies = [
       {
-        default: { actions: [{ target: 'reject' }] },
         name: 'ipv4-core',
         statements: [
           {
@@ -18,12 +29,22 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { target: 'accept' },
               { community: { action: 'set', name: 'aggregated' } },
               { next_hop: '172.31.255.1' },
+              # to test Netomox::Topology::MddoBgpPolicyAction
+              { unknown_bgp_action_key: 'unknown_value' },
               # accept both Integer and String number
               { local_preference: 300 },
               { local_preference: '310' },
               # accept both Integer and String number
               { metric: 100 },
-              { metric: '110' }
+              { metric: '110' },
+              {
+                as_path_prepend: [
+                  # asn and repeat accept both Integer and String number
+                  { asn: 65_001, repeat: '1' },
+                  { asn: '65001', repeat: 1 },
+                  { asn: 65_002, repeat: 2 }
+                ]
+              }
             ],
             conditions: [
               { protocol: 'bgp' },
@@ -31,6 +52,8 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { route_filter: { prefix: '0.0.0.0/0', length: {}, match_type: 'exact' } },
               # accept both Integer and String number
               { route_filter: { prefix: '0.0.0.0/0', length: { min: 32, max: '25' }, match_type: 'exact' } },
+              # to test Netomox::Topology::MddoBgpPolicyAction
+              { unknown_bgp_condition_key: 'unknown_condition' },
               { policy: 'reject-in-rule-ipv4' },
               { as_path_group: 'asXXXXX-origin' },
               { community: ['aggregated'] },
@@ -51,7 +74,14 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
             # without-if
             name: 'test-statement'
           }
-        ]
+        ],
+        default: {
+          actions: [
+            # to test Netomox::Topology::MddoBgpPolicyAction
+            { unknown_bgp_action_key: 'unknown_value' },
+            { target: 'reject' }
+          ]
+        }
       }
     ]
 
@@ -61,6 +91,7 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
         node 'node1' do
           attr = {
             router_id: '10.0.0.1',
+            as_path_sets: as_path_sets,
             policies: policies
           }
           attribute(attr)
@@ -71,9 +102,22 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
     target_nws = Netomox::Topology::Networks.new(topo_data)
     attr = target_nws.find_network('bgp_proc')&.find_node_by_name('node1')&.attribute
 
+    expected_as_path_sets = [
+      {
+        'group-name' => 'hoge',
+        'as-path' => [
+          { 'name' => 'any', 'pattern' => '.*' },
+          { 'name' => '01', 'pattern' => '65001+' },
+          { 'name' => '02a', 'length' => { 'min' => 10 } },
+          { 'name' => '02b', 'length' => { 'max' => 100 } },
+          { 'name' => '02c', 'length' => { 'eq' => 15 } }
+        ]
+      }
+    ]
     expected_policies = [
       {
         'default' => {
+          # skip unknown-bgp-action-key and continue next token
           'actions' => [{ 'target' => 'reject' }]
         },
         'name' => 'ipv4-core',
@@ -84,16 +128,25 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
               { 'target' => 'accept' },
               { 'community' => { 'action' => 'set', 'name' => 'aggregated' } },
               { 'next-hop' => '172.31.255.1' },
+              # skip unknown-bgp-action-key and continue next token
               { 'local-preference' => 300 },
               { 'local-preference' => 310 },
               { 'metric' => 100 },
-              { 'metric' => 110 }
+              { 'metric' => 110 },
+              {
+                'as-path-prepend' => [
+                  { 'asn' => 65_001, 'repeat' => 1 },
+                  { 'asn' => 65_001, 'repeat' => 1 },
+                  { 'asn' => 65_002, 'repeat' => 2 }
+                ]
+              }
             ],
             'conditions' => [
               { 'protocol' => 'bgp' },
               { 'rib' => 'inet.0' },
               { 'route-filter' => { 'prefix' => '0.0.0.0/0', 'length' => {}, 'match-type' => 'exact' } },
               { 'route-filter' => { 'prefix' => '0.0.0.0/0', 'length' => { 'min' => 32, 'max' => 25 }, 'match-type' => 'exact' } },
+              # skip unknown-bgp-condition-key and continue next token
               { 'policy' => 'reject-in-rule-ipv4' },
               { 'as-path-group' => 'asXXXXX-origin' },
               { 'community' => ['aggregated'] },
@@ -124,7 +177,7 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
       'peer-group' => [],
       'policy' => expected_policies,
       'prefix-set' => [],
-      'as-path-set' => [],
+      'as-path-set' => expected_as_path_sets,
       'community-set' => [],
       'redistribute' => [],
       'flag' => []

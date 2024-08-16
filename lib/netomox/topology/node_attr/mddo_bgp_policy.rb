@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require 'netomox/topology/attr_base'
-require_relative 'mddo_bgp_policy_action'
-require_relative 'mddo_bgp_policy_condition'
+require 'netomox/topology/node_attr/mddo_bgp_policy_as_path_set'
+require 'netomox/topology/node_attr/mddo_bgp_policy_action'
+require 'netomox/topology/node_attr/mddo_bgp_policy_condition'
 
 module Netomox
   module Topology
@@ -45,58 +46,6 @@ module Netomox
 
       # Attribute defs
       ATTR_DEFS = [{ int: :prefix, ext: 'prefix', default: '' }].freeze
-
-      # @param [Hash] data Attribute data (RFC8345)
-      # @param [String] type Attribute type (keyword of data in RFC8345)
-      def initialize(data, type)
-        super(ATTR_DEFS, data, type)
-      end
-    end
-
-    # as-path-set for bgp-policy
-    class MddoBgpAsPathSet < SubAttributeBase
-      # @!attribute [rw] as_path
-      #   @return [MddoBgpAsPath]
-      # @!attribute [rw] group_name
-      #   @return [String]
-      attr_accessor :as_path, :group_name
-
-      # Attribute defs
-      ATTR_DEFS = [
-        { int: :as_path, ext: 'as-path', default: {} },
-        { int: :group_name, ext: 'group-name', default: '' }
-      ].freeze
-
-      # @param [Hash] data Attribute data (RFC8345)
-      # @param [String] type Attribute type (keyword of data in RFC8345)
-      def initialize(data, type)
-        super(ATTR_DEFS, data, type)
-        @as_path = convert_as_path(data)
-      end
-
-      private
-
-      # @param [Hash] data Attribute data (RFC8345)
-      # @return [MddoBgpAsPath] Converted attribute data
-      def convert_as_path(data)
-        key = @attr_table.ext_of(:as_path)
-        MddoBgpAsPath.new(data[key], key)
-      end
-    end
-
-    # sub-data of as-path-set
-    class MddoBgpAsPath < SubAttributeBase
-      # @!attribute [rw] name
-      #   @return [String]
-      # @!attribute [rw] pattern
-      #   @return [String]
-      attr_accessor :name, :pattern
-
-      # Attribute defs
-      ATTR_DEFS = [
-        { int: :name, ext: 'name', default: '' },
-        { int: :pattern, ext: 'pattern', default: '' }
-      ].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
       # @param [String] type Attribute type (keyword of data in RFC8345)
@@ -165,7 +114,7 @@ module Netomox
       # Attribute defs
       ATTR_DEFS = [
         { int: :name, ext: 'name', default: '' },
-        { int: :default, ext: 'default', default: [] },
+        { int: :default, ext: 'default', default: {} },
         { int: :statements, ext: 'statements', default: [] }
       ].freeze
 
@@ -203,7 +152,8 @@ module Netomox
         'community' => MddoBgpPolicyActionCommunity,
         'next-hop' => MddoBgpPolicyActionNextHop,
         'local-preference' => MddoBgpPolicyActionLocalPreference,
-        'metric' => MddoBgpPolicyActionMetric
+        'metric' => MddoBgpPolicyActionMetric,
+        'as-path-prepend' => MddoBgpPolicyActionAsPathPrepend
       }.freeze
 
       # condition keyword and corresponding attribute class
@@ -221,19 +171,21 @@ module Netomox
       protected
 
       # @param [String] action_key
-      # @return [MddoBgpPolicyAction] Action attribute class correspond with the action key
+      # @return [MddoBgpPolicyAction, nil] Action attribute class correspond with the action key
       def action_attr(action_key)
         return ACTION_ATTR[action_key] if ACTION_ATTR.key?(action_key)
 
         Netomox.logger.error "Unknown bgp-policy action keyword: #{action_key}"
+        nil # error
       end
 
       # @param [String] condition_key
-      # @return [MddoBgpPolicyCondition] Condition attribute class correspond with the action key
+      # @return [MddoBgpPolicyCondition, nil] Condition attribute class correspond with the action key
       def condition_attr(condition_key)
         return CONDITION_ATTR[condition_key] if CONDITION_ATTR.key?(condition_key)
 
-        Netomox.logger.error "Unknown bgp-policy action keyword: #{condition_key}"
+        Netomox.logger.error "Unknown bgp-policy condition keyword: #{condition_key}"
+        nil # error
       end
     end
 
@@ -250,6 +202,7 @@ module Netomox
       # @param [String] type Attribute type (keyword of data in RFC8345)
       def initialize(data, type)
         super(ATTR_DEFS, data, type)
+        @actions = convert_statements(data)
       end
 
       private
@@ -258,7 +211,10 @@ module Netomox
       # @return [Array<MddoBgpPolicyAction>] Converted attribute data
       def convert_statements(data)
         key = @attr_table.ext_of(:actions)
-        operative_array_key?(data, key) ? data[key].map { |d| action_attr(d.keys[0]).new(d, key) } : []
+        return [] unless operative_array_key?(data, key)
+
+        # NOTE: if policy action includes unknown keyword, action_attr returns nil -> ignore it
+        data[key].map { |d| action_attr(d.keys[0])&.new(d, key) }.compact
       end
     end
 
@@ -307,14 +263,17 @@ module Netomox
       # @return [Array<MddoBgpPolicyAction>] Converted attribute data
       def convert_actions(data)
         key = @attr_table.ext_of(:actions)
-        operative_array_key?(data, key) ? data[key].map { |d| action_attr(d.keys[0]).new(d, key) } : []
+        return [] unless operative_array_key?(data, key)
+
+        # NOTE: if policy action includes unknown keyword, action_attr returns nil -> ignore it
+        data[key].map { |d| action_attr(d.keys[0])&.new(d, key) }.compact
       end
 
       # @param [Hash] data Attribute data (RFC8345)
       # @return [Array<MddoBgpPolicyCondition>] Converted attribute data
       def convert_conditions(data)
         key = @attr_table.ext_of(:conditions)
-        operative_array_key?(data, key) ? data[key].map { |d| condition_attr(d.keys[0]).new(d, key) } : []
+        operative_array_key?(data, key) ? data[key].map { |d| condition_attr(d.keys[0])&.new(d, key) }.compact : []
       end
     end
   end
