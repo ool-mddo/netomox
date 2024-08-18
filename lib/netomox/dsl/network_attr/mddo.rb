@@ -8,7 +8,7 @@ module Netomox
     # attribute for mddo-topology layer1 network
     class MddoL1NWAttribute < NetworkAttributeBase
       def initialize(**hash)
-        super(**hash)
+        super
         @type = "#{NS_MDDO}:l1-network-attributes"
       end
     end
@@ -16,7 +16,7 @@ module Netomox
     # attribute for mddo-topology layer2 network
     class MddoL2NWAttribute < NetworkAttributeBase
       def initialize(**hash)
-        super(**hash)
+        super
         @type = "#{NS_MDDO}:l2-network-attributes"
       end
     end
@@ -24,7 +24,7 @@ module Netomox
     # attribute for mddo-topology layer3 network
     class MddoL3NWAttribute < NetworkAttributeBase
       def initialize(**hash)
-        super(**hash)
+        super
         @type = "#{NS_MDDO}:l3-network-attributes"
       end
     end
@@ -64,7 +64,7 @@ module Netomox
     # attribute for mddo-topology bgp-proc network
     class MddoBgpProcNWAttribute < NetworkAttributeBase
       def initialize(**hash)
-        super(**hash)
+        super
         @type = "#{NS_MDDO}:bgp-proc-network-attributes"
       end
     end
@@ -72,7 +72,7 @@ module Netomox
     # attribute for mddo-topology bgp-as network
     class MddoBgpAsNWAttribute < NetworkAttributeBase
       def initialize(**hash)
-        super(**hash)
+        super
         @type = "#{NS_MDDO}:bgp-as-network-attributes"
       end
     end

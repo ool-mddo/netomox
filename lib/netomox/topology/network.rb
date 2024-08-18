@@ -123,7 +123,7 @@ module Netomox
       # @return [Boolean]
       def eql?(other)
         # TODO: now network types is literal (NOT object)
-        super(other) && @network_types == other.network_types
+        super && @network_types == other.network_types
       end
 
       # @return [String]

@@ -88,7 +88,7 @@ module Netomox
       attr_accessor :local_preference
 
       # Attribute defs
-      ATTR_DEFS = [{ int: :local_preference, ext: 'local-preference', default: -1, convert: ->(d) { d.to_i } }].freeze
+      ATTR_DEFS = [{ int: :local_preference, ext: 'local-preference', default: -1, convert: lambda(&:to_i) }].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
       # @param [String] type Attribute type (keyword of data in RFC8345)
@@ -104,7 +104,7 @@ module Netomox
       attr_accessor :metric
 
       # Attribute defs
-      ATTR_DEFS = [{ int: :metric, ext: 'metric', default: -1, convert: ->(d) { d.to_i } }].freeze
+      ATTR_DEFS = [{ int: :metric, ext: 'metric', default: -1, convert: lambda(&:to_i) }].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
       # @param [String] type Attribute type (keyword of data in RFC8345)
@@ -170,8 +170,8 @@ module Netomox
 
       # Attribute defs
       ATTR_DEFS = [
-        { int: :asn, ext: 'asn', default: -1, convert: ->(d) { d.to_i } },
-        { int: :repeat, ext: 'repeat', default: 1, convert: ->(d) { d.to_i } }
+        { int: :asn, ext: 'asn', default: -1, convert: lambda(&:to_i) },
+        { int: :repeat, ext: 'repeat', default: 1, convert: lambda(&:to_i) }
       ].freeze
 
       # @param [Hash] data Attribute data (RFC8345)

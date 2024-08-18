@@ -12,9 +12,8 @@ module Netomox
       # @return [void]
       def diff_backward_check(attrs)
         # receiver of this method will be (c)
-        bwd_states = []
-        attrs.each do |attr|
-          bwd_states.push(pick_backward_state(send(attr)))
+        bwd_states = attrs.map do |attr|
+          pick_backward_state(send(attr))
         end
         @diff_state.backward = backward_state_from(bwd_states)
       end

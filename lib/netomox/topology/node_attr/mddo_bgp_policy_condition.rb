@@ -220,8 +220,8 @@ module Netomox
 
       # Attribute defs
       ATTR_DEFS = [
-        { int: :min, ext: 'min', default: -1, convert: ->(d) { d.to_i } },
-        { int: :max, ext: 'max', default: -1, convert: ->(d) { d.to_i } }
+        { int: :min, ext: 'min', default: -1, convert: lambda(&:to_i) },
+        { int: :max, ext: 'max', default: -1, convert: lambda(&:to_i) }
       ].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
