@@ -8,7 +8,7 @@ module Netomox
     class OpsNodeAttribute < OpsAttributeBase
       # @param [Hash] hash Key-Value data of any attribute
       def initialize(hash)
-        super(hash)
+        super
         @type = "#{NS_OPS}:ops-node-attributes"
       end
     end

@@ -18,7 +18,7 @@ module Netomox
 
       # @param [String] name Name of the network
       def initialize(name)
-        super(name)
+        super
         @type = nil # Hash
         @nodes = [] # Array<PNode>
         @links = [] # Array<PLink>

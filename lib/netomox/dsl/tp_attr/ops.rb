@@ -8,7 +8,7 @@ module Netomox
     class OpsTPAttribute < OpsAttributeBase
       # @param [Hash] hash Key-Value data of any attribute
       def initialize(hash)
-        super(hash)
+        super
         @type = "#{NS_OPS}:ops-termination-point-attributes"
       end
     end

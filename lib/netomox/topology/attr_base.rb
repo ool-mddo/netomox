@@ -208,7 +208,7 @@ module Netomox
       attr_accessor :diff_state
 
       def initialize(attr_table, data, type)
-        super(attr_table, data, type)
+        super
         @diff_state = DiffState.new # empty state
       end
 

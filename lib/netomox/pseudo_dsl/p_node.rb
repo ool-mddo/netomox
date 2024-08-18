@@ -13,7 +13,7 @@ module Netomox
 
       # @param [String] name Name of the network
       def initialize(name)
-        super(name)
+        super
         @tps = [] # Array<PTermPoint>
       end
 
