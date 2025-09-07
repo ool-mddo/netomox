@@ -252,11 +252,11 @@ module Netomox
       # @raise [DSLInvalidArgumentError]
       def normalize_link_args(src_node, src_tp = nil, dst_node = nil, dst_tp = nil)
         # with 1 arg (an array)
-        return src_node if src_node.is_a?(Array) && check_normalize_args(src_node, 4)
+        return src_node if src_node.is_a?(Array) && check_normalize_args?(src_node, 4)
 
         # with 4 args
         args = [src_node, src_tp, dst_node, dst_tp]
-        return args if check_normalize_args(args, 4)
+        return args if check_normalize_args?(args, 4)
 
         raise DSLInvalidArgumentError, 'Link args is not satisfied: ' \
                                        "src: { node:#{src_node}, tp:#{src_tp}}, dst: { node:#{dst_node}, tp:#{dst_tp} }"

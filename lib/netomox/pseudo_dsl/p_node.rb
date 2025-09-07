@@ -20,7 +20,7 @@ module Netomox
       # Generate term-point name automatically
       # @return [String] term-point name
       def auto_tp_name
-        tp_names = @tps.map(&:name).filter { |name| name =~ /p\d+/ }
+        tp_names = @tps.map(&:name).grep { |name| name =~ /p\d+/ }
         tp_name_numbers = tp_names.map do |name|
           name =~ /p(\d+)/
           Regexp.last_match(1).to_i

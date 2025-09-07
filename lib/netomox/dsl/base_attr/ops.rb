@@ -19,7 +19,7 @@ module Netomox
       # @param [Boolean] include_private
       # @return [Boolean]
       def respond_to_missing?(method, include_private = false)
-        @attr.key?(method) ? true : super
+        @attr.key?(method) || super
       end
 
       # To be respond any attribute Key as accessor (instance method)

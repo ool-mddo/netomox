@@ -30,7 +30,7 @@ module Netomox
 
       protected
 
-      def check_normalize_args(args, length)
+      def check_normalize_args?(args, length)
         !args.map { |e| e.is_a?(String) && !e.empty? }.include?(false) && args.length == length
       end
     end

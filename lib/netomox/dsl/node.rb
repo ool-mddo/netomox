@@ -239,11 +239,11 @@ module Netomox
       # @raise [DSLInvalidArgumentError]
       def normalize_support_ref(nw_ref, node_ref = nil)
         # with 1 arg (an array)
-        return nw_ref if nw_ref.is_a?(Array) && check_normalize_args(nw_ref, 2)
+        return nw_ref if nw_ref.is_a?(Array) && check_normalize_args?(nw_ref, 2)
 
         # with 2 args
         args = [nw_ref, node_ref]
-        return args if check_normalize_args(args, 2)
+        return args if check_normalize_args?(args, 2)
 
         raise DSLInvalidArgumentError, 'Support node args is not satisfied: ' \
                                        "nw_ref:#{nw_ref}, node_ref:#{node_ref}"
