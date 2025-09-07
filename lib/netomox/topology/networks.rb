@@ -164,6 +164,9 @@ module Netomox
       # @param [Networks] other Networks to compare
       # @return [Networks] Result of comparison
       def diff(other)
+        # clear diff state
+        clear_diff_state
+        other.clear_diff_state
         # forward check
         d_networks = Networks.new({})
         d_networks.networks = diff_forward_check_of(:networks, other)
@@ -188,6 +191,11 @@ module Netomox
             'network' => @networks.map(&:to_data)
           }
         }
+      end
+
+      # @return [void]
+      def clear_diff_state
+        @networks.each(&:clear_diff_state)
       end
 
       private

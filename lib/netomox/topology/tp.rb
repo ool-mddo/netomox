@@ -51,9 +51,17 @@ module Netomox
         add_supports_and_attr(data, 'supporting-termination-point')
       end
 
+      # @return [void]
+      def clear_diff_state
+        @diff_state = DiffState.new
+      end
+
       # @param [TermPoint] other Term-point to compare
       # @return [TermPoint] Result of comparison
       def diff(other)
+        # clear diff state
+        clear_diff_state
+        other.clear_diff_state
         # forward check
         d_tp = TermPoint.new({ 'tp-id' => @name }, @parent_path)
         d_tp.supports = diff_supports(other)

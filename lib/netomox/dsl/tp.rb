@@ -180,11 +180,11 @@ module Netomox
       # @raise [DSLInvalidArgumentError]
       def normalize_support_ref(nw_ref, node_ref = nil, tp_ref = nil)
         # with 1 arg (an array)
-        return nw_ref if nw_ref.is_a?(Array) && check_normalize_args(nw_ref, 3)
+        return nw_ref if nw_ref.is_a?(Array) && check_normalize_args?(nw_ref, 3)
 
         # with 3 args
         args = [nw_ref, node_ref, tp_ref]
-        return args if check_normalize_args(args, 3)
+        return args if check_normalize_args?(args, 3)
 
         raise DSLInvalidArgumentError, 'Support term-point args is not satisfied: ' \
                                        "nw_ref:#{nw_ref}, node_ref:#{node_ref}, tp_ref:#{tp_ref}"
