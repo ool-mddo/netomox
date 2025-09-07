@@ -43,6 +43,9 @@ module Netomox
       # @param [Link] other Link to compare
       # @return [Link] Result of comparison
       def diff(other)
+        # clear diff state
+        clear_diff_state
+        other.clear_diff_state
         # forward check
         d_link = Link.new({ 'link-id' => @name }, @parent_path)
         d_link.source = diff_link_tp(:source, other)
@@ -76,6 +79,11 @@ module Netomox
           'destination' => @destination.to_data(:destination)
         }
         add_supports_and_attr(data, 'supporting-link')
+      end
+
+      # @return [void]
+      def clear_diff_state
+        @diff_state = DiffState.new
       end
 
       private

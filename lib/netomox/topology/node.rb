@@ -41,6 +41,9 @@ module Netomox
       # @param [Node] other Node to compare
       # @return [Node] Result of comparison
       def diff(other)
+        # clear diff state
+        clear_diff_state
+        other.clear_diff_state
         # forward check
         d_node = Node.new({ 'node-id' => @name }, @parent_path)
         attr = :termination_points
@@ -73,6 +76,12 @@ module Netomox
           "#{NS_TOPO}:termination-point" => @termination_points.map(&:to_data)
         }
         add_supports_and_attr(data, 'supporting-node')
+      end
+
+      # @return [void]
+      def clear_diff_state
+        @termination_points.delete_if { |tp| tp.diff_state.detect == :deleted }
+        @termination_points.each(&:clear_diff_state)
       end
 
       # Find all support-node that links to specified network

@@ -134,6 +134,9 @@ module Netomox
       # @param [Network] other Network to compare
       # @return [Network] Result of comparison
       def diff(other)
+        # clear diff state
+        clear_diff_state
+        other.clear_diff_state
         # forward check
         d_network = Network.new('network-id' => @name)
         # TODO: diff of network-types is not implemented yet
@@ -166,6 +169,15 @@ module Netomox
           "#{NS_TOPO}:link" => @links.map(&:to_data)
         }
         add_supports_and_attr(data, 'supporting-network')
+      end
+
+      # @return [void]
+      def clear_diff_state
+        @nodes.delete_if { |node| node.diff_state.detect == :deleted }
+        @links.delete_if { |link| link.diff_state.detect == :deleted }
+
+        @nodes.each(&:clear_diff_state)
+        @links.each(&:clear_diff_state)
       end
 
       private
