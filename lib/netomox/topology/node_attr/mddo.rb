@@ -3,6 +3,7 @@
 require 'netomox/topology/attr_base'
 require 'netomox/topology/node_attr/base'
 require 'netomox/topology/node_attr/mddo_l3_static_route'
+require 'netomox/topology/node_attr/mddo_l3_firewall'
 require 'netomox/topology/node_attr/mddo_ospf_redistribute'
 require 'netomox/topology/node_attr/mddo_bgp_policy'
 
@@ -68,27 +69,44 @@ module Netomox
       # @!attribute [rw] node_type
       #   @return [String]
       # @!attribute [rw] static_routes
-      #   @return []
-      attr_accessor :node_type, :static_routes
+      #   @return [Array<MddoL3StaticRoute>]
+      # @!attribute [rw] firewall
+      #   @return [MddoL3Firewall]
+      attr_accessor :node_type, :static_routes, :firewall
 
       # Attribute definition of L3 node
       ATTR_DEFS = [
         { int: :node_type, ext: 'node-type', default: '' },
-        { int: :static_routes, ext: 'static-route', default: [] }
+        { int: :static_routes, ext: 'static-route', default: [] },
+        { int: :firewall, ext: 'firewall', default: {} }
       ].freeze
 
       def initialize(data, type)
         super(ATTR_DEFS, data, type)
         @static_routes = convert_static_routes(data)
+        @firewall = convert_firewall(data)
+      end
+
+      def to_data
+        data = super
+        data.delete('firewall') if @firewall.empty?
+        data
       end
 
       private
 
       # @param [Hash] data Attribute data (RFC8345)
-      # @return [Array<L3Prefix>] Converted attribute data
+      # @return [Array<MddoL3StaticRoute>] Converted attribute data
       def convert_static_routes(data)
         key = @attr_table.ext_of(:static_routes)
         operative_array_key?(data, key) ? data[key].map { |s| MddoL3StaticRoute.new(s, key) } : []
+      end
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @return [MddoL3Firewall] Converted attribute data
+      def convert_firewall(data)
+        key = @attr_table.ext_of(:firewall)
+        MddoL3Firewall.new(operative_hash_key?(data, key) ? data[key] : {}, key)
       end
     end
 

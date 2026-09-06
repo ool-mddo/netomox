@@ -3,6 +3,7 @@
 require 'netomox/const'
 require 'netomox/dsl/node_attr/rfc_prefix'
 require 'netomox/dsl/node_attr/mddo_l3_static_route'
+require 'netomox/dsl/node_attr/mddo_l3_firewall'
 require 'netomox/dsl/node_attr/mddo_ospf_redistribute'
 require 'netomox/dsl/node_attr/mddo_bgp_policy'
 
@@ -90,7 +91,9 @@ module Netomox
       #   @return [Array<MddoL3StaticRoute>]
       # @!attribute [rw] flags
       #   @return [Array<String>]
-      attr_accessor :node_type, :prefixes, :static_routes, :flags
+      # @!attribute [rw] firewall
+      #   @return [MddoL3Firewall]
+      attr_accessor :node_type, :prefixes, :static_routes, :flags, :firewall
       # @!attribute [r] type
       #   @return [String]
       attr_reader :type
@@ -99,28 +102,32 @@ module Netomox
       # @param [Array<Hash>] prefixes Prefixes at the node
       # @param [Array<Hash>] static_routes Static routes at the node
       # @param [Array<String>] flags Flags
-      def initialize(node_type: '', prefixes: [], static_routes: [], flags: [])
+      # @param [Hash] firewall Firewall attribute data
+      def initialize(node_type: '', prefixes: [], static_routes: [], flags: [], firewall: {})
         @node_type = node_type
         @prefixes = prefixes.map { |p| L3Prefix.new(**p) }
         @static_routes = static_routes.map { |s| MddoL3StaticRoute.new(**s) }
         @flags = flags
+        @firewall = MddoL3Firewall.new(**firewall)
         @type = "#{NS_MDDO}:l3-node-attributes"
       end
 
       # Convert to RFC8345 topology data
       # @return [Hash]
       def topo_data
-        {
+        data = {
           'node-type' => @node_type,
           'prefix' => @prefixes.map(&:topo_data),
           'static-route' => @static_routes.map(&:topo_data),
           'flag' => @flags
         }
+        data['firewall'] = @firewall.topo_data unless @firewall.empty?
+        data
       end
 
       # @return [Boolean]
       def empty?
-        @node_type.empty? && @prefixes.empty? && @static_routes.empty? && @flags.empty?
+        @node_type.empty? && @prefixes.empty? && @static_routes.empty? && @flags.empty? && @firewall.empty?
       end
     end
 
