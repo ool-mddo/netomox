@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'L3 firewall node dsl', :dsl, :mddo, :node, :firewall do
+RSpec.describe 'L3 firewall node dsl', :dsl, :firewall, :mddo, :node do
   before do
     nws = Netomox::DSL::Networks.new do
       network 'test-L3' do

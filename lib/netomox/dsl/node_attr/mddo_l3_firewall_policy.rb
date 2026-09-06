@@ -18,8 +18,6 @@ module Netomox
       #   @return [String]
       attr_accessor :name, :action, :application, :source_address, :destination_address
 
-      # rubocop:disable Metrics/ParameterLists
-
       # @param [String] name Rule name
       # @param [String] action 'permit' or 'deny'
       # @param [String] application Application filter
@@ -32,7 +30,6 @@ module Netomox
         @source_address = source_address
         @destination_address = destination_address
       end
-      # rubocop:enable Metrics/ParameterLists
 
       # Convert to RFC8345 topology data
       # @return [Hash]
