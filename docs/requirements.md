@@ -18,8 +18,12 @@ netomox のデータコンテナがその情報を保持できることを要求
 - `node_type` は変更しない (`'node'` のまま)
 
 **R2: クラスタペア情報**
-- FW ノードは HA クラスタのプライマリ・セカンダリ名を保持できること
-- フィールド: `firewall.pair.primary` (String), `firewall.pair.secondary` (String)
+- FW ノードは HA クラスタのペア情報を `cluster_firewall_pairs` 配列で保持できること
+- 各ペアはプライマリ・セカンダリのノード情報を持つこと
+- 各ノードはノード名 (`name`) と非典型インタフェースリスト (`atypical_interfaces`) を持つこと
+- 各非典型インタフェースはインタフェース名 (`name`)、役割 (`role`: `'fabric'` または `'control'`)、
+  ファブリック固有オプション (`fabric_options`、`role == 'fabric'` のときのみ) を持つこと
+- `fabric_options` はメンバインタフェース名リスト (`member_interfaces`) を持つこと
 
 **R3: セキュリティゾーン定義**
 - FW ノードは複数のセキュリティゾーンを定義できること
@@ -51,7 +55,7 @@ netomox のデータコンテナがその情報を保持できることを要求
 | 要求 | Topology クラス | DSL クラス |
 |---|---|---|
 | R1 | `MddoL3NodeAttribute#flags` (既存) | 同左 |
-| R2 | `MddoL3FirewallPair` | `MddoL3FirewallPair` |
+| R2 | `MddoL3FirewallClusterPair`, `MddoL3FirewallClusterNode`, `MddoL3FirewallAtypicalInterface`, `MddoL3FirewallFabricOptions` | 同左 |
 | R3 | `MddoL3FirewallZone` | `MddoL3FirewallZone` |
 | R4 | `MddoL3FirewallPolicy`, `MddoL3FirewallPolicyRule` | 同左 |
 | R2–R4 コンテナ | `MddoL3Firewall` | `MddoL3Firewall` |
