@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'netomox/topology/attr_base'
-require 'netomox/topology/node_attr/mddo_l3_firewall_pair'
+require 'netomox/topology/node_attr/mddo_l3_firewall_cluster_pair'
 require 'netomox/topology/node_attr/mddo_l3_firewall_zone'
 require 'netomox/topology/node_attr/mddo_l3_firewall_policy'
 
@@ -9,16 +9,16 @@ module Netomox
   module Topology
     # Firewall attribute container for L3 node attribute
     class MddoL3Firewall < SubAttributeBase
-      # @!attribute [rw] pair
-      #   @return [MddoL3FirewallPair]
+      # @!attribute [rw] cluster_firewall_pairs
+      #   @return [Array<MddoL3FirewallClusterPair>]
       # @!attribute [rw] zones
       #   @return [Array<MddoL3FirewallZone>]
       # @!attribute [rw] policies
       #   @return [Array<MddoL3FirewallPolicy>]
-      attr_accessor :pair, :zones, :policies
+      attr_accessor :cluster_firewall_pairs, :zones, :policies
 
       ATTR_DEFS = [
-        { int: :pair, ext: 'pair', default: {} },
+        { int: :cluster_firewall_pairs, ext: 'cluster-firewall-pair', default: [] },
         { int: :zones, ext: 'zone', default: [] },
         { int: :policies, ext: 'policy', default: [] }
       ].freeze
@@ -27,18 +27,22 @@ module Netomox
       # @param [String] type Attribute type (keyword of data in RFC8345)
       def initialize(data, type)
         super(ATTR_DEFS, data, type)
-        @pair = convert_pair(data)
+        @cluster_firewall_pairs = convert_cluster_firewall_pairs(data)
         @zones = convert_zones(data)
         @policies = convert_policies(data)
+      end
+
+      def empty?
+        @cluster_firewall_pairs.empty?
       end
 
       private
 
       # @param [Hash] data Attribute data (RFC8345)
-      # @return [MddoL3FirewallPair]
-      def convert_pair(data)
-        key = @attr_table.ext_of(:pair)
-        MddoL3FirewallPair.new(operative_hash_key?(data, key) ? data[key] : {}, key)
+      # @return [Array<MddoL3FirewallClusterPair>]
+      def convert_cluster_firewall_pairs(data)
+        key = @attr_table.ext_of(:cluster_firewall_pairs)
+        operative_array_key?(data, key) ? data[key].map { |p| MddoL3FirewallClusterPair.new(p, key) } : []
       end
 
       # @param [Hash] data Attribute data (RFC8345)

@@ -10,7 +10,24 @@ RSpec.describe 'check L3 firewall node attribute with Mddo-model' do
             node_type: 'node',
             flags: ['firewall'],
             firewall: {
-              pair: { primary: 'site-a-fw-1', secondary: 'site-a-fw-2' },
+              cluster_firewall_pairs: [
+                {
+                  primary: {
+                    name: 'site-a-fw-1',
+                    atypical_interfaces: [
+                      { name: 'ge-0/0/0', role: 'fabric', fabric_options: { member_interfaces: ['ge-0/0/0'] } },
+                      { name: 'ge-0/0/1', role: 'control' }
+                    ]
+                  },
+                  secondary: {
+                    name: 'site-a-fw-2',
+                    atypical_interfaces: [
+                      { name: 'ge-0/0/0', role: 'fabric', fabric_options: { member_interfaces: ['ge-0/0/0'] } },
+                      { name: 'ge-0/0/1', role: 'control' }
+                    ]
+                  }
+                }
+              ],
               zones: [
                 { name: 'trust', interfaces: [] },
                 { name: 'untrust', interfaces: [] },
@@ -66,7 +83,26 @@ RSpec.describe 'check L3 firewall node attribute with Mddo-model' do
       'static-route' => [],
       'flag' => ['firewall'],
       'firewall' => {
-        'pair' => { 'primary' => 'site-a-fw-1', 'secondary' => 'site-a-fw-2' },
+        'cluster-firewall-pair' => [
+          {
+            'primary' => {
+              'name' => 'site-a-fw-1',
+              'atypical-interface' => [
+                { 'name' => 'ge-0/0/0', 'role' => 'fabric',
+                  'fabric-options' => { 'member-interface' => ['ge-0/0/0'] } },
+                { 'name' => 'ge-0/0/1', 'role' => 'control' }
+              ]
+            },
+            'secondary' => {
+              'name' => 'site-a-fw-2',
+              'atypical-interface' => [
+                { 'name' => 'ge-0/0/0', 'role' => 'fabric',
+                  'fabric-options' => { 'member-interface' => ['ge-0/0/0'] } },
+                { 'name' => 'ge-0/0/1', 'role' => 'control' }
+              ]
+            }
+          }
+        ],
         'zone' => [
           { 'name' => 'trust',   'interface' => [] },
           { 'name' => 'untrust', 'interface' => [] },
@@ -107,10 +143,19 @@ RSpec.describe 'check L3 firewall node attribute with Mddo-model' do
     expect(attr&.to_data).not_to have_key('firewall')
   end
 
-  it 'can access firewall pair info' do
+  it 'can access firewall cluster pair info' do
     attr = @nws.find_network('nw_l3')&.find_node_by_name('fw-node')&.attribute
-    expect(attr&.firewall&.pair&.primary).to eq 'site-a-fw-1'
-    expect(attr&.firewall&.pair&.secondary).to eq 'site-a-fw-2'
+    pair = attr&.firewall&.cluster_firewall_pairs&.first
+    expect(pair&.primary&.name).to eq 'site-a-fw-1'
+    expect(pair&.secondary&.name).to eq 'site-a-fw-2'
+  end
+
+  it 'can access atypical interface fabric options' do
+    attr = @nws.find_network('nw_l3')&.find_node_by_name('fw-node')&.attribute
+    cluster_pair = attr&.firewall&.cluster_firewall_pairs&.first
+    primary_node = cluster_pair&.primary
+    fabric_if = primary_node&.atypical_interfaces&.find { |i| i.role == 'fabric' }
+    expect(fabric_if&.fabric_options&.member_interfaces).to eq ['ge-0/0/0']
   end
 
   it 'can access firewall zones' do
