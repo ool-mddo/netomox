@@ -71,7 +71,7 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
     expect(node.topo_data).to eq node_data
   end
 
-  # rubocop:disable RSpec/ExampleLength
+  # rubocop:disable-next RSpec/ExampleLength
   it 'generate node that has L3 attribute', :attr, :l3attr do
     node_attr = {
       node_type: 'segment',
@@ -110,7 +110,6 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
     }
     expect(node.topo_data).to eq node_data
   end
-  # rubocop:enable RSpec/ExampleLength
 
   it 'generate node that has ospf-area attribute', :attr, :ospf_attr do
     node_attr = {
@@ -146,7 +145,7 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
     expect(node.topo_data).to eq node_data
   end
 
-  # rubocop:disable RSpec/ExampleLength
+  # rubocop:disable-next RSpec/ExampleLength
   it 'generate node that has bgp-proc attribute', :attr, :bgp_attr do
     node_attr = {
       router_id: '10.0.0.4',
@@ -208,7 +207,6 @@ RSpec.describe 'node dsl', :dsl, :mddo, :node do
     }
     expect(node.topo_data).to eq node_data
   end
-  # rubocop:enable RSpec/ExampleLength
 
   it 'generate node that has bgp-as attribute', :attr, :bgp_attr do
     node_attr = {

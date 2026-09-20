@@ -65,13 +65,13 @@ module Netomox
       # when attribute has sub-attribute, define #diff method in sub class.
       # @return [Boolean]
       def diff?
-        self.class.instance_methods.include?(:diff)
+        self.class.method_defined?(:diff)
       end
 
       # attribute class has #fill method or not?
       # @return [Boolean]
       def fill?
-        self.class.instance_methods.include?(:fill)
+        self.class.method_defined?(:fill)
       end
 
       # Convert to data for RFC8345 format
@@ -136,7 +136,7 @@ module Netomox
       # @param [Array, AttributeBase, Hash] attr An attribute
       # @return [Array<Hash>, Hash] RFC8345 converted data
       def select_child_attr(attr)
-        if attr.is_a?(Array) && attr.all? { |d| d.is_a?(SubAttributeBase) }
+        if attr.is_a?(Array) && attr.all?(SubAttributeBase)
           # for sub-attribute array
           attr.map(&:to_data)
         elsif attr.is_a?(SubAttributeBase)

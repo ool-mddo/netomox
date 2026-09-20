@@ -58,7 +58,7 @@ module Netomox
       # @param [Integer] port_vlan_id
       # @param [Array<String>] vlan_id_names
       # @param [String] tp_state
-      # rubocop:disable Metrics/ParameterLists
+      # rubocop:disable-next Metrics/ParameterLists
       def initialize(descr: '', max_frame_size: 1500, mac_addr: '',
                      eth_encap: '', port_vlan_id: 0,
                      vlan_id_names: [], tp_state: 'in-use')
@@ -75,7 +75,6 @@ module Netomox
         @tp_state = tp_state
         @type = "#{NS_L2NW}:l2-termination-point-attributes"
       end
-      # rubocop:enable Metrics/ParameterLists
 
       # @return [Boolean]
       def empty?

@@ -2,8 +2,6 @@ inherit_from: .rubocop_todo.yml
 
 plugins:
   - rubocop-rake
-  - rubocop-capybara
-require:
   - rubocop-rspec
 
 AllCops:
@@ -34,8 +32,7 @@ Style/BlockComments:
 Style/SafeNavigationChainLength:
   Max: 3
 
-RSpecRails:
-  Enabled: false
+Style/OneClassPerFile:
+  Exclude:
+    - 'exe/**/*'
 
-FactoryBot:
-  Enabled: false

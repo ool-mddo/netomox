@@ -61,7 +61,7 @@ module Netomox
       # @param [Hash] data Attribute data (RFC8345)
       # @return [Array<MddoL3FirewallPolicyRule>]
       def convert_rules(data)
-        key = @attr_table.ext_of(:rules)  # 'rules'
+        key = @attr_table.ext_of(:rules)
         operative_array_key?(data, key) ? data[key].map { |r| MddoL3FirewallPolicyRule.new(r, key) } : []
       end
     end

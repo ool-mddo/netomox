@@ -155,7 +155,7 @@ RSpec.describe 'check node attribute with Mddo-model' do
     expect(attr&.to_data).to eq expected_attr
   end
 
-  # rubocop:disable RSpec/ExampleLength
+  # rubocop:disable-next RSpec/ExampleLength
   it 'has MDDO bgp-proc node attribute' do
     attr = @nws.find_network('nw_bgp_proc')&.find_node_by_name('node1')&.attribute
     expected_attr = {
@@ -201,7 +201,6 @@ RSpec.describe 'check node attribute with Mddo-model' do
     }
     expect(attr&.to_data).to eq expected_attr
   end
-  # rubocop:enable RSpec/ExampleLength
 
   it 'has MDDO bgp-as node attribute' do
     attr = @nws.find_network('nw_bgp_as')&.find_node_by_name('node1')&.attribute

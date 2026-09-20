@@ -151,7 +151,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
     end.to raise_error(Netomox::DSL::DSLInvalidArgumentError, "Unknown bgp-policy element keyword: #{key} in #{arg}")
   end
 
-  # rubocop:disable RSpec/ExampleLength
+  # rubocop:disable-next RSpec/ExampleLength
   it 'returns bgp-policy-action', :attr, :bgp_attr do
     args = [
       { apply: 'reject-in-ipv4' },
@@ -190,7 +190,6 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
     ]
     expect(actions.map(&:topo_data)).to eq actions_data
   end
-  # rubocop:enable RSpec/ExampleLength
 
   it 'raises exception if unknown action keyword' do
     key = :apple
@@ -252,7 +251,7 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
     expect(policies.map(&:topo_data)).to eq policies_data
   end
 
-  # rubocop:disable RSpec/ExampleLength
+  # rubocop:disable-next RSpec/ExampleLength
   it 'generate node that has bgp-policy attribute', :attr, :bgp_attr do
     prefix_sets = [
       { name: 'default-ipv4', prefixes: [{ prefix: '0.0.0.0/0' }] }
@@ -372,5 +371,4 @@ RSpec.describe 'node bgp-policy attribute dsl', :dsl, :mddo, :node do
     }
     expect(node.topo_data).to eq node_data
   end
-  # rubocop:enable RSpec/ExampleLength
 end

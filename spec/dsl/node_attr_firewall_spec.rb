@@ -12,7 +12,7 @@ RSpec.describe 'L3 firewall node dsl', :dsl, :firewall, :mddo, :node do
     @l3attr_key = "#{Netomox::NS_MDDO}:l3-node-attributes"
   end
 
-  # rubocop:disable RSpec/ExampleLength
+  # rubocop:disable-next RSpec/ExampleLength
   it 'generate firewall node with full firewall attribute' do
     node_attr = {
       node_type: 'node',
@@ -113,7 +113,6 @@ RSpec.describe 'L3 firewall node dsl', :dsl, :firewall, :mddo, :node do
     }
     expect(node.topo_data).to eq node_data
   end
-  # rubocop:enable RSpec/ExampleLength
 
   it 'does not include firewall key for non-firewall node' do
     node_attr = { node_type: 'node', prefixes: [{ prefix: '192.168.0.0/24', metric: 1, flags: [] }] }

@@ -115,7 +115,7 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
     expect(tp.topo_data).to eq tp_data
   end
 
-  # rubocop:disable RSpec/ExampleLength
+  # rubocop:disable-next RSpec/ExampleLength
   it 'generate term-point that has ospf-area attribute', :attr, :ospf_attr do
     tp_attr = {
       network_type: 'p2p',
@@ -157,9 +157,8 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
     }
     expect(tp.topo_data).to eq tp_data
   end
-  # rubocop:enable RSpec/ExampleLength
 
-  # rubocop:disable RSpec/ExampleLength
+  # rubocop:disable-next RSpec/ExampleLength
   it 'generates term-point that has bgp-proc attribute', :attr, :bgp_attr do
     tp_attr = {
       local_as: 65_531,
@@ -207,7 +206,6 @@ RSpec.describe 'termination point dsl', :dsl, :tp do
     }
     expect(tp.topo_data).to eq tp_data
   end
-  # rubocop:enable RSpec/ExampleLength
 
   it 'generates term-point that has bgp-as attribute', :attr, :bgp_attr do
     tp_attr = { description: 'bgp-as tp descr', flags: %w[foo bar] }

@@ -19,10 +19,12 @@ RSpec.describe 'networks dsl', :dsl, :network, :networks do
     nws_data = {
       @nws_key => {
         'network' => [
-          'network-id' => 'nw1',
-          'network-types' => {},
-          'node' => [],
-          @link_key => []
+          {
+            'network-id' => 'nw1',
+            'network-types' => {},
+            'node' => [],
+            @link_key => []
+          }
         ]
       }
     }

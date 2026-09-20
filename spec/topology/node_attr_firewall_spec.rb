@@ -72,7 +72,7 @@ RSpec.describe 'check L3 firewall node attribute with Mddo-model' do
     @default_diff_state = { backward: nil, forward: :kept, pair: '' }
   end
 
-  # rubocop:disable RSpec/ExampleLength
+  # rubocop:disable-next RSpec/ExampleLength
   it 'has firewall node attribute with all sections' do
     attr = @nws.find_network('nw_l3')&.find_node_by_name('fw-node')&.attribute
     expected_attr = {
@@ -134,7 +134,6 @@ RSpec.describe 'check L3 firewall node attribute with Mddo-model' do
     }
     expect(attr&.to_data).to eq expected_attr
   end
-  # rubocop:enable RSpec/ExampleLength
 
   it 'does not have firewall key for non-firewall node' do
     attr = @nws.find_network('nw_l3')&.find_node_by_name('normal-node')&.attribute

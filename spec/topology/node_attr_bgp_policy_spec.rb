@@ -5,7 +5,7 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
     @default_diff_state = { backward: nil, forward: :kept, pair: '' }
   end
 
-  # rubocop:disable RSpec/ExampleLength
+  # rubocop:disable-next RSpec/ExampleLength
   it 'generate bgp-policy actions' do
     as_path_sets = [
       {
@@ -184,5 +184,4 @@ RSpec.describe 'check bgp-proc node bgp-policy attribute' do
     }
     expect(attr&.to_data).to eq expected_attr
   end
-  # rubocop:enable RSpec/ExampleLength
 end
