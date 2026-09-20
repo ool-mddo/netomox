@@ -24,7 +24,7 @@ module Netomox
       def topo_data
         {
           'name' => @name,
-          'interface' => @interfaces
+          'interfaces' => @interfaces
         }
       end
     end

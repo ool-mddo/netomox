@@ -38,8 +38,8 @@ module Netomox
           'name' => @name,
           'action' => @action,
           'application' => @application,
-          'source-address' => @source_address,
-          'destination-address' => @destination_address
+          'source_address' => @source_address,
+          'destination_address' => @destination_address
         }
       end
     end
@@ -67,9 +67,9 @@ module Netomox
       # @return [Hash]
       def topo_data
         {
-          'from-zone' => @from_zone,
-          'to-zone' => @to_zone,
-          'rule' => @rules.map(&:topo_data)
+          'from_zone' => @from_zone,
+          'to_zone' => @to_zone,
+          'rules' => @rules.map(&:topo_data)
         }
       end
     end

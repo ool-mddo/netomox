@@ -35,36 +35,35 @@ FW 関連データをすべて `firewall` キー 1 つに束ねる設計を採�
   "prefix": [],
   "static-route": [],
   "firewall": {
-    "cluster-firewall-pair": [
-      {
-        "primary": {
-          "name": "site-a-fw-1",
-          "atypical-interface": [
-            { "name": "ae0", "role": "fabric",
-              "fabric-options": { "member-interface": ["ge-0/0/0"] } },
-            { "name": "ge-0/0/1", "role": "control" }
-          ]
-        },
-        "secondary": {
-          "name": "site-a-fw-2",
-          "atypical-interface": [
-            { "name": "ae0", "role": "fabric",
-              "fabric-options": { "member-interface": ["ge-0/0/0"] } },
-            { "name": "ge-0/0/1", "role": "control" }
-          ]
-        }
+    "node": "site-a-fw-1",
+    "pair": {
+      "primary": {
+        "name": "site-a-fw-1",
+        "atypical_interfaces": [
+          { "name": "ae0", "role": "fabric",
+            "fabric_options": { "member_interfaces": ["ge-0/0/0"] } },
+          { "name": "ge-0/0/1", "role": "control" }
+        ]
+      },
+      "secondary": {
+        "name": "site-a-fw-2",
+        "atypical_interfaces": [
+          { "name": "ae0", "role": "fabric",
+            "fabric_options": { "member_interfaces": ["ge-0/0/0"] } },
+          { "name": "ge-0/0/1", "role": "control" }
+        ]
       }
+    },
+    "zones": [
+      { "name": "WAN", "interfaces": ["ge-0/0/1.0", "ge-7/0/1.0"] },
+      { "name": "LAN", "interfaces": ["ge-0/0/2.0", "ge-7/0/2.0"] }
     ],
-    "zone": [
-      { "name": "WAN", "interface": ["ge-0/0/1.0", "ge-7/0/1.0"] },
-      { "name": "LAN", "interface": ["ge-0/0/2.0", "ge-7/0/2.0"] }
-    ],
-    "policy": [
+    "policies": [
       {
-        "from-zone": "LAN", "to-zone": "WAN",
-        "rule": [
+        "from_zone": "LAN", "to_zone": "WAN",
+        "rules": [
           { "name": "DEFAULT", "action": "permit", "application": "any",
-            "source-address": "any", "destination-address": "any" }
+            "source_address": "any", "destination_address": "any" }
         ]
       }
     ]
@@ -98,18 +97,18 @@ FW はあくまで `'node'` ロールであり、FW 識別は `flags: ['firewall
 
 ---
 
-### クラスタペア情報 (2026-09-11 改訂)
+### クラスタペア情報 (2026-09-11 改訂、2026-09-20 再改訂)
 
-HA クラスタの情報を `cluster-firewall-pair` 配列で保持する設計に変更。
-各ペアはプライマリ・セカンダリの 2 ノードを持ち、それぞれが非典型インタフェース
-(`atypical-interface`) リストを持つ。
+HA クラスタの情報を `pair` 単一オブジェクトで保持する。
+`pair` はプライマリ・セカンダリの 2 ノードを直接持ち、それぞれが非典型インタフェース
+(`atypical_interfaces`) リストを持つ。
 
-**atypical-interface の role:**
-- `'fabric'`: HA クラスタのファブリックリンク。`fabric-options` を持つ
-- `'control'`: HA クラスタの制御リンク。`fabric-options` は出力しない
+**atypical_interfaces の role:**
+- `'fabric'`: HA クラスタのファブリックリンク。`fabric_options` を持つ
+- `'control'`: HA クラスタの制御リンク。`fabric_options` は出力しない
 
-**`fabric-options` の条件出力:**
-`role == 'fabric'` のときのみ `fabric-options` キーを `to_data` / `topo_data` に含める。
+**`fabric_options` の条件出力:**
+`role == 'fabric'` のときのみ `fabric_options` キーを `to_data` / `topo_data` に含める。
 `MddoL3FirewallAtypicalInterface#to_data` がこの制御を担う。
 
 ---
@@ -119,19 +118,20 @@ HA クラスタの情報を `cluster-firewall-pair` 配列で保持する設計�
 ```
 MddoL3NodeAttribute
   └── firewall: MddoL3Firewall                          (ext key: 'firewall', default: {})
-        ├── cluster_firewall_pairs: Array<MddoL3FirewallClusterPair>  (ext: 'cluster-firewall-pair')
+        ├── node: String                                 (ext: 'node')
+        ├── pair: Hash (raw)                             (ext: 'pair')  ← MddoL3FirewallClusterPair 構造を raw Hash として保持
         │     ├── primary: MddoL3FirewallClusterNode
-        │     │     └── atypical_interfaces: Array<MddoL3FirewallAtypicalInterface>
+        │     │     └── atypical_interfaces: Array<MddoL3FirewallAtypicalInterface>  (ext: 'atypical_interfaces')
         │     │           ├── name: String
         │     │           ├── role: String  ('fabric' | 'control')
         │     │           └── fabric_options: MddoL3FirewallFabricOptions  (role='fabric' のみ出力)
         │     │                 └── member_interfaces: Array<String>
         │     └── secondary: MddoL3FirewallClusterNode  (primary と同構造)
-        ├── zones: Array<MddoL3FirewallZone>             (ext: 'zone')
-        │     └── name, interfaces
-        └── policies: Array<MddoL3FirewallPolicy>        (ext: 'policy')
-              ├── from_zone, to_zone
-              └── rules: Array<MddoL3FirewallPolicyRule>
+        ├── zones: Array<MddoL3FirewallZone>             (ext: 'zones')
+        │     └── name, interfaces                       (interfaces ext: 'interfaces')
+        └── policies: Array<MddoL3FirewallPolicy>        (ext: 'policies')
+              ├── from_zone (ext: 'from_zone'), to_zone (ext: 'to_zone')
+              └── rules: Array<MddoL3FirewallPolicyRule> (ext: 'rules')
                     (name, action, application, source_address, destination_address)
 ```
 
