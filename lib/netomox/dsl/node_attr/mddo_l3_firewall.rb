@@ -38,7 +38,7 @@ module Netomox
 
       # @return [Boolean]
       def empty?
-        @cluster_firewall_pairs.empty?
+        @cluster_firewall_pairs.empty? && @zones.empty? && @policies.empty?
       end
     end
   end
