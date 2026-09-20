@@ -14,7 +14,7 @@ module Netomox
 
       ATTR_DEFS = [
         { int: :name, ext: 'name', default: '' },
-        { int: :interfaces, ext: 'interface', default: [] }
+        { int: :interfaces, ext: 'interfaces', default: [] }
       ].freeze
 
       # @param [Hash] data Attribute data (RFC8345)

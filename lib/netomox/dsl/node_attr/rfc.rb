@@ -75,7 +75,7 @@ module Netomox
       # @param [Array<String>] mgmt_addrs
       # @param [String] sys_mac_addr
       # @param [Integer] mgmt_vid
-      # rubocop:disable Metrics/ParameterLists
+      # rubocop:disable-next Metrics/ParameterLists
       def initialize(name: '', flags: [], descr: '',
                      mgmt_addrs: [], sys_mac_addr: '', mgmt_vid: 0)
         @name = name
@@ -86,7 +86,6 @@ module Netomox
         @mgmt_vid = mgmt_vid
         @type = "#{NS_L2NW}:l2-node-attributes"
       end
-      # rubocop:enable Metrics/ParameterLists
 
       # Convert to RFC8345 topology data
       # @return [Hash]

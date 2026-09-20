@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe 'check attribute conversion functions' do
-  # rubocop:disable RSpec/ExampleLength
+  # rubocop:disable-next RSpec/ExampleLength
   it 'can convert topology-attribute to dsl-attribute' do
     origin_attr = {
       router_id: '10.0.0.1',
@@ -44,5 +44,4 @@ RSpec.describe 'check attribute conversion functions' do
     converted_attr = Netomox.convert_attr_topo2dsl(node.attribute.to_data)
     expect(converted_attr).to eq origin_attr
   end
-  # rubocop:enable RSpec/ExampleLength
 end

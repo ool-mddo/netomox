@@ -12,30 +12,29 @@ RSpec.describe 'L3 firewall node dsl', :dsl, :firewall, :mddo, :node do
     @l3attr_key = "#{Netomox::NS_MDDO}:l3-node-attributes"
   end
 
-  # rubocop:disable RSpec/ExampleLength
+  # rubocop:disable-next RSpec/ExampleLength
   it 'generate firewall node with full firewall attribute' do
     node_attr = {
       node_type: 'node',
       flags: ['firewall'],
       firewall: {
-        cluster_firewall_pairs: [
-          {
-            primary: {
-              name: 'site-a-fw-1',
-              atypical_interfaces: [
-                { name: 'ge-0/0/0', role: 'fabric', fabric_options: { member_interfaces: ['ge-0/0/0'] } },
-                { name: 'ge-0/0/1', role: 'control' }
-              ]
-            },
-            secondary: {
-              name: 'site-a-fw-2',
-              atypical_interfaces: [
-                { name: 'ge-0/0/0', role: 'fabric', fabric_options: { member_interfaces: ['ge-0/0/0'] } },
-                { name: 'ge-0/0/1', role: 'control' }
-              ]
-            }
+        node: 'site-a-fw-1',
+        pair: {
+          primary: {
+            name: 'site-a-fw-1',
+            atypical_interfaces: [
+              { name: 'ge-0/0/0', role: 'fabric', fabric_options: { member_interfaces: ['ge-0/0/0'] } },
+              { name: 'ge-0/0/1', role: 'control' }
+            ]
+          },
+          secondary: {
+            name: 'site-a-fw-2',
+            atypical_interfaces: [
+              { name: 'ge-0/0/0', role: 'fabric', fabric_options: { member_interfaces: ['ge-0/0/0'] } },
+              { name: 'ge-0/0/1', role: 'control' }
+            ]
           }
-        ],
+        },
         zones: [
           { name: 'WAN', interfaces: %w[ge-0/0/1.0 ge-7/0/1.0] },
           { name: 'LAN', interfaces: %w[ge-0/0/2.0 ge-7/0/2.0] }
@@ -70,43 +69,42 @@ RSpec.describe 'L3 firewall node dsl', :dsl, :firewall, :mddo, :node do
         'static-route' => [],
         'flag' => ['firewall'],
         'firewall' => {
-          'cluster-firewall-pair' => [
-            {
-              'primary' => {
-                'name' => 'site-a-fw-1',
-                'atypical-interface' => [
-                  { 'name' => 'ge-0/0/0', 'role' => 'fabric',
-                    'fabric-options' => { 'member-interface' => ['ge-0/0/0'] } },
-                  { 'name' => 'ge-0/0/1', 'role' => 'control' }
-                ]
-              },
-              'secondary' => {
-                'name' => 'site-a-fw-2',
-                'atypical-interface' => [
-                  { 'name' => 'ge-0/0/0', 'role' => 'fabric',
-                    'fabric-options' => { 'member-interface' => ['ge-0/0/0'] } },
-                  { 'name' => 'ge-0/0/1', 'role' => 'control' }
-                ]
-              }
+          'node' => 'site-a-fw-1',
+          'pair' => {
+            'primary' => {
+              'name' => 'site-a-fw-1',
+              'atypical_interfaces' => [
+                { 'name' => 'ge-0/0/0', 'role' => 'fabric',
+                  'fabric_options' => { 'member_interfaces' => ['ge-0/0/0'] } },
+                { 'name' => 'ge-0/0/1', 'role' => 'control' }
+              ]
+            },
+            'secondary' => {
+              'name' => 'site-a-fw-2',
+              'atypical_interfaces' => [
+                { 'name' => 'ge-0/0/0', 'role' => 'fabric',
+                  'fabric_options' => { 'member_interfaces' => ['ge-0/0/0'] } },
+                { 'name' => 'ge-0/0/1', 'role' => 'control' }
+              ]
             }
+          },
+          'zones' => [
+            { 'name' => 'WAN', 'interfaces' => %w[ge-0/0/1.0 ge-7/0/1.0] },
+            { 'name' => 'LAN', 'interfaces' => %w[ge-0/0/2.0 ge-7/0/2.0] }
           ],
-          'zone' => [
-            { 'name' => 'WAN', 'interface' => %w[ge-0/0/1.0 ge-7/0/1.0] },
-            { 'name' => 'LAN', 'interface' => %w[ge-0/0/2.0 ge-7/0/2.0] }
-          ],
-          'policy' => [
+          'policies' => [
             {
-              'from-zone' => 'LAN', 'to-zone' => 'WAN',
-              'rule' => [
+              'from_zone' => 'LAN', 'to_zone' => 'WAN',
+              'rules' => [
                 { 'name' => 'DEFAULT', 'action' => 'permit',
-                  'application' => 'any', 'source-address' => 'any', 'destination-address' => 'any' }
+                  'application' => 'any', 'source_address' => 'any', 'destination_address' => 'any' }
               ]
             },
             {
-              'from-zone' => 'WAN', 'to-zone' => 'LAN',
-              'rule' => [
+              'from_zone' => 'WAN', 'to_zone' => 'LAN',
+              'rules' => [
                 { 'name' => 'DEFAULT', 'action' => 'deny',
-                  'application' => 'any', 'source-address' => 'any', 'destination-address' => 'any' }
+                  'application' => 'any', 'source_address' => 'any', 'destination_address' => 'any' }
               ]
             }
           ]
@@ -115,7 +113,6 @@ RSpec.describe 'L3 firewall node dsl', :dsl, :firewall, :mddo, :node do
     }
     expect(node.topo_data).to eq node_data
   end
-  # rubocop:enable RSpec/ExampleLength
 
   it 'does not include firewall key for non-firewall node' do
     node_attr = { node_type: 'node', prefixes: [{ prefix: '192.168.0.0/24', metric: 1, flags: [] }] }

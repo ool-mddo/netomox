@@ -22,8 +22,8 @@ module Netomox
         { int: :name, ext: 'name', default: '' },
         { int: :action, ext: 'action', default: '' },
         { int: :application, ext: 'application', default: '' },
-        { int: :source_address, ext: 'source-address', default: '' },
-        { int: :destination_address, ext: 'destination-address', default: '' }
+        { int: :source_address, ext: 'source_address', default: '' },
+        { int: :destination_address, ext: 'destination_address', default: '' }
       ].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
@@ -44,9 +44,9 @@ module Netomox
       attr_accessor :from_zone, :to_zone, :rules
 
       ATTR_DEFS = [
-        { int: :from_zone, ext: 'from-zone', default: '' },
-        { int: :to_zone, ext: 'to-zone', default: '' },
-        { int: :rules, ext: 'rule', default: [] }
+        { int: :from_zone, ext: 'from_zone', default: '' },
+        { int: :to_zone, ext: 'to_zone', default: '' },
+        { int: :rules, ext: 'rules', default: [] }
       ].freeze
 
       # @param [Hash] data Attribute data (RFC8345)

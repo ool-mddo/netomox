@@ -14,7 +14,7 @@ gem 'rake', '~> 13.0.1'
 gem 'rspec', '~> 3.13'
 gem 'rubocop', '~> 1.80'
 gem 'rubocop-rake', '~> 0.7'
-gem 'rubocop-rspec', '~> 2.31'
+gem 'rubocop-rspec', '~> 3.0'
 gem 'simplecov', '~> 0.21.0'
 gem 'webrick', '~> 1.7.0' # yard restriction
 gem 'yard', '~> 0.9.20'

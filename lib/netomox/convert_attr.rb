@@ -25,6 +25,8 @@ module Netomox
     confederation_member: :confederation_members,
     peer_group: :peer_groups,
     policy: :policies,
+    cluster_firewall_pair: :cluster_firewall_pairs,
+    zone: :zones,
     prefix_set: :prefix_sets,
     as_path_set: :as_path_sets,
     community_set: :community_sets,

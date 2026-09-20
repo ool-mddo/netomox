@@ -34,3 +34,24 @@ RFC8345 準拠の JSON をパース・生成し、トポロジの差分検出も
 
 手書きのドキュメントは `docs/` に置く。
 YARD が自動生成する HTML ドキュメントは `doc/` (gitignore 済み) に出力される。
+
+## ATTR_DEFS ext キーの制約
+
+Topology 層の `ATTR_DEFS` で定義する `ext:` の値は、実際のトポロジ JSON における **JSON キー名と完全一致** しなければならない。
+`SubAttributeBase#select_child_attr` が ext キーでデータを読み書きするため、不一致があると
+`convert_namespace` 実行時にアトリビュートが消失する。
+
+FW 関連クラスのスキーマは playground の canonical definition に従う:
+**`playground/docs/firewall_node_attributes.md`** (playground リポジトリ)
+
+キーはすべて **snake_case + 複数形** (`zones`, `policies`, `interfaces`, `rules`, `from_zone` 等)。
+ハイフン区切り・単数形 (`zone`, `from-zone`, `interface` 等) は誤り。
+
+## 開発ツール
+
+### rubocop
+- rubocop-rspec は `plugins:` 形式でロードする (`require:` ではない)
+- rubocop-rspec **3.x 以上** が必要 (`Gemfile`: `gem 'rubocop-rspec', '~> 3.0'`)
+- rubocop-rspec 3.x から `RSpecRails`, `FactoryBot` 等のサブ Cop 群が独立した gem に分離された。
+  使用しない場合は `.rubocop.yml` から `RSpecRails:` / `FactoryBot:` の設定を削除すること
+- Capybara cops は `rubocop-capybara` gem が別途必要 (netomox は未使用のため `.rubocop.yml` に含めない)
