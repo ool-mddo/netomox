@@ -1,6 +1,6 @@
 # Plan: layer3 termination-point に FHRP (VRRP/HSRP) 属性を追加する
 
-(状態: 実装済み (ブランチ `v0.14.0-dev`、未コミット)。バージョン番号の更新 (0.14.0) のみ、実装・テストの確認後に別途行う)
+(状態: 実装済み・バージョンを 0.14.0 に更新 (ブランチ `v0.14.0-dev`)。push すると CI (`packages.yaml`) が gem を GitHub Packages に公開する)
 
 ### 確認事項の決定 (2026-10-11)
 

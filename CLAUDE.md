@@ -46,6 +46,9 @@ Topology 層の `ATTR_DEFS` で定義する `ext:` の値は、実際のトポ�
 FW 関連クラスのスキーマは playground の canonical definition に従う:
 **`playground/docs/firewall_node_attributes.md`** (playground リポジトリ)
 
+FHRP (VRRP/HSRP。`MddoFhrp`、`MddoL3TPAttribute#fhrp`) のスキーマも playground の canonical definition に従う:
+**`playground/docs/fhrp_termination_point_attributes.md`** (playground リポジトリ)
+
 キーはすべて **snake_case + 複数形** (`zones`, `policies`, `interfaces`, `rules`, `from_zone` 等)。
 ハイフン区切り・単数形 (`zone`, `from-zone`, `interface` 等) は誤り。
 
