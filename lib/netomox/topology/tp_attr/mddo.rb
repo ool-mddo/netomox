@@ -4,6 +4,7 @@ require 'netomox/topology/attr_base'
 require 'netomox/topology/diffable_forward'
 require 'netomox/topology/tp_attr/mddo_ospf_timer'
 require 'netomox/topology/tp_attr/mddo_ospf_neighbor'
+require 'netomox/topology/tp_attr/mddo_fhrp'
 require 'netomox/topology/tp_attr/mddo_bgp_timer'
 
 module Netomox
@@ -70,26 +71,48 @@ module Netomox
     class MddoL3TPAttribute < AttributeBase
       # @!attribute [rw] description
       #   @return [String]
+      # @!attribute [rw] ip_addrs
+      #   @return [Array<String>]
       # @!attribute [rw] flags
       #   @return [Array<String>]
-      attr_accessor :description, :ip_addrs, :flags
+      # @!attribute [rw] fhrp
+      #   @return [Array<MddoFhrp>]
+      attr_accessor :description, :ip_addrs, :flags, :fhrp
 
-      # Attribute definition of L2 termination-point
+      # Attribute definition of L3 termination-point
       ATTR_DEFS = [
         { int: :description, ext: 'description', default: '' },
         { int: :ip_addrs, ext: 'ip-address', default: [] },
-        { int: :flags, ext: 'flag', default: [] }
+        { int: :flags, ext: 'flag', default: [] },
+        { int: :fhrp, ext: 'fhrp', default: [] }
       ].freeze
 
       # @param [Hash] data Attribute data (RFC8345)
       # @param [String] type Attribute type (keyword of data in RFC8345)
       def initialize(data, type)
         super(ATTR_DEFS, data, type)
+        @fhrp = convert_fhrp(data)
+      end
+
+      # @return [Hash] RFC8345 data (without `fhrp` key if the term-point doesn't have fhrp config)
+      def to_data
+        data = super
+        data.delete('fhrp') if @fhrp.empty?
+        data
       end
 
       # @return [String]
       def to_s
         "attribute: #{@path}"
+      end
+
+      private
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @return [Array<MddoFhrp>] Converted attribute data
+      def convert_fhrp(data)
+        key = @attr_table.ext_of(:fhrp)
+        operative_array_key?(data, key) ? data[key].map { |f| MddoFhrp.new(f, key) } : []
       end
     end
 

@@ -3,6 +3,7 @@
 require 'netomox/const'
 require 'netomox/dsl/tp_attr/mddo_ospf_timer'
 require 'netomox/dsl/tp_attr/mddo_ospf_neighbor'
+require 'netomox/dsl/tp_attr/mddo_fhrp'
 require 'netomox/dsl/tp_attr/mddo_bgp_timer'
 
 module Netomox
@@ -93,7 +94,9 @@ module Netomox
       #   @return [Array<String>]
       # @!attribute [rw] flags
       #   @return [Array<String>]
-      attr_accessor :description, :ip_addrs, :flags
+      # @!attribute [rw] fhrp
+      #   @return [Array<MddoFhrp>]
+      attr_accessor :description, :ip_addrs, :flags, :fhrp
       # @!attribute [r] type
       #   @return [String]
       attr_reader :type
@@ -101,26 +104,30 @@ module Netomox
       # @param [String] description Interface description
       # @param [Array<String>] ip_addrs IP addresses
       # @param [Array<String>] flags Flags
-      def initialize(description: '', ip_addrs: [], flags: [])
+      # @param [Array<Hash>] fhrp FHRP (VRRP/HSRP) group configs (keyword arguments of MddoFhrp)
+      def initialize(description: '', ip_addrs: [], flags: [], fhrp: [])
         @description = description || '' # avoid nil if the interface doesn't have description
         @ip_addrs = ip_addrs
         @flags = flags
+        @fhrp = fhrp.map { |f| MddoFhrp.new(**f) }
         @type = "#{NS_MDDO}:l3-termination-point-attributes"
       end
 
       # Convert to RFC8345 topology data
       # @return [Hash]
       def topo_data
-        {
+        data = {
           'description' => @description,
           'ip-address' => @ip_addrs,
           'flag' => @flags
         }
+        data['fhrp'] = @fhrp.map(&:topo_data) unless @fhrp.empty?
+        data
       end
 
       # @return [Boolean]
       def empty?
-        @description.empty? && @ip_addrs.empty? && @flags.empty?
+        @description.empty? && @ip_addrs.empty? && @flags.empty? && @fhrp.empty?
       end
     end
 

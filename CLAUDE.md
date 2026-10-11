@@ -9,6 +9,7 @@ RFC8345 準拠の JSON をパース・生成し、トポロジの差分検出も
 
 ### 命名規則
 - 略語を使わない: `fw` ではなく `firewall` のように完全な語を使う
+  - 例外: `fhrp` (JSON キー・クラス名 `MddoFhrp`。プロジェクトで決めた名称)
 
 ### 層拡張のパターン
 新しい属性・層を追加する場合は **Topology 層と DSL 層の両方を必ずセットで実装する**。
@@ -17,7 +18,8 @@ RFC8345 準拠の JSON をパース・生成し、トポロジの差分検出も
   フィールドを定義、`initialize` でサブ属性オブジェクトに変換する
 - **DSL 層** (`lib/netomox/dsl/`): keyword 引数 + `topo_data` / `empty?` メソッドを実装する
 
-参考実装: `MddoL3StaticRoute`、`MddoBgpPolicy`
+参考実装: `MddoL3StaticRoute`、`MddoBgpPolicy`、`MddoOspfNeighbor` (term-point 属性内の配列)、
+`MddoFhrp` (L3 term-point の VRRP/HSRP。`MddoL3TPAttribute#fhrp`)
 
 ### デバイス種別の識別
 - ノード種別の識別には `node_type` ではなく **`flags`** を使う
@@ -46,6 +48,12 @@ FW 関連クラスのスキーマは playground の canonical definition に従�
 
 キーはすべて **snake_case + 複数形** (`zones`, `policies`, `interfaces`, `rules`, `from_zone` 等)。
 ハイフン区切り・単数形 (`zone`, `from-zone`, `interface` 等) は誤り。
+
+これは **FW 関連クラスのスキーマに限った規約**。それ以外の属性は既存のキーに合わせる。
+term-point 属性・L3 ノード属性の既存キーは kebab-case (`ip-address`, `static-route`, `network-type` 等)。
+FHRP (`MddoFhrp`、`MddoL3TPAttribute#fhrp`) は L3 term-point 属性なので kebab-case
+(`group-id`, `virtual-address`, `source-address`)。外部キーが配列で複数形に変換するものは
+`lib/netomox/convert_attr.rb` の `PLURAL_ATTR_KEY_TABLE` に登録する (例: `virtual_address` → `virtual_addresses`)。
 
 ## 開発ツール
 
