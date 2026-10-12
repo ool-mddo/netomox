@@ -5,6 +5,7 @@ require 'netomox/topology/network'
 require 'netomox/topology/base'
 require 'netomox/topology/error'
 require 'netomox/topology/link_tpref'
+require 'netomox/topology/network_attr/mddo'
 
 module Netomox
   module Topology
@@ -16,14 +17,22 @@ module Netomox
       #   @return [Array<Network>]
       attr_accessor :networks
 
+      # Attribute key/class of the networks container (mddo augmentation)
+      ATTR_KEY_KLASS_LIST = [
+        { key: "#{NS_MDDO}:networks-attributes", klass: MddoNetworksAttribute }
+      ].freeze
+
       # @return [Hash] RFC8345 data
       def initialize(data)
         super('networks')
 
+        # empty attribute (default)
+        @attribute = AttributeBase.new([], {}, '_empty_attr_')
         nws_key = "#{NS_NW}:networks"
         return unless data.key?(nws_key)
 
         setup_networks(data[nws_key])
+        setup_attribute(data[nws_key], ATTR_KEY_KLASS_LIST)
         setup_diff_state(data[nws_key])
       end
 
@@ -185,12 +194,10 @@ module Netomox
       # Convert to data for RFC8345 format
       # @return [Hash]
       def to_data
-        {
-          "#{NS_NW}:networks" => {
-            '_diff_state_' => @diff_state.to_data,
-            'network' => @networks.map(&:to_data)
-          }
-        }
+        nws_data = { '_diff_state_' => @diff_state.to_data }
+        nws_data[@attribute.type] = @attribute.to_data unless @attribute.empty?
+        nws_data['network'] = @networks.map(&:to_data)
+        { "#{NS_NW}:networks" => nws_data }
       end
 
       # @return [void]

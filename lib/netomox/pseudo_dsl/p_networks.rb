@@ -15,9 +15,12 @@ module Netomox
       #   @return [Array<PNetwork>]
       # @!attribute [rw] nmx_networks
       #   @return [Netomox::DSL::Networks]
-      attr_accessor :networks, :nmx_networks
+      # @!attribute [rw] attribute
+      #   @return [Hash, nil] attribute of the networks container (e.g. `{ flags: [...] }`)
+      attr_accessor :networks, :nmx_networks, :attribute
 
       def initialize
+        @attribute = nil
         @networks = [] # Array<PNetwork>
         @nmx_networks = Netomox::DSL::Networks.new
       end
@@ -36,6 +39,7 @@ module Netomox
       # convert to Netomox::DSL objects
       # @return [Netomox::DSL::Networks]
       def interpret
+        @nmx_networks.attribute(@attribute) if @attribute
         @networks.each { |network| interpret_network(network) }
         @nmx_networks
       end

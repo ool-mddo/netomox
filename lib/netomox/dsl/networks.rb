@@ -2,6 +2,7 @@
 
 require 'netomox/dsl/base'
 require 'netomox/dsl/network'
+require 'netomox/dsl/network_attr/mddo'
 
 module Netomox
   module DSL
@@ -16,6 +17,7 @@ module Netomox
       def initialize(&block)
         super(nil, 'networks')
         @networks = []
+        @attribute = nil
         register(&block) if block_given?
       end
 
@@ -35,11 +37,20 @@ module Netomox
         nw
       end
 
+      # Set attribute of the networks container (mddo augmentation)
+      # @param [Hash] attr Attribute data (e.g. `flags: %w[key=value]`)
+      # @return [MddoNetworksNWAttribute]
+      def attribute(attr)
+        @attribute = MddoNetworksNWAttribute.new(**attr)
+      end
+
       # Convert to RFC8345 topology data
       # @return [Hash]
       def topo_data
-        networks = @networks.map(&:topo_data)
-        { "#{NS_NW}:networks" => { 'network' => networks } }
+        nws_data = {}
+        nws_data[@attribute.type] = @attribute.topo_data if @attribute && !@attribute.empty?
+        nws_data['network'] = @networks.map(&:topo_data)
+        { "#{NS_NW}:networks" => nws_data }
       end
 
       # Find network by name
