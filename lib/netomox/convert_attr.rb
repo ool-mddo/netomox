@@ -21,6 +21,7 @@ module Netomox
     static_route: :static_routes,
     neighbor: :neighbors,
     prefix: :prefixes,
+    virtual_address: :virtual_addresses,
     flag: :flags,
     confederation_member: :confederation_members,
     peer_group: :peer_groups,

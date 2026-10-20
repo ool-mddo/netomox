@@ -143,3 +143,52 @@ MddoL3NodeAttribute
   将来的に diff 対応が必要な場合は `include Diffable` を追加する必要がある。
 - **application フィールドの型:** 現状フリーテキスト。将来的に列挙型化の可能性がある。
 - **クラスタペアの整合性検証:** `primary`/`secondary` に対応するノードの存在確認は未実装。
+
+---
+
+## L3 term-point の FHRP (VRRP/HSRP) 属性 (2026-10)
+
+### 背景
+
+インタフェースに設定された VRRP/HSRP の情報 (グループ ID、仮想 IP、priority など) を、
+トポロジモデルの L3 term-point に持たせる必要が生じた。入力は Batfish の `vrrpProperties` / `hsrpProperties`
+(インタフェース × グループ単位の表) で、playground の `docs/work/plans/fhrp_termination_point_attributes.md` に全体計画がある。
+
+### 採用方針
+
+| 検討項目 | 採用 | 理由 |
+|---|---|---|
+| 置き場所 | 既存の `mddo-topology:l3-termination-point-attributes` に `fhrp` キーを追加 | FHRP は「そのインタフェース上のグループ」の情報で、L3 の term-point に紐づく。専用の名前空間 (`*-attributes`) を増やす理由が薄い |
+| VRRP と HSRP | キーを分けず `fhrp` に統合し、要素内の `protocol` で区別 | 両者でパラメータに差がない。差が出ても要素に任意キーを足せば拡張できる |
+| 空のとき | `fhrp` キー自体を出力しない | FHRP を持たない既存の topology.json に差分を出さない (`firewall` キーと同じ方針) |
+| キー名 | kebab-case (`group-id`, `virtual-address`, `source-address`) | 同じ term-point 属性の既存キー (`ip-address` 等) に合わせる |
+| `source-address` | 残す | term-point が複数の IP アドレスを持つとき、どのアドレスに属するグループかを示せる |
+
+### 構造
+
+```
+MddoL3TPAttribute
+  └── fhrp: Array<MddoFhrp>                 (ext key: 'fhrp', default: [])
+        ├── protocol: String                (ext: 'protocol')          'vrrp' | 'hsrp'
+        ├── group_id: Integer               (ext: 'group-id')          文字列入力は to_i
+        ├── virtual_addresses: Array<String>(ext: 'virtual-address')
+        ├── priority: Integer               (ext: 'priority')          文字列入力は to_i
+        ├── preempt: Boolean                (ext: 'preempt')
+        ├── source_address: String          (ext: 'source-address')
+        └── active: Boolean                 (ext: 'active')
+```
+
+- クラス名は `MddoFhrp` (Topology/DSL 同名)。`fhrp` は JSON キーとしてプロジェクトで決めた名称で、
+  「略語を使わない」規約の例外とする。
+- PseudoDSL の属性 Hash では `fhrp:` (キー名そのまま) の配列として渡す。要素は `MddoFhrp` DSL のキーワード引数。
+  `Netomox.convert_attr_topo2dsl` では、配列の `virtual-address` が `PLURAL_ATTR_KEY_TABLE` により `virtual_addresses` になる。
+  `fhrp` 自体は配列でも複数形に変換しない。
+- diff: `MddoL3TPAttribute` は `Diffable` を include していない。属性の比較 (`compare_attribute`) は
+  `to_data` の Hashdiff なので、`fhrp` の追加・削除・変更は検出される。配列は位置で比較されるため、
+  要素の並び順が変わると変更として検出される。
+
+### 未決事項
+
+- `(protocol, group-id)` の一意性検証は未実装。
+- `protocol` の値の検証 (`vrrp`/`hsrp` 以外の拒否) は未実装。
+

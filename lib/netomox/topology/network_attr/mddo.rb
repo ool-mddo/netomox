@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'netomox/topology/attr_base'
 require 'netomox/topology/network_attr/base'
 
 module Netomox
@@ -57,6 +58,28 @@ module Netomox
       # @return [String]
       def to_s
         "attribute: #{@name}, #{@flags}"
+      end
+    end
+
+    # attribute for the networks container (top level of the topology data)
+    # NOTE: RFC8345 `networks` container has no leaf, so that this is an mddo augmentation (flags only)
+    class MddoNetworksAttribute < AttributeBase
+      # @!attribute [rw] flags
+      #   @return [Array<String>]
+      attr_accessor :flags
+
+      # Attribute definition of networks
+      ATTR_DEFS = [{ int: :flags, ext: 'flag', default: [] }].freeze
+
+      # @param [Hash] data Attribute data (RFC8345)
+      # @param [String] type Attribute type (keyword of data in RFC8345)
+      def initialize(data, type)
+        super(ATTR_DEFS, data, type)
+      end
+
+      # @return [String]
+      def to_s
+        "attribute: #{@flags}"
       end
     end
 

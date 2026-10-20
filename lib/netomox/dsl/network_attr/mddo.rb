@@ -61,6 +61,27 @@ module Netomox
       end
     end
 
+    # attribute for mddo-topology networks container (top level of the topology data)
+    # NOTE: RFC8345 `networks` container has no leaf, so that this is an mddo augmentation (flags only)
+    class MddoNetworksNWAttribute < NetworkAttributeBase
+      # @param [Array<String>] flags
+      def initialize(flags: [])
+        super(name: '', flags: flags)
+        @type = "#{NS_MDDO}:networks-attributes"
+      end
+
+      # Convert to RFC8345 topology data
+      # @return [Hash]
+      def topo_data
+        { 'flag' => @flags }
+      end
+
+      # @return [Boolean]
+      def empty?
+        @flags.empty?
+      end
+    end
+
     # attribute for mddo-topology bgp-proc network
     class MddoBgpProcNWAttribute < NetworkAttributeBase
       def initialize(**hash)
