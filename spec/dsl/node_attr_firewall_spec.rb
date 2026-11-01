@@ -97,14 +97,14 @@ RSpec.describe 'L3 firewall node dsl', :dsl, :firewall, :mddo, :node do
               'from_zone' => 'LAN', 'to_zone' => 'WAN',
               'rules' => [
                 { 'name' => 'DEFAULT', 'action' => 'permit',
-                  'application' => 'any', 'source_address' => 'any', 'destination_address' => 'any' }
+                  'application' => ['any'], 'source_address' => ['any'], 'destination_address' => ['any'] }
               ]
             },
             {
               'from_zone' => 'WAN', 'to_zone' => 'LAN',
               'rules' => [
                 { 'name' => 'DEFAULT', 'action' => 'deny',
-                  'application' => 'any', 'source_address' => 'any', 'destination_address' => 'any' }
+                  'application' => ['any'], 'source_address' => ['any'], 'destination_address' => ['any'] }
               ]
             }
           ]

@@ -62,8 +62,8 @@ FW 関連データをすべて `firewall` キー 1 つに束ねる設計を採�
       {
         "from_zone": "LAN", "to_zone": "WAN",
         "rules": [
-          { "name": "DEFAULT", "action": "permit", "application": "any",
-            "source_address": "any", "destination_address": "any" }
+          { "name": "DEFAULT", "action": "permit", "application": ["any"],
+            "source_address": ["any"], "destination_address": ["any"] }
         ]
       }
     ]
@@ -132,7 +132,8 @@ MddoL3NodeAttribute
         └── policies: Array<MddoL3FirewallPolicy>        (ext: 'policies')
               ├── from_zone (ext: 'from_zone'), to_zone (ext: 'to_zone')
               └── rules: Array<MddoL3FirewallPolicyRule> (ext: 'rules')
-                    (name, action, application, source_address, destination_address)
+                    name, action: String
+                    application, source_address, destination_address: Array<String>  (v0.15 で String から変更)
 ```
 
 ---
@@ -141,7 +142,7 @@ MddoL3NodeAttribute
 
 - **diff 対応:** 現状 `MddoL3Firewall` は `Diffable` を include していない。
   将来的に diff 対応が必要な場合は `include Diffable` を追加する必要がある。
-- **application フィールドの型:** 現状フリーテキスト。将来的に列挙型化の可能性がある。
+- **application フィールドの型:** 配列 (v0.15〜)。要素は JunOS のアプリケーション名/アドレス名のフリーテキスト。将来的に列挙型化の可能性がある。
 - **クラスタペアの整合性検証:** `primary`/`secondary` に対応するノードの存在確認は未実装。
 
 ---
@@ -192,3 +193,15 @@ MddoL3TPAttribute
 - `(protocol, group-id)` の一意性検証は未実装。
 - `protocol` の値の検証 (`vrrp`/`hsrp` 以外の拒否) は未実装。
 
+
+---
+
+## FW ポリシールールの application / source_address / destination_address の配列化 (v0.15)
+
+JunOS の `application [ a b ];` のように、1 ルールが複数の値を取れるため、3 項目を常に `Array<String>` とした
+(playground の canonical definition `docs/firewall_node_attributes.md` に従う)。
+
+- `default` は `[]`。型不一致 (String default vs Array 値) による `Attribute type mismatch` の ERROR ログを避けるため。
+- 後方互換: Topology 層は `convert` で旧形式の String を `[value]` に、空文字を `[]` に正規化する。
+  DSL 層の `MddoL3FirewallPolicyRule#initialize` も同様に String を配列化する。
+- `to_data` / `topo_data` の出力は常に配列。旧バージョンの利用側 (String 前提) には破壊的変更のため minor を上げた。
