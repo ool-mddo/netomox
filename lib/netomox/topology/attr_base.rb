@@ -209,7 +209,8 @@ module Netomox
 
       def initialize(attr_table, data, type)
         super
-        @diff_state = DiffState.new # empty state
+        # restore diff state if the data has (e.g. data of diff output), otherwise empty state
+        @diff_state = data['_diff_state_'] ? DiffState.from_data(data['_diff_state_']) : DiffState.new
       end
 
       def to_data
