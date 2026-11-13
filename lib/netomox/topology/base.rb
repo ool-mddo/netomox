@@ -106,12 +106,7 @@ module Netomox
         ds_key = '_diff_state_'
         return unless data[ds_key]
 
-        @diff_state = DiffState.new(
-          forward: data[ds_key]['forward']&.intern,
-          backward: data[ds_key]['backward']&.intern,
-          pair: data[ds_key]['pair'],
-          diff_data: data[ds_key]['diff_data'] || nil
-        )
+        @diff_state = DiffState.from_data(data[ds_key])
       end
 
       private

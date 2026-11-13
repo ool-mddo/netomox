@@ -11,19 +11,25 @@ module Netomox
       # @!attribute [rw] action
       #   @return [String] 'permit' or 'deny'
       # @!attribute [rw] application
-      #   @return [String]
+      #   @return [Array<String>] (a String input is converted to a single-element Array)
       # @!attribute [rw] source_address
-      #   @return [String]
+      #   @return [Array<String>] (a String input is converted to a single-element Array)
       # @!attribute [rw] destination_address
-      #   @return [String]
+      #   @return [Array<String>] (a String input is converted to a single-element Array)
       attr_accessor :name, :action, :application, :source_address, :destination_address
+
+      # Convert a value to an array of strings (legacy String data is accepted, an empty string is converted to [])
+      # NOTE: always return a new Array, not to share the default value and the input data between instances
+      TO_STRING_ARRAY = lambda do |value|
+        value.is_a?(String) && value.empty? ? [] : Array(value).dup
+      end
 
       ATTR_DEFS = [
         { int: :name, ext: 'name', default: '' },
         { int: :action, ext: 'action', default: '' },
-        { int: :application, ext: 'application', default: '' },
-        { int: :source_address, ext: 'source_address', default: '' },
-        { int: :destination_address, ext: 'destination_address', default: '' }
+        { int: :application, ext: 'application', default: [], convert: TO_STRING_ARRAY },
+        { int: :source_address, ext: 'source_address', default: [], convert: TO_STRING_ARRAY },
+        { int: :destination_address, ext: 'destination_address', default: [], convert: TO_STRING_ARRAY }
       ].freeze
 
       # @param [Hash] data Attribute data (RFC8345)

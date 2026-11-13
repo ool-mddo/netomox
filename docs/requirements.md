@@ -36,9 +36,10 @@ netomox のデータコンテナがその情報を保持できることを要求
 - 各ルールは以下のフィールドを持つこと:
   - `name`: ルール名
   - `action`: `'permit'` または `'deny'`
-  - `application`: アプリケーション識別子 (例: `'any'`, `'http'`)
-  - `source_address`: 送信元アドレスまたは `'any'`
-  - `destination_address`: 宛先アドレスまたは `'any'`
+  - `application`: アプリケーション識別子の配列 (例: `['any']`, `['junos-ping', 'junos-https']`)
+  - `source_address`: 送信元アドレスの配列 (例: `['any']`)
+  - `destination_address`: 宛先アドレスの配列 (例: `['any']`)
+  - 3 項目は常に `Array<String>`。旧形式の String 入力は 1 要素の配列に、空文字は `[]` に正規化する (v0.15)
 
 **R5: 後方互換性**
 - FW 情報を持たない既存の L3 ノードの `to_data` 出力に `firewall` キーが追加されないこと
